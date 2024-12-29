@@ -7,6 +7,7 @@ import { CrearClienteForm } from '../components/CreateClientModal';
 import { useClient } from '../hooks/useClient';
 import Swal from 'sweetalert2';
 import { useLoan } from '../hooks/useLoan';
+import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
 
 export const PrestamosPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -65,11 +66,10 @@ export const PrestamosPage = () => {
     }, [])
 
     return (
-        <>
+        <RegisterTableLayout title="Registrar Préstamo">
             {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
             {loading && <p>Cargando...</p>}
             <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                <h1 className="text-xl font-bold">Registrar Préstamo</h1>
 
                 <div className="grid grid-cols-2 gap-4">
                     {/* Select Cliente */}
@@ -207,6 +207,7 @@ export const PrestamosPage = () => {
                     <CrearClienteForm onCreate={handleCreateClient} />
                 </Modal>
             )}
-        </>
+        </RegisterTableLayout>
+
     );
 };

@@ -7,15 +7,16 @@ export const LabeledInput = React.forwardRef(({
     clase = "",
     error = null,
     register,
+    disabled = false,
     ...props
 }, ref) => {
     const registerProps = register ? register(name, { required: require }) : {};
-
     return (
         <div className="flex flex-col">
             <label>
                 {label}
                 <input
+                    disabled={disabled}
                     {...registerProps}
                     {...props}
                     ref={ref}

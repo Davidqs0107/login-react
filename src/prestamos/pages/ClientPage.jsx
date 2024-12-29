@@ -6,6 +6,7 @@ import { formFields } from '../forms/clienteForm';
 import { useClient } from '../hooks/useClient';
 import Swal from 'sweetalert2';
 import { ClientsTable } from '../components/ClientTable';
+import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
 
 export const ClientPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue, clearErrors } = useForm();
@@ -95,44 +96,45 @@ export const ClientPage = () => {
         };
         fetchUsers();
     }, []);
+    const titleClient = selectedClient ? "Editar Cliente" : "Registro de Cliente";
     return (
         <>
-            {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
-            {loading && <p>Cargando...</p>}
-            <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
-                <h1>{selectedClient ? "Editar Cliente" : "Registro de Cliente"}</h1>
+            <RegisterTableLayout title={titleClient}>
+                {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
+                {loading && <p>Cargando...</p>}
+                <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
+                    <div className='grid grid-cols-2 gap-4'>
+                        {formFields.map((field, i) => (
+                            <div key={i}>
+                                <LabeledInput
+                                    type={field.type}
+                                    label={field.label}
+                                    name={field.name}
+                                    register={register}
+                                    require={field.required}
+                                    error={errors[field.name]}
+                                    {...register(field.name, field.validation)}
+                                />
+                            </div>
+                        ))}
+                    </div>
 
-                <div className='grid grid-cols-2 gap-4'>
-                    {formFields.map((field, i) => (
-                        <div key={i}>
-                            <LabeledInput
-                                type={field.type}
-                                label={field.label}
-                                name={field.name}
-                                register={register}
-                                require={field.required}
-                                error={errors[field.name]}
-                                {...register(field.name, field.validation)}
-                            />
-                        </div>
-                    ))}
-                </div>
+                    <div className="flex gap-4">
+                        <Button clase='!w-auto' type='submit'>
+                            {selectedClient ? "Actualizar" : "Aceptar"}
+                        </Button>
 
-                <div className="flex gap-4">
-                    <Button clase='!w-auto' type='submit'>
-                        {selectedClient ? "Actualizar" : "Aceptar"}
-                    </Button>
-
-                    <Button
-                        clase='!w-auto !bg-gray-500 hover:!bg-gray-600'
-                        type='button'
-                        onClick={handleCancel}
-                    >
-                        Cancelar
-                    </Button>
-                </div>
-            </form>
-            <ClientsTable clients={clients} onEdit={handleEdit} onDelete={handleDelete} />
+                        <Button
+                            clase='!w-auto !bg-gray-500 hover:!bg-gray-600'
+                            type='button'
+                            onClick={handleCancel}
+                        >
+                            Cancelar
+                        </Button>
+                    </div>
+                </form>
+                <ClientsTable clients={clients} onEdit={handleEdit} onDelete={handleDelete} />
+            </RegisterTableLayout>
         </>
     )
 }

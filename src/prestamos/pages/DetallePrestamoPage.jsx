@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "../../components/Modal"; // Importa tu componente Modal
-import { Button } from "../../components/Button"; // Botón reutilizable
+import { Modal } from "../../components/Modal";
+import { Button } from "../../components/Button";
 import { useForm } from "react-hook-form";
 import { useLoan } from "../hooks/useLoan";
 import { useParams } from "react-router";
 import { CreateCuotaModal } from "../components/CreateCuotaModal";
+import { RegisterTableLayout } from "../../layout/RegisterTableLayout";
+import { formatDate, formtaTipoPrestamo } from "../../common/functions";
+import { generatePDF } from "../functions/generatePdfPrestamo";
 
 export const DetallePrestamoPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -28,8 +31,8 @@ export const DetallePrestamoPage = () => {
             try {
                 const data = await getLoanById(prestamoId, true);
                 if (data && data.prestamo) {
-                    setPrestamo(data.prestamo); // Asegúrate de acceder al nivel correcto.
-                    setCuotas(data.prestamo?.cuotas || []); // Asegúrate de acceder al nivel correcto.
+                    setPrestamo(data.prestamo);
+                    setCuotas(data.prestamo?.cuotas || []);
                 }
             } catch (error) {
                 console.error("Error al obtener los clientes:", error);
@@ -37,75 +40,99 @@ export const DetallePrestamoPage = () => {
         };
         fetchUsers();
     }, []);
-
+    const onDownloadPDF = () => {
+        console.log(prestamo)
+        generatePDF(prestamo, cuotas);
+    };
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
-            {/* Encabezado */}
-            <header className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Detalle del Préstamo</h1>
-            </header>
-
+        <RegisterTableLayout title="Detalle de Préstamo">
             {/* Información Principal */}
             <section className="mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow">
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
                         <p><strong>Nombre:</strong> {prestamo.nombre} {prestamo.apellido}</p>
+                        <p><strong>CI:</strong> {prestamo.ci}</p>
                         <p><strong>Email:</strong> {prestamo.email}</p>
                         <p><strong>Dirección:</strong> {prestamo.direccion}</p>
+                        <p><strong>Telefono:</strong> {prestamo.telefono}</p>
                     </div>
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Detalles del Préstamo</h2>
                         <p><strong>Monto:</strong> {prestamo.monto}</p>
+                        <p><strong>Tipo prestamo:</strong> {formtaTipoPrestamo(prestamo.tipo_prestamo)}</p>
                         <p><strong>Tasa de Interés:</strong> {prestamo.tasa_interes}%</p>
                         <p><strong>Frecuencia de Pago:</strong> {prestamo.frecuencia_pago}</p>
                         <p><strong>Total de Cuotas:</strong> {prestamo.total_cuotas}</p>
-                        <p><strong>Fecha de Inicio:</strong> {new Date(prestamo.fecha_inicio).toLocaleDateString()}</p>
+                        <p><strong>Fecha de Inicio:</strong> {formatDate(prestamo.fecha_inicio)}</p>
                     </div>
+                </div>
+
+                <div className="gap-4 p-6 bg-white rounded-lg shadow">
+                    <strong>Documento:</strong>
+                    <p> {prestamo.documento}</p>
+
+                </div>
+                <div className="grid grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow ">
+                    <Button clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
+                        onClick={onDownloadPDF}
+                    >
+                        Descargar PDF
+                    </Button>
+                    <Button clase="!bg-blue-500 hover:!bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
+                        onClick={() => window.print()}
+                    >
+                        Imprimir
+                    </Button>
                 </div>
             </section>
 
             {/* Tabla de Cuotas */}
-            <section>
+            <section >
                 <h2 className="text-xl font-semibold mb-4">Cuotas</h2>
-                <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">N° Cuota</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Fecha de Pago</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto Pagado</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Estado</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {cuotas.map((cuota, index) => {
-                            const isCurrentCuota = index === 0 || cuotas[index - 1]?.estado === "pagada";
-                            const isDisabled = cuota.estado === "pagada" || !isCurrentCuota;
-                            return <tr key={cuota.id} className="border-t">
-                                <td className="px-4 py-2">{cuota.numero_cuota}</td>
-                                <td className="px-4 py-2">{new Date(cuota.fecha_pago).toLocaleDateString()}</td>
-                                <td className="px-4 py-2">{cuota.monto}</td>
-                                <td className="px-4 py-2">{cuota.monto_pagado}</td>
-                                <td className="px-4 py-2 capitalize">{cuota.estado}</td>
-                                <td className="px-4 py-2">
-                                    <Button
-                                        clase={`${isDisabled
-                                            ? "bg-gray-400 cursor-not-allowed"
-                                            : "bg-blue-500 hover:bg-blue-700 text-white"
-                                            } font-bold py-1 px-3 rounded`}
-                                        onClick={() => handlePagarCuota(cuota)}
-                                        disabled={isDisabled}
-                                    >
-                                        {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
-                                    </Button>
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">N° Cuota</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Fecha de Pago</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto Pagado</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Estado</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Acciones</th>
                             </tr>
-                        }
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {cuotas.map((cuota, index) => {
+                                const isCurrentCuota = index === 0 || cuotas[index - 1]?.estado === "pagada";
+                                const isDisabled = cuota.estado === "pagada" || !isCurrentCuota;
+
+                                return (
+                                    <tr key={cuota.id} className="border-t odd:bg-gray-50">
+                                        <td className="px-4 py-2">{cuota.numero_cuota}</td>
+                                        <td className="px-4 py-2">{new Date(cuota.fecha_pago).toLocaleDateString()}</td>
+                                        <td className="px-4 py-2">{cuota.monto}</td>
+                                        <td className="px-4 py-2">{cuota.monto_pagado}</td>
+                                        <td className="px-4 py-2 capitalize">{cuota.estado}</td>
+                                        <td className="px-4 py-2">
+                                            <Button
+                                                clase={`${isDisabled
+                                                    ? "bg-gray-400 cursor-not-allowed"
+                                                    : "bg-blue-500 hover:bg-blue-700 text-white"
+                                                    } font-bold py-1 px-3 rounded`}
+                                                onClick={() => handlePagarCuota(cuota)}
+                                                disabled={isDisabled}
+                                            >
+                                                {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+
             </section>
 
             {/* Modal para Pagar Cuota */}
@@ -118,6 +145,6 @@ export const DetallePrestamoPage = () => {
                     <CreateCuotaModal closeModal={setIsModalOpen} cuota={selectedCuota} updatedCuota={handleUpdateCuota} />
                 </Modal>
             )}
-        </div>
+        </RegisterTableLayout>
     );
 };

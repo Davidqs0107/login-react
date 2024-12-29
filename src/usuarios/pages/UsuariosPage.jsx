@@ -6,6 +6,7 @@ import { formFields } from '../forms/usuarioForm';
 import { useUsers } from '../hooks/useUsers';
 import { UsersTable } from '../components/UserTable';
 import Swal from 'sweetalert2';
+import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
 
 export const UsuariosPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue, clearErrors } = useForm();
@@ -109,63 +110,64 @@ export const UsuariosPage = () => {
         };
         fetchUsers();
     }, []);
-
+    const titleUsuario = selectedUser ? "Editar Usuario" : "Registrar Usuario";
     return (
         <>
-            {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
-            {loading && <p>Cargando...</p>}
-            <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
-                <h1>{selectedUser ? "Editar Usuario" : "Registro de Usuario"}</h1>
+            <RegisterTableLayout title={titleUsuario}>
+                {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
+                {loading && <p>Cargando...</p>}
+                <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
 
-                <div className='grid grid-cols-2 gap-4'>
-                    {getDynamicFormFields().map((field, i) => (
-                        <div key={i}>
-                            <LabeledInput
-                                type={field.type}
-                                label={field.label}
-                                name={field.name}
-                                register={register}
-                                require={field.required}
-                                error={errors[field.name]}
-                                {...register(field.name, field.validation)}
-                            />
-                            {
-                                field.name === 'password' && selectedUser &&
-                                (<>
-                                    <div key={`check-${i}`}>
-                                        <label>Restablecer contraseña</label>
-                                        <input className='!ml-2'
-                                            type="checkbox"
-                                            name="passCheck"
-                                            checked={passCheck}
-                                            onChange={(e) => {
-                                                setPassCheck(e.target.checked);
-                                                setValue('passCheck', e.target.checked); // Sincronizar con react-hook-form
-                                            }} />
-                                    </div>
+                    <div className='grid grid-cols-2 gap-4'>
+                        {getDynamicFormFields().map((field, i) => (
+                            <div key={i}>
+                                <LabeledInput
+                                    type={field.type}
+                                    label={field.label}
+                                    name={field.name}
+                                    register={register}
+                                    require={field.required}
+                                    error={errors[field.name]}
+                                    {...register(field.name, field.validation)}
+                                />
+                                {
+                                    field.name === 'password' && selectedUser &&
+                                    (<>
+                                        <div key={`check-${i}`}>
+                                            <label>Restablecer contraseña</label>
+                                            <input className='!ml-2'
+                                                type="checkbox"
+                                                name="passCheck"
+                                                checked={passCheck}
+                                                onChange={(e) => {
+                                                    setPassCheck(e.target.checked);
+                                                    setValue('passCheck', e.target.checked); // Sincronizar con react-hook-form
+                                                }} />
+                                        </div>
 
-                                </>)
-                            }
+                                    </>)
+                                }
 
-                        </div>
-                    ))}
-                </div>
+                            </div>
+                        ))}
+                    </div>
 
-                <div className="flex gap-4">
-                    <Button clase='!w-auto' type='submit'>
-                        {selectedUser ? "Actualizar" : "Aceptar"}
-                    </Button>
+                    <div className="flex gap-4">
+                        <Button clase='!w-auto' type='submit'>
+                            {selectedUser ? "Actualizar" : "Aceptar"}
+                        </Button>
 
-                    <Button
-                        clase='!w-auto !bg-gray-500 hover:!bg-gray-600'
-                        type='button'
-                        onClick={handleCancel}
-                    >
-                        Cancelar
-                    </Button>
-                </div>
-            </form>
-            <UsersTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
+                        <Button
+                            clase='!w-auto !bg-gray-500 hover:!bg-gray-600'
+                            type='button'
+                            onClick={handleCancel}
+                        >
+                            Cancelar
+                        </Button>
+                    </div>
+                </form>
+                <UsersTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
+            </RegisterTableLayout>
         </>
     )
 }

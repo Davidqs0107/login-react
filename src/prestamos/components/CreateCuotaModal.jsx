@@ -91,7 +91,7 @@ export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota }) => {
 
                 <div className="flex justify-end gap-4">
                     <Button
-                        clase="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                        clase="!bg-gray-500 hover:!bg-gray-600 text-white font-bold py-2 px-4 rounded"
                         onClick={() => closeModal(false)}
                     >
                         Cancelar

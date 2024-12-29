@@ -17,12 +17,14 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [errors, setErrors] = useState([]);
+
     const mapUserFunction = (user) => {
         const usuario = {
             id: user.id,
             name: user.nombre,
             email: user.email,
-            empresa_id: user.empresa_id
+            empresa_id: user.empresa_id,
+            rol: user.rol,
         }
         setUser(usuario);
         setIsAuthenticated(true);
@@ -92,9 +94,14 @@ export const AuthProvider = ({ children }) => {
         try {
             const { data } = await renewToken();
             const user = localStorage.getItem('usuario');
-            localStorage.setItem('token', data.token);
-            setIsAuthenticated(true);
-            setUser(JSON.parse(user));
+            const usuario = JSON.parse(user);
+            data.email = usuario.email;
+            data.nombre = usuario.name;
+            mapUserFunction(data);
+            // localStorage.setItem('token', data.token);
+            // console.log(JSON.parse(user));
+            // setIsAuthenticated(true);
+            // setUser(JSON.parse(user));
             setIsLoading(false);
         } catch (error) {
             localStorage.clear();
