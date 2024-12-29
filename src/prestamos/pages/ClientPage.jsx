@@ -13,7 +13,7 @@ export const ClientPage = () => {
     // aca se usa el useCliente para comunicarse con la API
     const { createClient, updateClient, deleteClient, getClients, error, loading } = useClient();
     const [clients, setClients] = useState([]);
-
+    const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
     const [selectedClient, setSelectedClient] = useState(null);
     const onSubmit = handleSubmit(async (data) => {
         if (selectedClient) {
@@ -90,12 +90,18 @@ export const ClientPage = () => {
 
     };
     useEffect(() => {
-        const fetchUsers = async () => {
-            const data = await getClients();
-            if (data) setClients(data.clientes);
-        };
-        fetchUsers();
+        fetchClients();
     }, []);
+    const fetchClients = async (page = 1) => {
+        const data = await getClients(page);
+        if (data) {
+            setClients(data.clientes);
+            setMeta(data.meta);
+        }
+    };
+    const handlePageChange = (newPage) => {
+        fetchClients(newPage);
+    };
     const titleClient = selectedClient ? "Editar Cliente" : "Registro de Cliente";
     return (
         <>
@@ -133,7 +139,7 @@ export const ClientPage = () => {
                         </Button>
                     </div>
                 </form>
-                <ClientsTable clients={clients} onEdit={handleEdit} onDelete={handleDelete} />
+                <ClientsTable clients={clients} meta={meta} onPageChange={handlePageChange} onEdit={handleEdit} onDelete={handleDelete} />
             </RegisterTableLayout>
         </>
     )

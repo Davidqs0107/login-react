@@ -1,6 +1,7 @@
 import React from "react";
 
-export const ClientsTable = ({ clients = [], onEdit, onDelete }) => {
+export const ClientsTable = ({ clients = [], meta, onPageChange, onEdit, onDelete }) => {
+    const { page, totalPages } = meta;
     return (
         <div className="overflow-x-auto mt-6">
             <table className="hidden sm:table min-w-full table-auto border-collapse border border-gray-200 text-sm">
@@ -42,7 +43,23 @@ export const ClientsTable = ({ clients = [], onEdit, onDelete }) => {
                     ))}
                 </tbody>
             </table>
-
+            <div className="flex justify-center mt-4">
+                <button
+                    disabled={page <= 1}
+                    onClick={() => onPageChange(page - 1)}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+                >
+                    Anterior
+                </button>
+                <span className="px-4 py-2">{`${page} de ${totalPages}`}</span>
+                <button
+                    disabled={page >= totalPages}
+                    onClick={() => onPageChange(page + 1)}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+                >
+                    Siguiente
+                </button>
+            </div>
             <div className="block sm:hidden">
                 {clients.map((client) => (
                     <div key={client.id} className="border border-gray-200 p-4 mb-4 rounded-lg">

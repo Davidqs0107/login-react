@@ -8,10 +8,11 @@ import { useLoan } from '../hooks/useLoan';
 import { EditPrestamoModal } from '../components/EditPrestamoModal';
 import { Modal } from '../../components/Modal';
 import { useNavigate } from 'react-router';
+import { formatDateWithDateFns } from '../../common/functions';
 
 export const ListadoPrestamosPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
-    const { getLoans } = useLoan();
+    const { getLoans, error, loading } = useLoan();
     const [prestamos, setPrestamos] = useState([]);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
@@ -42,12 +43,14 @@ export const ListadoPrestamosPage = () => {
         navigate('/prestamo/');
     }
     useEffect(() => {
-        setValue("fecha_inicio", new Date().toISOString().split('T')[0]);
-        setValue("fecha_fin", new Date().toISOString().split('T')[0]);
+        setValue("fecha_inicio", formatDateWithDateFns(new Date()));
+        setValue("fecha_fin", formatDateWithDateFns(new Date()));
     }, []);
 
     return (
         <RegisterTableLayout title={"Listado de Prestamos"}>
+            {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
+            {loading && <p>Cargando...</p>}
             <section className="mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-white rounded-lg shadow">
                     <div>
