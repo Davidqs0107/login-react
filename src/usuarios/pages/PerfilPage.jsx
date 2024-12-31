@@ -10,7 +10,7 @@ import { userLocalStorage } from '../../common/functions'
 const userStore = userLocalStorage.getUser();
 export const PerfilPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue, clearErrors } = useForm();
-    const { updateUser, getUser, loading, error } = useUsers();
+    const { updateUserCobrador, getUser, loading, error } = useUsers();
     const onSubmit = handleSubmit(async (data) => {
         const payload = {
             ...data,
@@ -18,7 +18,7 @@ export const PerfilPage = () => {
         };
         if (payload.password === '') delete payload.password;
 
-        const user = await updateUser(payload);
+        const user = await updateUserCobrador(payload);
         if (user) {
             Swal.fire({
                 title: "Usuario actualizado",

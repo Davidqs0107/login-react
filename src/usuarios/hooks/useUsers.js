@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { deleteUserRequest, getUserRequest, getUsersRequest, registerUserRequest, updateUserRequest } from "../../api/usuarios";
+import { deleteUserRequest, getUserRequest, getUsersRequest, registerUserRequest, updateUserCobradorRequest, updateUserRequest } from "../../api/usuarios";
 
 export const useUsers = () => {
     const [loading, setLoading] = useState(false);
@@ -22,6 +22,18 @@ export const useUsers = () => {
         setError(null);
         try {
             const { data } = await updateUserRequest(user);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    };
+    const updateUserCobrador = async (user) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await updateUserCobradorRequest(user);
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
@@ -74,6 +86,7 @@ export const useUsers = () => {
         //metodos
         createUser,
         updateUser,
+        updateUserCobrador,
         deleteUser,
         getUsers,
         getUser,
