@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getLoanByIdRequest, getLoansRequest, registerLoanRequest, updateLoanRequest } from "../../api/prestamos";
+import { getDocByIdRequest, getLoanByIdRequest, getLoansRequest, registerLoanRequest, updateLoanRequest, uploadDocRequest } from "../../api/prestamos";
 
 export const useLoan = () => {
     const [loading, setLoading] = useState(false);
@@ -53,12 +53,45 @@ export const useLoan = () => {
             setLoading(false);
         }
     }
+
+    // archivos
+
+    const uploadDoc = async (id, file) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const formData = new FormData();
+            formData.append("archivo", file);
+            console.log(id, formData);
+            const { data } = await uploadDocRequest(id, formData);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const getDoc = async (id) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await getDocByIdRequest(id);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    }
     return {
         // metodos
         createLoan,
         getLoans,
         getLoanById,
         updateLoan,
+        uploadDoc,
+        getDoc,
         // variables
         error,
         loading

@@ -1,14 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
+import { Eye, FileInput, FileSearch2 } from "lucide-react";
 
-export const LoansTable = ({ loans = [], totalPages, openModal }) => {
+export const LoansTable = ({ loans = [], meta, openModal, onPageChange, typeModal }) => {
+    const { page, totalPages = 1 } = meta;
+
     const navigate = useNavigate();
     const onNavigate = (loanId) => {
         navigate(`/prestamo/${loanId}`);
     }
     const handleOpenModal = (prestamoId) => {
+        typeModal(true);
         openModal(prestamoId);
+    }
+    const handleOpenModalDetail = (loan) => {
+        typeModal(false);
+        openModal(loan);
     }
     return (
         <div className="overflow-x-auto mt-6">
@@ -44,23 +52,80 @@ export const LoansTable = ({ loans = [], totalPages, openModal }) => {
 
                             <td className="px-4 py-2 border border-gray-200">
                                 <button
-                                    className="text-blue-500 hover:underline mr-2"
+                                    title="Ver detalle"
+                                    className="text-yellow-500 hover:underline mr-2"
                                     onClick={() => onNavigate(loan.id)}
                                 >
-                                    Ver detalle
+                                    <Eye />
                                 </button>
                                 <button
+                                    title="Editar documento"
                                     className="text-blue-500 hover:underline mr-2"
                                     onClick={() => handleOpenModal(loan)}
                                 >
-                                    Editar Doc
+                                    <FileInput />
+                                </button>
+                                <button
+                                    title="Ver documento"
+                                    className="text-green-500 hover:underline mr-2"
+                                    onClick={() => handleOpenModalDetail(loan)}
+                                >
+                                    <FileSearch2 />
                                 </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-
+            <div className="flex justify-center mt-4">
+                <button
+                    disabled={page <= 1}
+                    onClick={() => onPageChange(page - 1)}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+                >
+                    Anterior
+                </button>
+                <span className="px-4 py-2">{`${page} de ${totalPages || 1}`}</span>
+                <button
+                    disabled={page >= totalPages}
+                    onClick={() => onPageChange(page + 1)}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+                >
+                    Siguiente
+                </button>
+            </div>
+            <div className="block sm:hidden">
+                {loans.map((client) => (
+                    <div key={client.id} className="border border-gray-200 p-4 mb-4 rounded-lg">
+                        <div className="flex justify-between">
+                            <span className="font-bold">Nombre:</span>
+                            <span>{client.nombre}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="font-bold">Email:</span>
+                            <span>{client.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="font-bold">Direccion:</span>
+                            <span>{client.direccion}</span>
+                        </div>
+                        <div className="flex justify-between mt-2">
+                            <button
+                                className="text-blue-500 hover:underline mr-2"
+                                onClick={() => onEdit(client)}
+                            >
+                                Editar
+                            </button>
+                            <button
+                                className="text-red-500 hover:underline"
+                                onClick={() => onDelete(client.id)}
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
             <div className="block sm:hidden">
                 {loans.map((loan) => (
                     <div key={loan.id} className="border border-gray-200 p-4 mb-4 rounded-lg">

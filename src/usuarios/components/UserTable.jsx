@@ -1,3 +1,4 @@
+import { UserRoundPen, UserRoundX } from "lucide-react";
 import React from "react";
 
 export const UsersTable = ({ users = [], onEdit, onDelete }) => {
@@ -29,13 +30,13 @@ export const UsersTable = ({ users = [], onEdit, onDelete }) => {
                                     className="text-blue-500 hover:underline mr-2"
                                     onClick={() => onEdit(user)}
                                 >
-                                    Editar
+                                    <UserRoundPen />
                                 </button>
                                 <button
                                     className="text-red-500 hover:underline"
                                     onClick={() => onDelete(user.id)}
                                 >
-                                    Eliminar
+                                    <UserRoundX />
                                 </button>
                             </td>
                         </tr>
@@ -63,13 +64,13 @@ export const UsersTable = ({ users = [], onEdit, onDelete }) => {
                                 className="text-blue-500 hover:underline mr-2"
                                 onClick={() => onEdit(user)}
                             >
-                                Editar
+                                <UserRoundPen />
                             </button>
                             <button
                                 className="text-red-500 hover:underline"
                                 onClick={() => onDelete(user.id)}
                             >
-                                Eliminar
+                                <UserRoundX />
                             </button>
                         </div>
                     </div>

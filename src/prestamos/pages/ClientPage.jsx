@@ -13,7 +13,7 @@ export const ClientPage = () => {
     // aca se usa el useCliente para comunicarse con la API
     const { createClient, updateClient, deleteClient, getClients, error, loading } = useClient();
     const [clients, setClients] = useState([]);
-    const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+    const [meta, setMeta] = useState({ page: 1, pageSize: 1 });
     const [selectedClient, setSelectedClient] = useState(null);
     const onSubmit = handleSubmit(async (data) => {
         if (selectedClient) {

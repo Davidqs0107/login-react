@@ -8,6 +8,8 @@ import { CreateCuotaModal } from "../components/CreateCuotaModal";
 import { RegisterTableLayout } from "../../layout/RegisterTableLayout";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
 import { generatePDF } from "../functions/generatePdfPrestamo";
+import { Eye } from "lucide-react";
+import { tipoPrestamo } from "../../common/constans";
 
 export const DetallePrestamoPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -17,8 +19,9 @@ export const DetallePrestamoPage = () => {
     const [selectedCuota, setSelectedCuota] = useState(null);
     const [prestamo, setPrestamo] = useState({});
     const [cuotas, setCuotas] = useState([]);
-
-    const handlePagarCuota = (cuota) => {
+    const [onlyRead, setOnlyRead] = useState(false);
+    const handlePagarCuota = (cuota, read) => {
+        setOnlyRead(read);
         setSelectedCuota(cuota);
         setIsModalOpen(true);
     };
@@ -44,6 +47,15 @@ export const DetallePrestamoPage = () => {
         console.log(prestamo)
         generatePDF(prestamo, cuotas);
     };
+    const interesMontoTotal = () => {
+        if (prestamo.monto && prestamo.tasa_interes && prestamo.tipo_prestamo === tipoPrestamo.Fijo) {
+            return prestamo.monto * (prestamo.tasa_interes / 100) * prestamo.total_cuotas;
+        }
+        else {
+            return prestamo.monto * (prestamo.tasa_interes / 100);
+        }
+
+    }
     return (
         <RegisterTableLayout title="Detalle de Préstamo">
             {/* Información Principal */}
@@ -62,6 +74,7 @@ export const DetallePrestamoPage = () => {
                         <p><strong>Monto:</strong> {prestamo.monto}</p>
                         <p><strong>Tipo prestamo:</strong> {formtaTipoPrestamo(prestamo.tipo_prestamo)}</p>
                         <p><strong>Tasa de Interés:</strong> {prestamo.tasa_interes}%</p>
+                        <p><strong>Monto Interés:</strong> {interesMontoTotal() || 0}</p>
                         <p><strong>Frecuencia de Pago:</strong> {prestamo.frecuencia_pago}</p>
                         <p><strong>Total de Cuotas:</strong> {prestamo.total_cuotas}</p>
                         <p><strong>Fecha de Inicio:</strong> {formatDate(prestamo.fecha_inicio)}</p>
@@ -110,21 +123,30 @@ export const DetallePrestamoPage = () => {
                                 return (
                                     <tr key={cuota.id} className="border-t odd:bg-gray-50">
                                         <td className="px-4 py-2">{cuota.numero_cuota}</td>
-                                        <td className="px-4 py-2">{new Date(cuota.fecha_pago).toLocaleDateString()}</td>
+                                        <td className="px-4 py-2">{formatDate(cuota.fecha_pago)}</td>
                                         <td className="px-4 py-2">{cuota.monto}</td>
                                         <td className="px-4 py-2">{cuota.monto_pagado}</td>
                                         <td className="px-4 py-2 capitalize">{cuota.estado}</td>
                                         <td className="px-4 py-2">
-                                            <Button
-                                                clase={`${isDisabled
-                                                    ? "bg-gray-400 cursor-not-allowed"
-                                                    : "bg-blue-500 hover:bg-blue-700 text-white"
-                                                    } font-bold py-1 px-3 rounded`}
-                                                onClick={() => handlePagarCuota(cuota)}
-                                                disabled={isDisabled}
-                                            >
-                                                {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
-                                            </Button>
+                                            <div className="grid grid-cols-2 gap-2 ">
+                                                <Button
+                                                    clase={`${isDisabled
+                                                        ? "bg-gray-400 cursor-not-allowed"
+                                                        : "bg-blue-500 hover:bg-blue-700 text-white"
+                                                        } font-bold py-1 px-3 rounded`}
+                                                    onClick={() => handlePagarCuota(cuota, false)}
+                                                    disabled={isDisabled}
+                                                >
+                                                    {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
+                                                </Button>
+                                                <button
+                                                    className="text-blue-500 hover:underline"
+                                                    onClick={() => handlePagarCuota(cuota, true)}
+                                                >
+                                                    <Eye />
+                                                </button>
+                                            </div>
+
                                         </td>
                                     </tr>
                                 );
@@ -142,7 +164,7 @@ export const DetallePrestamoPage = () => {
                     onClose={() => setIsModalOpen(false)}
                     title={`Pagar Cuota N° ${selectedCuota?.numero_cuota}`}
                 >
-                    <CreateCuotaModal closeModal={setIsModalOpen} cuota={selectedCuota} updatedCuota={handleUpdateCuota} />
+                    <CreateCuotaModal closeModal={setIsModalOpen} cuota={selectedCuota} updatedCuota={handleUpdateCuota} onlyRead={onlyRead} />
                 </Modal>
             )}
         </RegisterTableLayout>

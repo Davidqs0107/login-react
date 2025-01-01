@@ -8,6 +8,7 @@ import { useClient } from '../hooks/useClient';
 import Swal from 'sweetalert2';
 import { useLoan } from '../hooks/useLoan';
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
+import { useNavigate } from 'react-router';
 
 export const PrestamosPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -17,7 +18,7 @@ export const PrestamosPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [clients, setClients] = useState([]);
     const [filteredClients, setFilteredClients] = useState(clients);
-
+    const navigate = useNavigate();
     const onSubmit = async (data) => {
         const loan = await createLoan(data);
         if (loan) {
@@ -26,7 +27,9 @@ export const PrestamosPage = () => {
                 text: "El préstamo ha sido registrado exitosamente",
                 icon: "success"
             });
-            reset();
+            setTimeout(() => {
+                navigate(`prestamo/${loan.prestamo[0].id}`);
+            }, 2000);
         }
     };
     //buscador local de clientes
@@ -49,6 +52,10 @@ export const PrestamosPage = () => {
         };
         setIsModalOpen(false);
     };
+    const handleNavigate = (path) => {
+        navigate(path);
+    }
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -71,36 +78,41 @@ export const PrestamosPage = () => {
             {loading && <p>Cargando...</p>}
             <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                     {/* Select Cliente */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Cliente</label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Buscar cliente"
-                                onChange={handleClientSearch}
-                                className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                            />
-                            <select
-                                {...register('cliente_id', { required: 'Seleccione un cliente' })}
-                                className="w-full border border-gray-300 rounded-md p-2"
-                            >
-                                {filteredClients.map(client => (
-                                    <option key={client.id} value={client.id}>
-                                        {client.nombre} {client.apellido}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.cliente_id && <p className="text-red-500 text-sm">{errors.cliente.message}</p>}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Cliente</label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Buscar cliente"
+                                    onChange={handleClientSearch}
+                                    className="w-full border border-gray-300 rounded-md p-2 mb-2"
+                                />
+                                <select
+                                    {...register('cliente_id', { required: 'Seleccione un cliente' })}
+                                    className="w-full border border-gray-300 rounded-md p-2"
+                                >
+                                    {filteredClients.map(client => (
+                                        <option key={client.id} value={client.id}>
+                                            {client.nombre} {client.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.cliente_id && <p className="text-red-500 text-sm">{errors.cliente_id.message}</p>}
+                            </div>
                         </div>
-                        <Button
-                            type="button"
-                            clase="!w-auto mt-2"
-                            onClick={() => setIsModalOpen(true)}
-                        >
-                            Crear Cliente
-                        </Button>
+                        <div>
+                            <br />
+                            <Button
+                                type="button"
+                                clase="!w-auto mt-2"
+                                onClick={() => setIsModalOpen(true)}
+                            >
+                                Crear Cliente
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Select Tipo de Préstamo */}
@@ -181,21 +193,21 @@ export const PrestamosPage = () => {
 
                 {/* Textarea Descripción */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Descripción</label>
+                    <label className="block text-sm font-medium text-gray-700">Documento</label>
                     <textarea
-                        {...register('descripcion', { required: 'La descripción es requerida' })}
+                        {...register('documento', { required: 'La documento es requerida' })}
                         className="w-full border border-gray-300 rounded-md p-2"
                         rows="4"
-                        placeholder="Ingrese una descripción del préstamo"
+                        placeholder="Ingrese una descripción del documento"
                     ></textarea>
-                    {errors.descripcion && <p className="text-red-500 text-sm">{errors.descripcion.message}</p>}
+                    {errors.documento && <p className="text-red-500 text-sm">{errors.documento.message}</p>}
                 </div>
 
                 <div className="flex gap-4">
                     <Button clase="!w-auto" type="submit">
                         Registrar
                     </Button>
-                    <Button clase="!w-auto bg-gray-500 hover:bg-gray-600" type="button" onClick={() => reset()}>
+                    <Button clase="!w-auto !bg-gray-500 hover:!bg-gray-600" type="button" onClick={() => handleNavigate('/listado/prestamos')}>
                         Cancelar
                     </Button>
                 </div>

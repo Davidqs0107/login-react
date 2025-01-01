@@ -4,7 +4,7 @@ import { useLoan } from '../hooks/useLoan';
 import Swal from 'sweetalert2';
 
 export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
-    const { updateLoan } = useLoan();
+    const { updateLoan, uploadDoc } = useLoan();
     const { documento } = prestamo;
 
     const onSubmit = async () => {
@@ -22,6 +22,21 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
         }
         console.log(doc)
     }
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        const doc = await uploadDoc(prestamo.id, file);
+        if (doc) {
+            Swal.fire({
+                title: "Documento actualizado",
+                text: "El documento ha sido actualizado exitosamente",
+                icon: "success"
+            });
+            closeModal(false);
+        }
+
+
+    }
     return (
         <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Documento</label>
@@ -31,7 +46,9 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
                 placeholder="Ingrese el Documento"
                 defaultValue={documento}
             />
-            <div className="flex justify-end gap-4">
+            <input type='file' name='archivo' onChange={handleFileChange} />
+
+            <div className="flex justify-end gap-4 mt-2">
                 <Button
                     clase="!bg-gray-500 hover:!bg-gray-600 !text-white !font-bold py-2 px-4 !rounded"
                     onClick={() => closeModal(false)}
