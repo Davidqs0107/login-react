@@ -28,7 +28,7 @@ export const PrestamosPage = () => {
                 icon: "success"
             });
             setTimeout(() => {
-                navigate(`prestamo/${loan.prestamo[0].id}`);
+                navigate(`/prestamo/${loan.prestamo[0].id}`);
             }, 2000);
         }
     };
