@@ -4,7 +4,7 @@ import { useLoan } from '../hooks/useLoan';
 import Swal from 'sweetalert2';
 
 export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
-    const { updateLoan, uploadDoc } = useLoan();
+    const { updateLoan, uploadDoc, error, loading } = useLoan();
     const { documento } = prestamo;
 
     const onSubmit = async () => {
@@ -20,7 +20,6 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
             });
             closeModal(false);
         }
-        console.log(doc)
     }
 
     const handleFileChange = async (e) => {
@@ -39,6 +38,8 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
     }
     return (
         <div>
+            {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
+            {loading && <p>Cargando...</p>}
             <label className="block text-sm font-medium text-gray-700 mb-2">Documento</label>
             <textarea
                 name='documento'

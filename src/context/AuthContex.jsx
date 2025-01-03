@@ -90,6 +90,8 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (!token) {
             setIsAuthenticated(false);
+            setIsLoading(false);
+            return;
         }
         try {
             const { data } = await renewToken();

@@ -2,6 +2,7 @@ import { LogOut, Menu, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContex';
+import { roles } from '../common/constans';
 
 const Sidebar = () => {
     const { user } = useAuth();
@@ -58,7 +59,7 @@ const Sidebar = () => {
                                 Perfil
                             </NavLink>
                         </li>
-                        <li>
+                        {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && <li>
                             <NavLink
                                 to="/clientes"
                                 className={({ isActive }) =>
@@ -67,7 +68,7 @@ const Sidebar = () => {
                             >
                                 Clientes
                             </NavLink>
-                        </li>
+                        </li>}
                         <li>
                             <NavLink
                                 to="/listado/prestamos"
@@ -79,7 +80,7 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
 
-                        <li>
+                        {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && <li>
                             <NavLink
                                 to="/usuarios"
                                 className={({ isActive }) =>
@@ -88,7 +89,7 @@ const Sidebar = () => {
                             >
                                 Usuarios
                             </NavLink>
-                        </li>
+                        </li>}
                     </ul>
                 </nav>
                 <button

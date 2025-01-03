@@ -12,6 +12,7 @@ export const ProtectedRoute = () => {
         return <h1>Cargando...</h1>
     }
     if (!isAuthenticated) {
+
         return <Navigate to="/auth/login" replace />
     }
     return (

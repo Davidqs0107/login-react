@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLoan } from '../hooks/useLoan';
 import { getEnvVariables } from '../../helpers/getEnvVariables';
+import { SquareArrowOutUpRight } from 'lucide-react';
 const { VITE_API_URL } = getEnvVariables();
 
 export const VerArchivos = ({ closeModal, prestamo }) => {
@@ -28,7 +29,7 @@ export const VerArchivos = ({ closeModal, prestamo }) => {
                         className="text-blue-500 hover:underline"
                         target="_blank"
                     >
-                        Descargar
+                        <SquareArrowOutUpRight />
                     </a>
                 </div>
             ))}

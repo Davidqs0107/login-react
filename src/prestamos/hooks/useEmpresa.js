@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { getSummaryRequest } from "../../api/empresa";
+import { getSummaryCobradorRequest, getSummaryRequest } from "../../api/empresa";
+import { useAuth } from "../../context/AuthContex";
 
 export const useEmpresa = () => {
+    const { checkAuthToken } = useAuth();
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const getSummary = async () => {
@@ -12,6 +15,20 @@ export const useEmpresa = () => {
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
+            checkAuthToken();
+        } finally {
+            setLoading(false);
+        }
+    };
+    const getSummaryCobrador = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await getSummaryCobradorRequest();
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+            checkAuthToken();
         } finally {
             setLoading(false);
         }
@@ -20,6 +37,7 @@ export const useEmpresa = () => {
         {
             //metodos
             getSummary,
+            getSummaryCobrador,
             //variables
             loading, error
         }
