@@ -94,38 +94,7 @@ export const LoansTable = ({ loans = [], meta, openModal, onPageChange, typeModa
                     Siguiente
                 </button>
             </div>
-            <div className="block sm:hidden">
-                {loans.map((client) => (
-                    <div key={client.id} className="border border-gray-200 p-4 mb-4 rounded-lg">
-                        <div className="flex justify-between">
-                            <span className="font-bold">Nombre:</span>
-                            <span>{client.nombre}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="font-bold">Email:</span>
-                            <span>{client.email}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="font-bold">Direccion:</span>
-                            <span>{client.direccion}</span>
-                        </div>
-                        <div className="flex justify-between mt-2">
-                            <button
-                                className="text-blue-500 hover:underline mr-2"
-                                onClick={() => onEdit(client)}
-                            >
-                                Editar
-                            </button>
-                            <button
-                                className="text-red-500 hover:underline"
-                                onClick={() => onDelete(client.id)}
-                            >
-                                Eliminar
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+
             <div className="block sm:hidden">
                 {loans.map((loan) => (
                     <div key={loan.id} className="border border-gray-200 p-4 mb-4 rounded-lg">
@@ -134,25 +103,37 @@ export const LoansTable = ({ loans = [], meta, openModal, onPageChange, typeModa
                             <span>{loan.nombre}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-bold">Email:</span>
-                            <span>{loan.email}</span>
+                            <span className="font-bold">CI:</span>
+                            <span>{loan.ci}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="font-bold">Telefono:</span>
+                            <span>{loan.telefono}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="font-bold">Direccion:</span>
                             <span>{loan.direccion}</span>
                         </div>
+                        <div className="flex justify-between">
+                            <span className="font-bold">Monto:</span>
+                            <span>{loan.monto}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="font-bold">Estado:</span>
+                            <span>{loan.estado_prestamo}</span>
+                        </div>
                         <div className="flex justify-between mt-2">
                             <button
-                                className="text-blue-500 hover:underline mr-2"
+                                className="text-yellow-500 hover:underline mr-2"
                                 onClick={() => onNavigate(loan.id)}
                             >
-                                Ver detalle
+                                <Eye />
                             </button>
                             <button
-                                className="text-blue-500 hover:underline mr-2"
-                                onClick={() => handleOpenModal(loan)}
+                                className="text-green-500 hover:underline mr-2"
+                                onClick={() => handleOpenModalDetail(loan)}
                             >
-                                Ver Doc
+                                <FileSearch2 />
                             </button>
                         </div>
                     </div>

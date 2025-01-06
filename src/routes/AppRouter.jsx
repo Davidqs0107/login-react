@@ -12,6 +12,7 @@ import { ProtectedRoute } from '../ProtectedRoute'
 import { PublicRoute } from '../PublicRoute'
 import { UsuariosPage } from '../usuarios/pages/UsuariosPage'
 import { ListadoPrestamosPage } from '../prestamos/pages/ListadoPrestamosPage'
+import { EmpresasAdminPages } from '../admin/pages/EmpresasAdminPages'
 
 export const AppRouter = () => {
     return (
@@ -25,6 +26,7 @@ export const AppRouter = () => {
                 <Route path='/listado/prestamos' element={<ListadoPrestamosPage />} />
                 <Route path='/pagos' element={<PagosPage />} />
                 <Route path='/perfil' element={<PerfilPage />} />
+                <Route path='/admin/empresas' element={<EmpresasAdminPages />} />
                 <Route path='/*' element={<Navigate to={"/"} />} />
 
             </Route>

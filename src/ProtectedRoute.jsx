@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router';
 import { PrestamoLayout } from './prestamos/layout/PrestamoLayout';
 
 export const ProtectedRoute = () => {
-    const { isLoading, isAuthenticated, checkAuthToken } = useAuth();
+    const { isLoading, isAuthenticated, checkAuthToken, user } = useAuth();
     useEffect(() => {
         checkAuthToken();
     }, []);
@@ -16,7 +16,7 @@ export const ProtectedRoute = () => {
         return <Navigate to="/auth/login" replace />
     }
     return (
-        <PrestamoLayout >
+        <PrestamoLayout rol={user.rol} >
             <Outlet />
         </PrestamoLayout>
     )
