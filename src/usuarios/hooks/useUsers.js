@@ -12,7 +12,7 @@ export const useUsers = () => {
             const { data } = await registerUserRequest(user);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || "Error desconocido");
         } finally {
             setLoading(false);
         }
@@ -24,7 +24,7 @@ export const useUsers = () => {
             const { data } = await updateUserRequest(user);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || "Error desconocido");
         } finally {
             setLoading(false);
         }
@@ -36,7 +36,7 @@ export const useUsers = () => {
             const { data } = await updateUserCobradorRequest(user);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || "Error desconocido");
         } finally {
             setLoading(false);
         }
@@ -52,7 +52,7 @@ export const useUsers = () => {
             if (err.response.data.msg) {
                 error = err.response.data.msg;
             }
-            setError(err.response?.data?.message || error);
+            setError(err.response?.data?.msg || error);
             return false;
         } finally {
             setLoading(false);
@@ -65,7 +65,7 @@ export const useUsers = () => {
             const { data } = await getUsersRequest(page, pageSize);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || "Error desconocido");
         } finally {
             setLoading(false);
         }
@@ -77,7 +77,7 @@ export const useUsers = () => {
             const { data } = await getUserRequest(id);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || "Error desconocido");
         } finally {
             setLoading(false);
         }

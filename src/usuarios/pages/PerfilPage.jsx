@@ -6,9 +6,10 @@ import { formFields } from '../forms/usuarioForm'
 import { useForm } from 'react-hook-form'
 import { useUsers } from '../hooks/useUsers'
 import Swal from 'sweetalert2'
-import { userLocalStorage } from '../../common/functions'
-const userStore = userLocalStorage.getUser();
+import { useAuth } from '../../context/AuthContex'
+
 export const PerfilPage = () => {
+    const { user } = useAuth();
     const { register, handleSubmit, formState: { errors }, reset, setValue, clearErrors } = useForm();
     const { updateUserCobrador, getUser, loading, error } = useUsers();
     const onSubmit = handleSubmit(async (data) => {
@@ -43,7 +44,7 @@ export const PerfilPage = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const { id } = userStore;
+            const { id } = user;
             const { usuario } = await getUser(id);
             Object.keys(usuario).forEach((key) => {
                 if (key === 'password') return;

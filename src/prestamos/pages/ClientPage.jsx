@@ -7,20 +7,26 @@ import { useClient } from '../hooks/useClient';
 import Swal from 'sweetalert2';
 import { ClientsTable } from '../components/ClientTable';
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
+import { MapLeaflet } from '../../components/MapLeaflet';
+import { useAuth } from '../../context/AuthContex';
 
 export const ClientPage = () => {
+    const { user } = useAuth();
+
     const { register, handleSubmit, formState: { errors }, reset, setValue, clearErrors } = useForm();
     // aca se usa el useCliente para comunicarse con la API
     const { createClient, updateClient, deleteClient, getClients, error, loading } = useClient();
     const [clients, setClients] = useState([]);
     const [meta, setMeta] = useState({ page: 1, pageSize: 1 });
     const [selectedClient, setSelectedClient] = useState(null);
+    const [position, setPosition] = useState({})
     const onSubmit = handleSubmit(async (data) => {
+        const payload = {
+            ...data,
+            ...position,
+        };
         if (selectedClient) {
-            const payload = {
-                ...data,
-                id: selectedClient.id
-            };
+            payload.id = selectedClient.id;
             const client = await updateClient(payload);
             if (client) {
                 setClients((prev) => prev.map((c) => (c.id === selectedClient.id ? { ...c, ...payload } : c)));
@@ -32,7 +38,7 @@ export const ClientPage = () => {
                 reset();
             }
         } else {
-            const client = await createClient(data);
+            const client = await createClient(payload);
             if (client) {
                 Swal.fire({
                     title: "Cliente registrado",
@@ -89,6 +95,14 @@ export const ClientPage = () => {
         });
 
     };
+
+    const handlePosition = (position) => {
+        console.log(position)
+        setPosition({
+            latitud: position.lat,
+            longitud: position.lng
+        })
+    }
     useEffect(() => {
         fetchClients();
     }, []);
@@ -124,7 +138,9 @@ export const ClientPage = () => {
                             </div>
                         ))}
                     </div>
-
+                    <div className='w-full overflow-auto'>
+                        {user.plan_id > 2 && <MapLeaflet onPosition={handlePosition} client={selectedClient} />}
+                    </div>
                     <div className="flex gap-4">
                         <Button clase='!w-auto' type='submit'>
                             {selectedClient ? "Actualizar" : "Aceptar"}

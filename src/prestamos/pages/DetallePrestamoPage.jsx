@@ -8,10 +8,13 @@ import { CreateCuotaModal } from "../components/CreateCuotaModal";
 import { RegisterTableLayout } from "../../layout/RegisterTableLayout";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
 import { generatePDF } from "../functions/generatePdfPrestamo";
-import { Eye } from "lucide-react";
+import { Eye, MapPinned } from "lucide-react";
 import { tipoPrestamo } from "../../common/constans";
+import { useAuth } from "../../context/AuthContex";
 
 export const DetallePrestamoPage = () => {
+    const { user } = useAuth();
+
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
     const { getLoanById, error, loading } = useLoan();
     const { id: prestamoId } = useParams();
@@ -20,6 +23,7 @@ export const DetallePrestamoPage = () => {
     const [prestamo, setPrestamo] = useState({});
     const [cuotas, setCuotas] = useState([]);
     const [onlyRead, setOnlyRead] = useState(false);
+    const [ubicacionBoton, setUbicacionBoton] = useState(null);
     const handlePagarCuota = (cuota, read) => {
         setOnlyRead(read);
         setSelectedCuota(cuota);
@@ -29,18 +33,20 @@ export const DetallePrestamoPage = () => {
 
         setCuotas((prev) => prev.map((c) => (c.id === cuota.id ? { ...c, ...cuota } : c)));
     };
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const data = await getLoanById(prestamoId, true);
-                if (data && data.prestamo) {
-                    setPrestamo(data.prestamo);
-                    setCuotas(data.prestamo?.cuotas || []);
-                }
-            } catch (error) {
-                console.error("Error al obtener los clientes:", error);
+    const fetchUsers = async () => {
+        try {
+            const data = await getLoanById(prestamoId, true);
+            if (data && data.prestamo) {
+                setPrestamo(data.prestamo);
+                setCuotas(data.prestamo?.cuotas || []);
+                handleUbicacion(data.prestamo);
             }
-        };
+        } catch (error) {
+            console.error("Error al obtener los clientes:", error);
+        }
+    };
+    useEffect(() => {
+
         fetchUsers();
     }, []);
     const onDownloadPDF = () => {
@@ -56,6 +62,20 @@ export const DetallePrestamoPage = () => {
         }
 
     }
+    const handleUbicacion = (prestamoData) => {
+        // Verificar si el plan y las coordenadas están presentes.
+        if (
+            user.plan_id > 2 &&
+            prestamoData.latitud &&
+            prestamoData.longitud
+        ) {
+            setUbicacionBoton(
+                `http://www.google.com/maps?q=${prestamoData.latitud},${prestamoData.longitud}`
+            );
+        } else {
+            setUbicacionBoton(null);
+        }
+    };
     return (
         <RegisterTableLayout title="Detalle de Préstamo">
             {/* Información Principal */}
@@ -68,6 +88,15 @@ export const DetallePrestamoPage = () => {
                         <p><strong>Email:</strong> {prestamo.email}</p>
                         <p><strong>Dirección:</strong> {prestamo.direccion}</p>
                         <p><strong>Telefono:</strong> {prestamo.telefono}</p>
+                        {ubicacionBoton && (
+                            <p>
+                                <strong>Ubicación:</strong>{" "}
+                                <a href={ubicacionBoton} target="_blank" rel="noopener noreferrer">
+                                    <MapPinned color="#04ff00" />
+                                </a>
+                            </p>
+                        )}
+
                     </div>
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Detalles del Préstamo</h2>

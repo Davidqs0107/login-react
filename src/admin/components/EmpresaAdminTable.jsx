@@ -12,6 +12,7 @@ export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
             <table className="min-w-full table-auto border-collapse border border-gray-200 text-sm">
                 <thead>
                     <tr className="bg-gray-100 text-left text-sm font-medium text-gray-700">
+                        <th className="px-4 py-2 border border-gray-200">ID</th>
                         <th className="px-4 py-2 border border-gray-200">Nombre</th>
                         <th className="px-4 py-2 border border-gray-200">Fecha inicio</th>
                         <th className="px-4 py-2 border border-gray-200">Fecha fin</th>
@@ -26,6 +27,7 @@ export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
                 <tbody>
                     {empresas.map((empresa) => (
                         <tr key={empresa.id} className="odd:bg-gray-50 even:bg-white hover:bg-gray-100">
+                            <td className="px-4 py-2 border border-gray-200">{empresa.id}</td>
                             <td className="px-4 py-2 border border-gray-200">{empresa.nombre}</td>
                             <td className="px-4 py-2 border border-gray-200">{formatDateWithDateFns(empresa.fecha_inicio)}</td>
                             <td className="px-4 py-2 border border-gray-200">{formatDateWithDateFns(empresa.fecha_fin)}</td>

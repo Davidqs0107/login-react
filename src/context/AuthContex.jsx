@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
             email: user.email,
             empresa_id: user.empresa_id,
             rol: user.rol,
+            plan_id: user.plan_id,
         }
         setUser(usuario);
         setIsAuthenticated(true);
