@@ -1,18 +1,24 @@
-
 import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 export const MapLeaflet = ({ onPosition, client }) => {
-    const [position, setPosition] = useState([-17.830045, -63.227303]); // Coordenadas por defecto
+    const [position, setPosition] = useState([-17.78416063196657, -63.18134307861329]); // Coordenadas por defecto
     const [userPosition, setUserPosition] = useState(null); // Para la posición del usuario
 
     useEffect(() => {
-        if (navigator.geolocation) {
+        if (client?.latitud && client?.longitud) {
+            // Si el cliente tiene coordenadas, usa esas
+            const clientCoords = [client.latitud, client.longitud];
+            setPosition(clientCoords);
+            setUserPosition(clientCoords);
+        } else if (navigator.geolocation) {
+            // Si no, usa la geolocalización del navegador
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    setPosition([latitude, longitude]);
-                    setUserPosition([latitude, longitude]); // Actualiza la posición del usuario
+                    const userCoords = [latitude, longitude];
+                    setPosition(userCoords);
+                    setUserPosition(userCoords);
                 },
                 (error) => {
                     console.error('Error obteniendo la geolocalización:', error);
@@ -21,11 +27,7 @@ export const MapLeaflet = ({ onPosition, client }) => {
         } else {
             console.error('Geolocalización no soportada por este navegador.');
         }
-        if (client && client.latitud && client.longitud) {
-            setPosition([client.latitud, client.longitud]);
-            setUserPosition([client.latitud, client.longitud]);
-        }
-    }, [client]);
+    }, [client]); // Dependencia al cliente para actualizar si cambia
 
     const eventHandlers = {
         dragend: (e) => {
@@ -36,7 +38,7 @@ export const MapLeaflet = ({ onPosition, client }) => {
     };
 
     return (
-        <MapContainer center={position} zoom={13} scrollWheelZoom={true} >
+        <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

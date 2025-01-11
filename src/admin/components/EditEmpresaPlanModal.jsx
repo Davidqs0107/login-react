@@ -3,7 +3,7 @@ import { Button } from "../../components/Button";
 import Swal from "sweetalert2";
 import { useAdmin } from "../hooks/useAdmin";
 
-export const EditEmpresaPlanModal = ({ planes, closeModal, empresa }) => {
+export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdateEmpresa }) => {
     const { updatePlan, loading, error } = useAdmin();
 
     const [formData, setFormData] = useState({
@@ -51,7 +51,9 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa }) => {
                 text: "El Plan ha sido actualizado exitosamente",
                 icon: "success",
             });
+            console.log(plan)
             closeModal();
+            handleUpdateEmpresa({ ...payload, fecha_inicio: plan.empresa.fecha_inicio, fecha_fin: plan.empresa.fecha_fin });
         }
     };
 

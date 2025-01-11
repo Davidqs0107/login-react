@@ -57,6 +57,18 @@ export const EmpresasAdminPages = () => {
             setPlanes(result.planes);
         }
     }
+    const handleUpdateEmpresa = (payload) => {
+        console.log(payload)
+        setEmpresas((prev) => prev.map((c) => {
+            if (c.id === selectedEmpresa.id) {
+                console.log(c)
+                return { ...c, ...payload };
+            }
+            return c;
+            // (c.id === selectedEmpresa.id ? { ...c, ...payload } : c)
+        }));
+
+    }
     useEffect(() => {
         setValue("fecha_inicio", formatDateWithDateFns(new Date()));
         setValue("fecha_fin", formatDateWithDateFns(new Date()));
@@ -110,7 +122,7 @@ export const EmpresasAdminPages = () => {
             </section>
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Cambiar plan" >
-                    <EditEmpresaPlanModal closeModal={setIsModalOpen} planes={planes} empresa={selectedEmpresa} />
+                    <EditEmpresaPlanModal closeModal={setIsModalOpen} planes={planes} empresa={selectedEmpresa} handleUpdateEmpresa={handleUpdateEmpresa} />
                 </Modal>
             )}
         </RegisterTableLayout>

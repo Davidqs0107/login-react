@@ -19,7 +19,6 @@ export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
                         <th className="hidden">planid</th>
                         <th className="px-4 py-2 border border-gray-200">Plan</th>
                         <th className="px-4 py-2 border border-gray-200">Precio</th>
-                        <th className="px-4 py-2 border border-gray-200">Duracion dias</th>
                         <th className="px-4 py-2 border border-gray-200">Estado</th>
                         <th className="px-4 py-2 border border-gray-200">Acciones</th>
                     </tr>
@@ -34,7 +33,6 @@ export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
                             <td className="px-4 py-2 border border-gray-200 hidden">{empresa.plan_id}</td>
                             <td className="px-4 py-2 border border-gray-200">{empresa.nombre_plan}</td>
                             <td className="px-4 py-2 border border-gray-200">{empresa.precio}</td>
-                            <td className="px-4 py-2 border border-gray-200">{empresa.duracion_dias}</td>
                             <td className="px-4 py-2 border border-gray-200">{empresa.estado_empresa_plan}</td>
 
                             <td className="px-4 py-2 border border-gray-200">
