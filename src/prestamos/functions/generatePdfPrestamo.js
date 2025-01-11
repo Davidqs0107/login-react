@@ -44,5 +44,9 @@ export const generatePDF = (prestamo, cuotas) => {
     });
 
     // Guardar el PDF
-    doc.save(`detalle_prestamo_${prestamo.id}.pdf`);
+    // doc.save(`detalle_prestamo_${prestamo.id}.pdf`);
+
+    const pdfBlob = doc.output("blob"); // Genera el PDF como un Blob
+    const pdfURL = URL.createObjectURL(pdfBlob); // Crea un URL temporal
+    window.open(pdfURL, "_blank");
 };

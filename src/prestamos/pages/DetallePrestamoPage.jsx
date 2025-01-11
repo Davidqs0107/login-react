@@ -30,8 +30,9 @@ export const DetallePrestamoPage = () => {
         setIsModalOpen(true);
     };
     const handleUpdateCuota = (cuota) => {
-
+        console.log(cuota)
         setCuotas((prev) => prev.map((c) => (c.id === cuota.id ? { ...c, ...cuota } : c)));
+
     };
     const fetchUsers = async () => {
         try {
@@ -48,7 +49,7 @@ export const DetallePrestamoPage = () => {
     useEffect(() => {
 
         fetchUsers();
-    }, []);
+    }, [prestamo]);
     const onDownloadPDF = () => {
         console.log(prestamo)
         generatePDF(prestamo, cuotas);
@@ -119,13 +120,13 @@ export const DetallePrestamoPage = () => {
                     <Button clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
                         onClick={onDownloadPDF}
                     >
-                        Descargar PDF
+                        Imprimir
                     </Button>
-                    <Button clase="!bg-blue-500 hover:!bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
+                    {/* <Button clase="!bg-blue-500 hover:!bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
                         onClick={() => window.print()}
                     >
                         Imprimir
-                    </Button>
+                    </Button> */}
                 </div>
             </section>
 
@@ -193,7 +194,7 @@ export const DetallePrestamoPage = () => {
                     onClose={() => setIsModalOpen(false)}
                     title={`Pagar Cuota N° ${selectedCuota?.numero_cuota}`}
                 >
-                    <CreateCuotaModal closeModal={setIsModalOpen} cuota={selectedCuota} updatedCuota={handleUpdateCuota} onlyRead={onlyRead} />
+                    <CreateCuotaModal closeModal={setIsModalOpen} cuota={selectedCuota} updatedCuota={handleUpdateCuota} onlyRead={onlyRead} prestamo={prestamo} />
                 </Modal>
             )}
         </RegisterTableLayout>

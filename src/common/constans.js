@@ -8,3 +8,8 @@ export const roles = {
     Cobrador: 'cobrador',
     SuperAdmin: 'super_admin'
 }
+
+export const tipoImpresion = {
+    carta: 'carta',
+    voucher: 'voucher'
+}

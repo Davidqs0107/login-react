@@ -97,7 +97,7 @@ const Sidebar = () => {
                     className="absolute bottom-4 left-4 right-4 p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
                 >
                     <LogOut size={18} className="mr-2" />
-                    Cerrar sesión
+                    Cerrar sesion
                 </button>
             </div>
 

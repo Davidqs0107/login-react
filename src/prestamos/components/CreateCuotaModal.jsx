@@ -3,8 +3,14 @@ import { Button } from '../../components/Button'
 import { usePago } from '../hooks/usePago';
 import Swal from 'sweetalert2';
 import { formatDateWithDateFns } from '../../common/functions';
+import { ReceiptText } from 'lucide-react';
+import { useAuth } from '../../context/AuthContex';
+import { generatePaymentReceiptPDF } from '../functions/generatePaymentReceiptPDF';
+import { tipoImpresion } from '../../common/constans';
 
-export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota, onlyRead }) => {
+export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota, onlyRead, prestamo }) => {
+    const { user } = useAuth();
+
     const { id: cuotaId } = cuota;
     const { getPagosCuotaById, createPago, error, loading } = usePago();
     const [pagos, setPagos] = useState([]);
@@ -35,12 +41,37 @@ export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota, onlyRead }) 
                 monto
             }
             setPagos((prev) => [...prev, pagoFormatted]);
-            console.log(pago)
+
             cuota.monto_pagado = parseFloat(pago.cuotaActualizada.monto_pagado);
             cuota.estado = pago.cuotaActualizada.estado;
             updatedCuota(cuota);
+            handlePrintPayment(payload);
         }
     };
+
+    const handlePrintPayment = (pago_realizado) => {
+        const { nombre, apellido, ci } = prestamo;
+        const { monto, tipo_pago, id, fecha_pago } = pago_realizado;
+        const cliente = {
+            nombre,
+            apellido,
+            ci,
+        };
+
+        const pago = {
+            monto,
+            tipo_pago,
+            fecha: fecha_pago,
+            id,
+        };
+        const usuario = {
+            nombre: user.name,
+            id: user.id,
+        }
+        generatePaymentReceiptPDF(cliente, pago, usuario, tipoImpresion.voucher)
+
+    }
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -66,6 +97,7 @@ export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota, onlyRead }) 
                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Fecha</th>
                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto</th>
                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Tipo pago</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Imprimir</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,9 +105,17 @@ export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota, onlyRead }) 
                         {pagos.map(pago => (
                             <tr key={pago.id} className="border-t">
                                 <>
-                                    <td className="px-4 py-2">{new Date(pago.fecha_pago).toISOString().split('T')[0]}</td>
+                                    <td className="px-4 py-2">{formatDateWithDateFns(pago.fecha_pago)}</td>
                                     <td className="px-4 py-2">{pago.monto}</td>
                                     <td className="px-4 py-2">{pago.tipo_pago}</td>
+                                    <td className="px-4 py-2">
+                                        <Button
+                                            className="text-blue-500 hover:underline"
+                                            onClick={() => handlePrintPayment(pago)}
+                                        >
+                                            <ReceiptText />
+                                        </Button>
+                                    </td>
                                 </>
 
                             </tr>
