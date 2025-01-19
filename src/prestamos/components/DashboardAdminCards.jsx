@@ -1,4 +1,4 @@
-import { BadgeDollarSign, FileText, UserCheck, Users } from 'lucide-react'
+import { BadgeDollarSign, CreditCard, FileText, UserCheck, Users } from 'lucide-react'
 import React from 'react'
 import { Card } from '../../components/CardResumen'
 
@@ -17,12 +17,12 @@ export const DashboardAdminCards = ({ summaryState }) => {
                 icon={<FileText size={24} />}
                 color="bg-green-500"
             />
-            {/* <Card
-                    title="Prestamos Pagados"
-                    value={summaryState.prestamos_completados || 0}
-                    icon={<CreditCard size={24} />}
-                    color="bg-yellow-500"
-                /> */}
+            <Card
+                title="Prestamos Completados"
+                value={summaryState.prestamos_completados || 0}
+                icon={<CreditCard size={24} />}
+                color="bg-yellow-500"
+            />
             <Card
                 title="Total Cobradores"
                 value={summaryState.cobradores_activos || 0}

@@ -9,6 +9,7 @@ import { ClientsTable } from '../components/ClientTable';
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
 import { MapLeaflet } from '../../components/MapLeaflet';
 import { useAuth } from '../../context/AuthContex';
+import { LoaderLocal } from '../../components/LoaderLocal';
 
 export const ClientPage = () => {
     const { user } = useAuth();
@@ -121,7 +122,7 @@ export const ClientPage = () => {
         <>
             <RegisterTableLayout title={titleClient}>
                 {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
-                {loading && <p>Cargando...</p>}
+                {loading && <LoaderLocal />}
                 <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
                     <div className='grid grid-cols-2 gap-4'>
                         {formFields.map((field, i) => (
@@ -142,7 +143,9 @@ export const ClientPage = () => {
                         {user.plan_id > 2 && <MapLeaflet onPosition={handlePosition} client={selectedClient} />}
                     </div>
                     <div className="flex gap-4">
-                        <Button clase='!w-auto' type='submit'>
+                        <Button clase='!w-auto' type='submit'
+                            disabled={!!loading}
+                        >
                             {selectedClient ? "Actualizar" : "Aceptar"}
                         </Button>
 

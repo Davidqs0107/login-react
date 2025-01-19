@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { useUsers } from '../hooks/useUsers'
 import Swal from 'sweetalert2'
 import { useAuth } from '../../context/AuthContex'
+import { LoaderLocal } from '../../components/LoaderLocal'
 
 export const PerfilPage = () => {
     const { user } = useAuth();
@@ -61,7 +62,7 @@ export const PerfilPage = () => {
     return (
         <RegisterTableLayout title="Perfil">
             {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
-            {loading && <p>Cargando...</p>}
+            {loading && <LoaderLocal />}
             <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
                 <div className='grid grid-cols-2 gap-4'>
                     {getDynamicFormFields().map((field, i) => (
@@ -81,7 +82,9 @@ export const PerfilPage = () => {
                 </div>
 
                 <div className="flex gap-4">
-                    <Button clase='!w-auto' type='submit'>
+                    <Button clase='!w-auto' type='submit'
+                        disabled={!!loading}
+                    >
                         Actualizar
                     </Button>
 

@@ -10,6 +10,7 @@ import { Modal } from '../../components/Modal';
 import { useNavigate } from 'react-router';
 import { formatDateWithDateFns } from '../../common/functions';
 import { VerArchivos } from '../components/VerArchivos';
+import { LoaderLocal } from '../../components/LoaderLocal';
 
 export const ListadoPrestamosPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -61,10 +62,11 @@ export const ListadoPrestamosPage = () => {
         setMeta(loans.meta);
 
     };
+
     return (
         <RegisterTableLayout title={"Listado de Prestamos"}>
             {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
-            {loading && <p>Cargando...</p>}
+            {loading && <LoaderLocal />}
             <section className="mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-white rounded-lg shadow">
                     <div>

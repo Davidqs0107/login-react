@@ -11,6 +11,7 @@ import { generatePDF } from "../functions/generatePdfPrestamo";
 import { Eye, MapPinned } from "lucide-react";
 import { tipoPrestamo } from "../../common/constans";
 import { useAuth } from "../../context/AuthContex";
+import { LoaderLocal } from "../../components/LoaderLocal";
 
 export const DetallePrestamoPage = () => {
     const { user } = useAuth();
@@ -30,7 +31,6 @@ export const DetallePrestamoPage = () => {
         setIsModalOpen(true);
     };
     const handleUpdateCuota = (cuota) => {
-        console.log(cuota)
         setCuotas((prev) => prev.map((c) => (c.id === cuota.id ? { ...c, ...cuota } : c)));
 
     };
@@ -49,9 +49,8 @@ export const DetallePrestamoPage = () => {
     useEffect(() => {
 
         fetchUsers();
-    }, [prestamo]);
+    }, []);
     const onDownloadPDF = () => {
-        console.log(prestamo)
         generatePDF(prestamo, cuotas);
     };
     const interesMontoTotal = () => {
@@ -79,6 +78,8 @@ export const DetallePrestamoPage = () => {
     };
     return (
         <RegisterTableLayout title="Detalle de Préstamo">
+            {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
+            {loading && <LoaderLocal />}
             {/* Información Principal */}
             <section className="mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow">
