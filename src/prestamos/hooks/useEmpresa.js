@@ -3,7 +3,6 @@ import { getSummaryCobradorRequest, getSummaryRequest } from "../../api/empresa"
 import { useAuth } from "../../context/AuthContex";
 
 export const useEmpresa = () => {
-    const { checkAuthToken } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -15,7 +14,6 @@ export const useEmpresa = () => {
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
-            checkAuthToken();
         } finally {
             setLoading(false);
         }
@@ -28,7 +26,6 @@ export const useEmpresa = () => {
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
-            checkAuthToken();
         } finally {
             setLoading(false);
         }

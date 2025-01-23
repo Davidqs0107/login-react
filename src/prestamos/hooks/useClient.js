@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { deleteClientRequest, getClientRequest, registerClientRequest, updateClientRequest } from '../../api/clientes';
 import { useAuth } from '../../context/AuthContex';
 export const useClient = () => {
-    const { checkAuthToken } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -15,7 +14,6 @@ export const useClient = () => {
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
-            checkAuthToken();
         } finally {
             setLoading(false);
         }
@@ -57,8 +55,6 @@ export const useClient = () => {
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
-            checkAuthToken();
-
         } finally {
             setLoading(false);
         }

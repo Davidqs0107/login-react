@@ -9,6 +9,7 @@ import { EmpresaAdminTable } from '../components/EmpresaAdminTable';
 import { Paginate } from '../../components/Paginate';
 import { Modal } from '../../components/Modal';
 import { EditEmpresaPlanModal } from '../components/EditEmpresaPlanModal';
+import { EmpresasUsuariosModal } from '../components/EmpresasUsuariosModal';
 
 export const EmpresasAdminPages = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -17,6 +18,7 @@ export const EmpresasAdminPages = () => {
     const [selectedEmpresa, setSelectedEmpresa] = useState({})
     const [planes, setPlanes] = useState([]);
     const [meta, setMeta] = useState({ page: 1, pageSize: 10, totalPages: 1 });
+    const [modalUsuario, setModalUsuario] = useState({ isModalUsuario: false, title: 'Cambiar plan' });
     const [isModalOpen, setIsModalOpen] = useState(false);
     /*
     cargar empresas
@@ -69,6 +71,11 @@ export const EmpresasAdminPages = () => {
         }));
 
     }
+
+    const handleModal = (modalUsuario) => {
+        setModalUsuario(modalUsuario);
+        setIsModalOpen(true);
+    }
     useEffect(() => {
         setValue("fecha_inicio", formatDateWithDateFns(new Date()));
         setValue("fecha_fin", formatDateWithDateFns(new Date()));
@@ -117,12 +124,13 @@ export const EmpresasAdminPages = () => {
             </section>
             <section>
                 <h2>Empresas</h2>
-                <EmpresaAdminTable empresas={empresas} openModal={setIsModalOpen} selectedEmpresa={setSelectedEmpresa} />
+                <EmpresaAdminTable empresas={empresas} openModal={handleModal} selectedEmpresa={setSelectedEmpresa} />
                 <Paginate meta={meta} onPageChange={handlePageChange} />
             </section>
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Cambiar plan" >
-                    <EditEmpresaPlanModal closeModal={setIsModalOpen} planes={planes} empresa={selectedEmpresa} handleUpdateEmpresa={handleUpdateEmpresa} />
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalUsuario.title}>
+                    {modalUsuario.isModalUsuario ? <EmpresasUsuariosModal empresa={selectedEmpresa} />
+                        : <EditEmpresaPlanModal closeModal={setIsModalOpen} planes={planes} empresa={selectedEmpresa} handleUpdateEmpresa={handleUpdateEmpresa} />}
                 </Modal>
             )}
         </RegisterTableLayout>

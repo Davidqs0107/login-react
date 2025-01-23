@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Button } from "../../components/Button";
 import Swal from "sweetalert2";
 import { useAdmin } from "../hooks/useAdmin";
-
+import { LoaderLocal } from "../../components/LoaderLocal";
 export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdateEmpresa }) => {
     const { updatePlan, loading, error } = useAdmin();
 
@@ -64,7 +64,7 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
                     {error}
                 </div>
             )}
-            {loading && <p>Cargando...</p>}
+            {loading && <LoaderLocal />}
             <h1>Empresa: {empresa.nombre}</h1>
             <div className="mt-5">
                 <label className="block text-sm font-medium text-gray-700 mb-2">

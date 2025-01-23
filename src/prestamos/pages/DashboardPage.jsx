@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout'
-import { Users, FileText, CreditCard, UserCheck, BadgeDollarSign } from 'lucide-react'
-import { Card } from '../../components/CardResumen'
 import { useEmpresa } from '../hooks/useEmpresa'
 import { useAuth } from '../../context/AuthContex'
 import { roles } from '../../common/constans'
@@ -10,7 +8,7 @@ import { DashboardCobradorCards } from '../components/DashboardCobradorCards'
 import { LoaderLocal } from '../../components/LoaderLocal'
 
 export const DashboardPage = () => {
-    const { user } = useAuth();
+    const { user, isLoading } = useAuth();
 
     const { getSummary, getSummaryCobrador, loading, error } = useEmpresa();
     const [summaryState, setSummaryState] = useState({});
@@ -28,11 +26,18 @@ export const DashboardPage = () => {
         }
     };
     useEffect(() => {
-        if (user.rol === roles.Cobrador) {
-            fetchSummaryCobrador();
-            return;
+        // usar switch case para los roles de usuario admin y cobrador
+        if (isLoading) return;
+        switch (user.rol) {
+            case roles.Admin:
+                fetchSummary();
+                break;
+            case roles.Cobrador:
+                fetchSummaryCobrador();
+                break;
+            default:
+                break;
         }
-        fetchSummary();
     }, []);
     return (
         <RegisterTableLayout title={"Resumen"}>

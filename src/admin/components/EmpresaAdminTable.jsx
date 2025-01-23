@@ -1,11 +1,11 @@
-import { Eye, FileInput, FileSearch2 } from 'lucide-react'
+import { Eye, FileInput, FileSearch2, Pencil } from 'lucide-react'
 import React from 'react'
 import { formatDateWithDateFns } from '../../common/functions'
 
 export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
-    const handleOpenModal = (empresa) => {
+    const handleOpenModal = (empresa, modalType) => {
         selectedEmpresa(empresa);
-        openModal(true);
+        openModal(modalType);
     }
     return (
         <div className='overflow-x-auto mt-6'>
@@ -39,11 +39,17 @@ export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
                                 <button
                                     title="Ver detalle"
                                     className="text-yellow-500 hover:underline mr-2"
-                                    onClick={() => handleOpenModal(empresa)}
+                                    onClick={() => handleOpenModal(empresa, { isModalUsuario: false, title: 'Cambiar plan' })}
+                                >
+                                    <Pencil />
+                                </button>
+                                <button
+                                    title="Ver usuarios"
+                                    className="text-green-500 hover:underline mr-2"
+                                    onClick={() => handleOpenModal(empresa, { isModalUsuario: true, title: 'Usuarios' })}
                                 >
                                     <Eye />
                                 </button>
-
                             </td>
                         </tr>
                     ))}
