@@ -38,9 +38,10 @@ export const AuthProvider = ({ children }) => {
             mapUserFunction(data.usuario);
 
         } catch (error) {
+            console.log(error.response.data)
+            const msg = [];
             if (error.response.data.errors) {
                 const { email, password, name } = error.response.data.errors;
-                const msg = [];
                 if (email) {
                     msg.push(email.msg);
                 }
@@ -52,7 +53,9 @@ export const AuthProvider = ({ children }) => {
                 }
                 return setErrors(msg);
             }
-            setErrors(error.response.data.msg);
+            msg.push(error.response.data.msg);
+
+            setErrors(msg);
         }
 
     };
