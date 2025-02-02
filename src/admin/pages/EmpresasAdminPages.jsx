@@ -10,19 +10,44 @@ import { Paginate } from '../../components/Paginate';
 import { Modal } from '../../components/Modal';
 import { EditEmpresaPlanModal } from '../components/EditEmpresaPlanModal';
 import { EmpresasUsuariosModal } from '../components/EmpresasUsuariosModal';
+import { Search } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export const EmpresasAdminPages = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
-    const { getEmpresasAdmin, getPlanes, loading, error } = useAdmin();
+    const { getEmpresasAdmin, getEmpresasByName, getPlanes, loading, error } = useAdmin();
     const [empresas, setEmpresas] = useState([]);
     const [selectedEmpresa, setSelectedEmpresa] = useState({})
     const [planes, setPlanes] = useState([]);
     const [meta, setMeta] = useState({ page: 1, pageSize: 10, totalPages: 1 });
     const [modalUsuario, setModalUsuario] = useState({ isModalUsuario: false, title: 'Cambiar plan' });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     /*
     cargar empresas
     */
+
+    const handleSearchOnEnter = async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchTerm.length > 1) {
+
+                const result = await getEmpresasByName(searchTerm);
+                if (result) {
+                    console.log(result)
+                    setEmpresas(result.empresas);
+                    setMeta(result.meta);
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'La busqueda debe tener al menos 2 caracteres',
+                })
+            }
+            setSearchTerm('');
+        }
+    };
     const onSubmit = handleSubmit(async (data) => {
         const payload = {
             ...data,
@@ -123,7 +148,21 @@ export const EmpresasAdminPages = () => {
                 </div>
             </section>
             <section>
-                <h2>Empresas</h2>
+                {/* Contenedor flexible para alinear el título y el input */}
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold">Empresas</h2>
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Buscar empresa..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyDown={handleSearchOnEnter}
+                            className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                </div>
                 <EmpresaAdminTable empresas={empresas} openModal={handleModal} selectedEmpresa={setSelectedEmpresa} />
                 <Paginate meta={meta} onPageChange={handlePageChange} />
             </section>

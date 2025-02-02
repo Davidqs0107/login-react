@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getEmpresasAdminRequest, getPlanesRequest, getUsuariosEmpresaRequest, updatePlanesRequest } from "../../api/admin";
+import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, updatePlanesRequest } from "../../api/admin";
 
 export const useAdmin = () => {
     const [loading, setLoading] = useState(false);
@@ -10,6 +10,18 @@ export const useAdmin = () => {
         setError(null);
         try {
             const { data } = await getEmpresasAdminRequest(payload);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    }
+    const getEmpresasByName = async (payload) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await getEmpresasByNameRequest(payload);
             return data;
         } catch (err) {
             setError(err.response?.data?.message || "Error desconocido");
@@ -58,6 +70,7 @@ export const useAdmin = () => {
         {
             // metodos
             getEmpresasAdmin,
+            getEmpresasByName,
             getUsuariosEmpresa,
             getPlanes,
             updatePlan,

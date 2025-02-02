@@ -39,11 +39,11 @@ export const LoginPage = () => {
                 >
                     Login
                 </Button>
-                <div className="text-sm mt-3">
+                {/* <div className="text-sm mt-3">
                     <Link to="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                         ¿No tienes una cuenta? Regístrate
                     </Link>
-                </div>
+                </div> */}
             </form>
         </AuthLayout>
     )
