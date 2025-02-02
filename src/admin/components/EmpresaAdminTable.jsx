@@ -39,14 +39,14 @@ export const EmpresaAdminTable = ({ empresas, openModal, selectedEmpresa }) => {
                                 <button
                                     title="Ver detalle"
                                     className="text-yellow-500 hover:underline mr-2"
-                                    onClick={() => handleOpenModal(empresa, { isModalUsuario: false, title: 'Cambiar plan' })}
+                                    onClick={() => handleOpenModal(empresa, { type: 'plan', title: 'Cambiar plan' })}
                                 >
                                     <Pencil />
                                 </button>
                                 <button
                                     title="Ver usuarios"
                                     className="text-green-500 hover:underline mr-2"
-                                    onClick={() => handleOpenModal(empresa, { isModalUsuario: true, title: 'Usuarios' })}
+                                    onClick={() => handleOpenModal(empresa, { type: 'usuarios', title: 'Usuarios' })}
                                 >
                                     <Eye />
                                 </button>

@@ -12,6 +12,7 @@ import { EditEmpresaPlanModal } from '../components/EditEmpresaPlanModal';
 import { EmpresasUsuariosModal } from '../components/EmpresasUsuariosModal';
 import { Search } from 'lucide-react';
 import Swal from 'sweetalert2';
+import { AgregarNuevaEmpresa } from '../components/AgregarNuevaEmpresa';
 
 export const EmpresasAdminPages = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -20,7 +21,7 @@ export const EmpresasAdminPages = () => {
     const [selectedEmpresa, setSelectedEmpresa] = useState({})
     const [planes, setPlanes] = useState([]);
     const [meta, setMeta] = useState({ page: 1, pageSize: 10, totalPages: 1 });
-    const [modalUsuario, setModalUsuario] = useState({ isModalUsuario: false, title: 'Cambiar plan' });
+    const [modalType, setModalType] = useState({ type: 'plan', title: 'Cambiar plan' });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     /*
@@ -97,8 +98,11 @@ export const EmpresasAdminPages = () => {
 
     }
 
-    const handleModal = (modalUsuario) => {
-        setModalUsuario(modalUsuario);
+    const handleModal = (modalTypeParam, e = false) => {
+        if (e) {
+            e.preventDefault();
+        }
+        setModalType(modalTypeParam);
         setIsModalOpen(true);
     }
     useEffect(() => {
@@ -145,6 +149,15 @@ export const EmpresasAdminPages = () => {
                             Buscar
                         </Button>
                     </div>
+                    <div>
+                        <br />
+                        <Button clase="!w-auto !bg-blue-500 hover:!bg-green-600"
+                            type="button"
+                            onClick={(e) => handleModal({ type: 'nuevo', title: 'Nueva Empresa' }, e)}
+                        >
+                            Nueva Empresa
+                        </Button>
+                    </div>
                 </div>
             </section>
             <section>
@@ -167,9 +180,27 @@ export const EmpresasAdminPages = () => {
                 <Paginate meta={meta} onPageChange={handlePageChange} />
             </section>
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalUsuario.title}>
-                    {modalUsuario.isModalUsuario ? <EmpresasUsuariosModal empresa={selectedEmpresa} />
-                        : <EditEmpresaPlanModal closeModal={setIsModalOpen} planes={planes} empresa={selectedEmpresa} handleUpdateEmpresa={handleUpdateEmpresa} />}
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalType.title}>
+                    {/* Usar switch para seleccionar el componente hijo */}
+                    {(() => {
+                        switch (modalType.type) {
+                            case 'usuarios':
+                                return <EmpresasUsuariosModal empresa={selectedEmpresa} />;
+                            case 'plan':
+                                return (
+                                    <EditEmpresaPlanModal
+                                        closeModal={setIsModalOpen}
+                                        planes={planes}
+                                        empresa={selectedEmpresa}
+                                        handleUpdateEmpresa={handleUpdateEmpresa}
+                                    />
+                                );
+                            case 'nuevo': // Nuevo caso para el nuevo componente
+                                return <AgregarNuevaEmpresa closeModal={setIsModalOpen} />;
+                            default:
+                                return null;
+                        }
+                    })()}
                 </Modal>
             )}
         </RegisterTableLayout>

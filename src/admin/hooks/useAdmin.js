@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, updatePlanesRequest } from "../../api/admin";
+import { registerRequest } from "../../api/auth";
 
 export const useAdmin = () => {
     const [loading, setLoading] = useState(false);
@@ -66,6 +67,20 @@ export const useAdmin = () => {
             setLoading(false);
         }
     }
+
+    const createEmpresa = async (payload) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await registerRequest(payload);
+            return data;
+        } catch (err) {
+            console.log(err)
+            setError(err.response?.data?.message || err.response?.data?.msg);
+        } finally {
+            setLoading(false);
+        }
+    }
     return (
         {
             // metodos
@@ -74,6 +89,7 @@ export const useAdmin = () => {
             getUsuariosEmpresa,
             getPlanes,
             updatePlan,
+            createEmpresa,
             // variables
             loading,
             error
