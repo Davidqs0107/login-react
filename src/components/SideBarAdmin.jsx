@@ -2,6 +2,7 @@ import { LogOut, Menu, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContex';
+import Swal from 'sweetalert2';
 
 const SidebarAdmin = () => {
     const { user } = useAuth();
@@ -14,8 +15,20 @@ const SidebarAdmin = () => {
 
     const handleLogout = () => {
 
-        localStorage.clear();
-        navigate('/auth/login');
+        Swal.fire({
+            title: "Esta seguro de cerrar sesion?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si!",
+            cancelButtonText: "No!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                localStorage.clear()
+                navigate("/auth/login")
+            }
+        });
     };
     return (
         <>
@@ -62,7 +75,7 @@ const SidebarAdmin = () => {
                 </nav>
                 <button
                     onClick={handleLogout}
-                    className="absolute bottom-4 left-4 right-4 p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
+                    className="mt-2 bottom-4 left-4 right-4 p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
                 >
                     <LogOut size={18} className="mr-2" />
                     Cerrar sesión

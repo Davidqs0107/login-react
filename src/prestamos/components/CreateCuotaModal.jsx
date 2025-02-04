@@ -41,10 +41,11 @@ export const CreateCuotaModal = ({ closeModal, cuota, updatedCuota, onlyRead, pr
                 monto
             }
             setPagos((prev) => [...prev, pagoFormatted]);
-
+            console.log(pago)
             cuota.monto_pagado = parseFloat(pago.cuotaActualizada.monto_pagado);
             cuota.estado = pago.cuotaActualizada.estado;
             updatedCuota(cuota);
+            payload.monto = pago.montoAplicado;
             handlePrintPayment(payload);
         }
     };

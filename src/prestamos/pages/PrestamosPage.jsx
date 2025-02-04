@@ -20,6 +20,7 @@ export const PrestamosPage = () => {
     const [filteredClients, setFilteredClients] = useState(clients);
     const navigate = useNavigate();
     const onSubmit = async (data) => {
+        console.log(data)
         const loan = await createLoan(data);
         if (loan) {
             Swal.fire({

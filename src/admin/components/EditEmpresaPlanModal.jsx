@@ -51,7 +51,6 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
                 text: "El Plan ha sido actualizado exitosamente",
                 icon: "success",
             });
-            console.log(plan)
             closeModal();
             handleUpdateEmpresa({ ...payload, fecha_inicio: plan.empresa.fecha_inicio, fecha_fin: plan.empresa.fecha_fin });
         }
