@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-
+import L from 'leaflet';
 export const MapLeaflet = ({ onPosition, client }) => {
     const [position, setPosition] = useState([-17.78416063196657, -63.18134307861329]); // Coordenadas por defecto
     const [userPosition, setUserPosition] = useState(null); // Para la posición del usuario
@@ -36,14 +36,18 @@ export const MapLeaflet = ({ onPosition, client }) => {
             onPosition(newCoords);
         },
     };
-
+    const markerIcon = new L.icon({
+        iconUrl: './listado/marker-icon.png',
+        iconSize: [25, 35]
+    })
     return (
-        <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
+        <MapContainer center={position} zoom={13} scrollWheelZoom={true} className='z-0'>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <Marker
+                icon={markerIcon}
                 position={position}
                 draggable
                 eventHandlers={eventHandlers}

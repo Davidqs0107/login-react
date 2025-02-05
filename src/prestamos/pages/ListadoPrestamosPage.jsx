@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router';
 import { formatDateWithDateFns } from '../../common/functions';
 import { VerArchivos } from '../components/VerArchivos';
 import { LoaderLocal } from '../../components/LoaderLocal';
+import { Search } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export const ListadoPrestamosPage = () => {
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -20,18 +22,45 @@ export const ListadoPrestamosPage = () => {
     const [isModalEdit, setIsModalEdit] = useState(false);
     const [selectedPrestamo, setSelectedPrestamo] = useState(null);
     const [meta, setMeta] = useState({ page: 1, pageSize: 10 });
+    const [searchTerm, setSearchTerm] = useState('');
 
     const navigate = useNavigate();
     const onSubmit = handleSubmit(async (data) => {
         const payload = {
             ...data,
             page: meta.page,
-            pageSize: meta.pageSize
+            pageSize: meta.pageSize,
+            searchTerm
         };
         const loans = await getLoans(payload);
         setPrestamos(loans.prestamos);
         setMeta(loans.meta);
     });
+
+    const handleSearchOnEnter = async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchTerm.length > 1) {
+                const payload = {
+                    page: meta.page,
+                    pageSize: meta.pageSize,
+                    searchTerm
+                };
+                const loans = await getLoans(payload);
+                if (loans) {
+                    setPrestamos(loans.prestamos);
+                    setMeta(loans.meta);
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'La busqueda debe tener al menos 2 caracteres',
+                })
+            }
+        }
+    };
+
     const handleOpenModal = (prestamo) => {
         setIsModalOpen(true);
         setSelectedPrestamo(prestamo);
@@ -114,7 +143,20 @@ export const ListadoPrestamosPage = () => {
                 </div>
             </section>
             <section>
-                <h2 className="text-xl font-semibold mb-4">Prestamos</h2>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold">Pretamos</h2>
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Buscar cliente..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyDown={handleSearchOnEnter}
+                            className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                </div>
                 <LoansTable loans={prestamos} meta={meta} openModal={handleOpenModal} onPageChange={handlePageChange} typeModal={setIsModalEdit} />
             </section>
             {/* Modal para Pagar Cuota */}
