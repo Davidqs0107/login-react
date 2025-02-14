@@ -105,7 +105,7 @@ export const DetallePrestamoPage = () => {
                         <p><strong>Monto:</strong> {prestamo.monto}</p>
                         <p><strong>Tipo prestamo:</strong> {formtaTipoPrestamo(prestamo.tipo_prestamo)}</p>
                         <p><strong>Tasa de Interés:</strong> {prestamo.tasa_interes}%</p>
-                        <p><strong>Monto Interés:</strong> {interesMontoTotal() || 0}</p>
+                        <p><strong>Total Monto Interés ganado:</strong> {interesMontoTotal() || 0}</p>
                         <p><strong>Frecuencia de Pago:</strong> {prestamo.frecuencia_pago}</p>
                         <p><strong>Total de Cuotas:</strong> {prestamo.total_cuotas}</p>
                         <p><strong>Fecha de Inicio:</strong> {formatDate(prestamo.fecha_inicio)}</p>

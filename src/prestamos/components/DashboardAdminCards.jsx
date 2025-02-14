@@ -30,7 +30,19 @@ export const DashboardAdminCards = ({ summaryState }) => {
                 color="bg-purple-500"
             />
             <Card
-                title="Total Recaudado"
+                title="Total descargos aprobados"
+                value={summaryState.descargos_completados || 0}
+                icon={<BadgeDollarSign size={24} />}
+                color="bg-green-500"
+            />
+            <Card
+                title="Total descargos pendientes"
+                value={summaryState.descargos_pendientes || 0}
+                icon={<BadgeDollarSign size={24} />}
+                color="bg-yellow-500"
+            />
+            <Card
+                title="Total de cobros"
                 value={summaryState.total_recaudado || 0}
                 icon={<BadgeDollarSign size={24} />}
                 color="bg-red-500"

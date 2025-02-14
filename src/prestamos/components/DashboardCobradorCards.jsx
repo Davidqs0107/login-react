@@ -30,6 +30,18 @@ export const DashboardCobradorCards = ({ summaryState }) => {
                 icon={<Receipt size={24} />}
                 color="bg-green-500"
             />
+            <Card
+                title="Mi Descargo Pendiente"
+                value={summaryState.descargos_pendientes || 0}
+                icon={<Receipt size={24} />}
+                color="bg-yellow-500"
+            />
+            <Card
+                title="Mi Descargo Aprobado"
+                value={summaryState.descargos_completados || 0}
+                icon={<Receipt size={24} />}
+                color="bg-purple-500"
+            />
         </div>
     )
 }

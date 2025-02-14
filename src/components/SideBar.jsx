@@ -83,6 +83,7 @@ const Sidebar = () => {
                                 Perfil
                             </NavLink>
                         </li>
+
                         {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
                             <li>
                                 <NavLink
@@ -99,6 +100,14 @@ const Sidebar = () => {
                                 className={({ isActive }) => `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`}
                             >
                                 Prestamos
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to="/descargos"
+                                className={({ isActive }) => `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`}
+                            >
+                                {user.rol === roles.Cobrador ? "Mi Descargo" : "Descargos"}
                             </NavLink>
                         </li>
                         {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
