@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getPagoCuotaByIdRequest, registerPagoRequest } from "../../api/pagos";
+import { getPagoCuotaByIdRequest, registerPagoMultiRequest, registerPagoRequest } from "../../api/pagos";
 
 export const usePago = () => {
     const [loading, setLoading] = useState(false);
@@ -17,7 +17,18 @@ export const usePago = () => {
             setLoading(false);
         }
     }
-
+    const createPagoMulti = async (pago) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await registerPagoMultiRequest(pago);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    }
     const getPagosCuotaById = async (id) => {
         setLoading(true);
         setError(null);
@@ -35,6 +46,7 @@ export const usePago = () => {
             // metodos
             getPagosCuotaById,
             createPago,
+            createPagoMulti,
             // variables
             loading,
             error
