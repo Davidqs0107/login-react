@@ -14,197 +14,452 @@ import { useAuth } from "../../context/AuthContex";
 import { LoaderLocal } from "../../components/LoaderLocal";
 
 export const DetallePrestamoPage = () => {
-    const { user } = useAuth();
+  const { user } = useAuth();
 
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
-    const { getLoanById, error, loading } = useLoan();
-    const { id: prestamoId } = useParams();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedCuota, setSelectedCuota] = useState(null);
-    const [prestamo, setPrestamo] = useState({});
-    const [cuotas, setCuotas] = useState([]);
-    const [onlyRead, setOnlyRead] = useState(false);
-    const [ubicacionBoton, setUbicacionBoton] = useState(null);
-    const handlePagarCuota = (cuota, read) => {
-        setOnlyRead(read);
-        setSelectedCuota(cuota);
-        setIsModalOpen(true);
-    };
-    const handleUpdateCuota = (cuota) => {
-        setCuotas((prev) => prev.map((c) => (c.id === cuota.id ? { ...c, ...cuota } : c)));
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm();
+  const { getLoanById, error, loading } = useLoan();
+  const { id: prestamoId } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCuota, setSelectedCuota] = useState(null);
+  const [prestamo, setPrestamo] = useState({});
+  const [cuotas, setCuotas] = useState([]);
+  const [onlyRead, setOnlyRead] = useState(false);
+  const [ubicacionBoton, setUbicacionBoton] = useState(null);
 
-    };
-    const fetchUsers = async () => {
-        try {
-            const data = await getLoanById(prestamoId, true);
-            if (data && data.prestamo) {
-                setPrestamo(data.prestamo);
-                setCuotas(data.prestamo?.cuotas || []);
-                handleUbicacion(data.prestamo);
-            }
-        } catch (error) {
-            console.error("Error al obtener los clientes:", error);
-        }
-    };
-    useEffect(() => {
-
-        fetchUsers();
-    }, []);
-    const onDownloadPDF = () => {
-        generatePDF(prestamo, cuotas);
-    };
-    const interesMontoTotal = () => {
-        if (prestamo.monto && prestamo.tasa_interes && prestamo.tipo_prestamo === tipoPrestamo.Fijo) {
-            return prestamo.monto * (prestamo.tasa_interes / 100) * prestamo.total_cuotas;
-        }
-        else {
-            return prestamo.monto * (prestamo.tasa_interes / 100);
-        }
-
-    }
-    const handleUbicacion = (prestamoData) => {
-        // Verificar si el plan y las coordenadas están presentes.
-        if (
-            user.plan_id > 2 &&
-            prestamoData.latitud &&
-            prestamoData.longitud
-        ) {
-            setUbicacionBoton(
-                `http://www.google.com/maps?q=${prestamoData.latitud},${prestamoData.longitud}`
-            );
-        } else {
-            setUbicacionBoton(null);
-        }
-    };
-     if (loading) {
-        return (
-            <RegisterTableLayout title="Detalle de Préstamo">
-                <LoaderLocal />
-            </RegisterTableLayout>
-        );
-    }
-    return (
-        <RegisterTableLayout title="Detalle de Préstamo">
-            {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
-            {loading && <LoaderLocal />}
-            {/* Información Principal */}
-            <section className="mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow">
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
-                        <p><strong>Nombre:</strong> {prestamo.nombre} {prestamo.apellido}</p>
-                        <p><strong>CI:</strong> {prestamo.ci}</p>
-                        <p><strong>Email:</strong> {prestamo.email}</p>
-                        <p><strong>Dirección:</strong> {prestamo.direccion}</p>
-                        <p><strong>Telefono:</strong> {prestamo.telefono}</p>
-                        {ubicacionBoton && (
-                            <p>
-                                <strong>Ubicación:</strong>{" "}
-                                <a href={ubicacionBoton} target="_blank" rel="noopener noreferrer">
-                                    <MapPinned color="#04ff00" />
-                                </a>
-                            </p>
-                        )}
-
-                    </div>
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Detalles del Préstamo</h2>
-                        <p><strong>Monto:</strong> {prestamo.monto}</p>
-                        <p><strong>Tipo prestamo:</strong> {formtaTipoPrestamo(prestamo.tipo_prestamo)}</p>
-                        <p><strong>Tasa de Interés:</strong> {prestamo.tasa_interes}%</p>
-                        <p><strong>Total Monto Interés ganado:</strong> {interesMontoTotal() || 0}</p>
-                        <p><strong>Frecuencia de Pago:</strong> {prestamo.frecuencia_pago}</p>
-                        <p><strong>Total de Cuotas:</strong> {prestamo.total_cuotas}</p>
-                        <p><strong>Fecha de Inicio:</strong> {formatDate(prestamo.fecha_inicio)}</p>
-                    </div>
-                </div>
-
-                <div className="gap-4 p-6 bg-white rounded-lg shadow">
-                    <strong>Documento:</strong>
-                    <p> {prestamo.documento}</p>
-
-                </div>
-                <div className="grid grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow ">
-                    <Button clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
-                        onClick={onDownloadPDF}
-                    >
-                        Imprimir
-                    </Button>
-                    {/* <Button clase="!bg-blue-500 hover:!bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
-                        onClick={() => window.print()}
-                    >
-                        Imprimir
-                    </Button> */}
-                </div>
-            </section>
-
-            {/* Tabla de Cuotas */}
-            <section >
-                <h2 className="text-xl font-semibold mb-4">Cuotas</h2>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">N° Cuota</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Fecha de Pago</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Monto Pagado</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Estado</th>
-                                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {cuotas.map((cuota, index) => {
-                                const isCurrentCuota = index === 0 || cuotas[index - 1]?.estado === "pagada";
-                                const isDisabled = cuota.estado === "pagada" || !isCurrentCuota;
-
-                                return (
-                                    <tr key={cuota.id} className="border-t odd:bg-gray-50">
-                                        <td className="px-4 py-2">{cuota.numero_cuota}</td>
-                                        <td className="px-4 py-2">{formatDate(cuota.fecha_pago)}</td>
-                                        <td className="px-4 py-2">{cuota.monto}</td>
-                                        <td className="px-4 py-2">{cuota.monto_pagado}</td>
-                                        <td className="px-4 py-2 capitalize">{cuota.estado}</td>
-                                        <td className="px-4 py-2">
-                                            <div className="grid grid-cols-2 gap-2 ">
-                                                <Button
-                                                    clase={`${isDisabled
-                                                        ? "bg-gray-400 cursor-not-allowed"
-                                                        : "bg-blue-500 hover:bg-blue-700 text-white"
-                                                        } font-bold py-1 px-3 rounded`}
-                                                    onClick={() => handlePagarCuota(cuota, false)}
-                                                    disabled={isDisabled}
-                                                >
-                                                    {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
-                                                </Button>
-                                                <button
-                                                    className="text-blue-500 hover:underline"
-                                                    onClick={() => handlePagarCuota(cuota, true)}
-                                                >
-                                                    <Eye />
-                                                </button>
-                                            </div>
-
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-
-            </section>
-
-            {/* Modal para Pagar Cuota */}
-            {isModalOpen && (
-                <Modal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    title={`Pagar Cuota N° ${selectedCuota?.numero_cuota}`}
-                >
-                    <CreateCuotaModal closeModal={setIsModalOpen} cuota={selectedCuota} updatedCuota={handleUpdateCuota} onlyRead={onlyRead} prestamo={prestamo} />
-                </Modal>
-            )}
-        </RegisterTableLayout>
+  const handlePagarCuota = (cuota, read) => {
+    setOnlyRead(read);
+    setSelectedCuota(cuota);
+    setIsModalOpen(true);
+  };
+  const handleUpdateCuota = (cuota) => {
+    setCuotas((prev) =>
+      prev.map((c) => (c.id === cuota.id ? { ...c, ...cuota } : c))
     );
+  };
+  const fetchUsers = async () => {
+    try {
+      const data = await getLoanById(prestamoId, true);
+      if (data && data.prestamo) {
+        setPrestamo(data.prestamo);
+        setCuotas(data.prestamo?.cuotas || []);
+        handleUbicacion(data.prestamo);
+      }
+    } catch (error) {
+      console.error("Error al obtener los clientes:", error);
+    }
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  const onDownloadPDF = () => {
+    generatePDF(prestamo, cuotas);
+  };
+  const interesMontoTotal = () => {
+    if (
+      prestamo.monto &&
+      prestamo.tasa_interes &&
+      prestamo.tipo_prestamo === tipoPrestamo.Fijo
+    ) {
+      const monto = parseFloat(prestamo.monto);
+      const tasa = parseFloat(prestamo.tasa_interes);
+      return monto * (tasa / 100) * prestamo.total_cuotas;
+    } else {
+      const monto = parseFloat(prestamo.monto || 0);
+      const tasa = parseFloat(prestamo.tasa_interes || 0);
+      return monto * (tasa / 100);
+    }
+  };
+  const handleUbicacion = (prestamoData) => {
+    // Verificar si el plan y las coordenadas están presentes.
+    if (user.plan_id > 2 && prestamoData.latitud && prestamoData.longitud) {
+      setUbicacionBoton(
+        `http://www.google.com/maps?q=${prestamoData.latitud},${prestamoData.longitud}`
+      );
+    } else {
+      setUbicacionBoton(null);
+    }
+  };
+  const saldoCuota = (cuota) => {
+    return parseFloat(cuota.monto) - parseFloat(cuota.monto_pagado || 0);
+  };
+
+  // Calcula cuánto capital hay en cada cuota (sin el interés)
+  const capitalPorCuota = (cuota) => {
+    if (!prestamo.monto || !prestamo.total_cuotas) return 0;
+
+    const monto = parseFloat(prestamo.monto);
+
+    // Para tipo "fijo": solo la última cuota tiene capital
+    if (prestamo.tipo_prestamo === tipoPrestamo.Fijo) {
+      return cuota.numero_cuota === prestamo.total_cuotas ? monto : 0;
+    }
+
+    // Para tipo normal: capital distribuido en todas las cuotas
+    return monto / prestamo.total_cuotas;
+  };
+
+  // Calcula cuánto interés hay en cada cuota
+  const interesPorCuota = (cuota) => {
+    const capital = capitalPorCuota(cuota);
+    return parseFloat(cuota.monto) - capital;
+  };
+
+  // Saldo Capital: capital que aún NO se ha pagado
+  const saldoCapital = () => {
+    if (!prestamo.monto || !prestamo.total_cuotas) return "0.00";
+
+    const monto = parseFloat(prestamo.monto);
+
+    // Para tipo "fijo": el capital está en la última cuota
+    if (prestamo.tipo_prestamo === tipoPrestamo.Fijo) {
+      const ultimaCuota = cuotas.find(
+        (c) => c.numero_cuota === prestamo.total_cuotas
+      );
+      if (!ultimaCuota) return monto.toFixed(2);
+
+      // Calcular cuánto capital se ha pagado de la última cuota
+      const montoPagado = parseFloat(ultimaCuota.monto_pagado || 0);
+      const capitalPagado = Math.min(montoPagado, monto); // El capital pagado no puede ser mayor al monto total
+      return (monto - capitalPagado).toFixed(2);
+    }
+
+    // Para tipo normal: calcular capital pendiente basado en monto pagado
+    const capitalPorCuotaNormal = monto / prestamo.total_cuotas;
+
+    // Sumar el capital pagado de todas las cuotas
+    const capitalPagadoTotal = cuotas.reduce((acc, cuota) => {
+      const montoPagado = parseFloat(cuota.monto_pagado || 0);
+      const capitalCuota = capitalPorCuota(cuota);
+      const interesCuota = interesPorCuota(cuota);
+
+      // Si el pago cubre el interés primero, luego el capital
+      const capitalPagado = Math.max(0, montoPagado - interesCuota);
+      return acc + Math.min(capitalPagado, capitalCuota);
+    }, 0);
+
+    return (monto - capitalPagadoTotal).toFixed(2);
+  };
+
+  // Interés Ganado: interés que YA se ha cobrado (incluyendo pagos parciales)
+  const interesGanado = () => {
+    if (prestamo.tipo_prestamo === tipoPrestamo.Fijo) {
+      // Para tipo "fijo": sumar el interés de todas las cuotas
+      return cuotas
+        .reduce((acc, cuota) => {
+          const capital = capitalPorCuota(cuota);
+          const montoPagado = parseFloat(cuota.monto_pagado || 0);
+          const interesCuota = interesPorCuota(cuota);
+
+          // Si es la última cuota, el interés se paga primero
+          if (cuota.numero_cuota === prestamo.total_cuotas) {
+            // Interés ganado es el mínimo entre lo pagado y el interés total de la cuota
+            const interesGanadoCuota = Math.min(montoPagado, interesCuota);
+            return acc + interesGanadoCuota;
+          }
+
+          // Para las demás cuotas (solo interés), todo lo pagado es interés
+          return acc + montoPagado;
+        }, 0)
+        .toFixed(2);
+    }
+
+    // Para tipo normal: calcular interés pagado de cada cuota
+    return cuotas
+      .reduce((acc, cuota) => {
+        const montoPagado = parseFloat(cuota.monto_pagado || 0);
+        const interesCuota = interesPorCuota(cuota);
+
+        // El interés se paga primero, luego el capital
+        const interesGanadoCuota = Math.min(montoPagado, interesCuota);
+        return acc + interesGanadoCuota;
+      }, 0)
+      .toFixed(2);
+  };
+
+  // Saldo de Interés: interés que aún falta por cobrar
+  const saldoInteres = () => {
+    return (interesMontoTotal() - parseFloat(interesGanado())).toFixed(2);
+  };
+
+  if (loading) {
+    return (
+      <RegisterTableLayout title="Detalle de Préstamo">
+        <LoaderLocal />
+      </RegisterTableLayout>
+    );
+  }
+  return (
+    <RegisterTableLayout title="Detalle de Préstamo">
+      {error && (
+        <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+          {error}
+        </div>
+      )}
+      {loading && <LoaderLocal />}
+      {/* Información Principal */}
+      <section className="mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow">
+          <div>
+            <h2 className="text-lg font-semibold mb-2">
+              Información del Cliente
+            </h2>
+            <p>
+              <strong>Nombre:</strong> {prestamo.nombre} {prestamo.apellido}
+            </p>
+            <p>
+              <strong>CI:</strong> {prestamo.ci}
+            </p>
+            <p>
+              <strong>Email:</strong> {prestamo.email}
+            </p>
+            <p>
+              <strong>Dirección:</strong> {prestamo.direccion}
+            </p>
+            <p>
+              <strong>Telefono:</strong> {prestamo.telefono}
+            </p>
+            {ubicacionBoton && (
+              <p>
+                <strong>Ubicación:</strong>{" "}
+                <a
+                  href={ubicacionBoton}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MapPinned color="#04ff00" />
+                </a>
+              </p>
+            )}
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold mb-2">
+              Detalles del Préstamo
+            </h2>
+            <p>
+              <strong>Monto:</strong> {prestamo.monto}
+            </p>
+            <p>
+              <strong>Tipo prestamo:</strong>{" "}
+              {formtaTipoPrestamo(prestamo.tipo_prestamo)}
+            </p>
+            <p>
+              <strong>Tasa de Interés:</strong> {prestamo.tasa_interes}%
+            </p>
+            <p>
+              <strong>Total Monto Interés ganado:</strong>{" "}
+              {interesMontoTotal() || 0}
+            </p>
+            <p>
+              <strong>Frecuencia de Pago:</strong> {prestamo.frecuencia_pago}
+            </p>
+            <p>
+              <strong>Total de Cuotas:</strong> {prestamo.total_cuotas}
+            </p>
+            <p>
+              <strong>Fecha de Inicio:</strong>{" "}
+              {formatDate(prestamo.fecha_inicio)}
+            </p>
+          </div>
+        </div>
+
+        <div className="gap-4 p-6 bg-white rounded-lg shadow">
+          <strong>Documento:</strong>
+          <p> {prestamo.documento}</p>
+        </div>
+
+        {/* Resumen Financiero */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-lg mt-4">
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Capital Pagado
+            </h3>
+            <p className="text-2xl font-bold text-green-600">
+              {(
+                parseFloat(prestamo.monto) - parseFloat(saldoCapital())
+              ).toFixed(2)}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">Capital ya cobrado</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Saldo Capital Pendiente
+            </h3>
+            <p className="text-2xl font-bold text-blue-600">{saldoCapital()}</p>
+            <p className="text-xs text-gray-500 mt-1">Capital aún por cobrar</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Interés Ganado
+            </h3>
+            <p className="text-2xl font-bold text-green-600">
+              {interesGanado()}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Interés ya cobrado (incluye parciales)
+            </p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Saldo Interés Pendiente
+            </h3>
+            <p className="text-2xl font-bold text-orange-600">
+              {saldoInteres()}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">Interés por cobrar</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow ">
+          <Button
+            clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
+            onClick={onDownloadPDF}
+          >
+            Imprimir
+          </Button>
+        </div>
+      </section>
+
+      {/* Tabla de Cuotas */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">Cuotas</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  N° Cuota
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Fecha de Pago
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Capital
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Interés
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Monto
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Monto Pagado
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Saldo Cuota
+                </th>
+                {/* <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Saldo Capital
+                </th> */}
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Estado
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {cuotas.map((cuota, index) => {
+                const isCurrentCuota =
+                  index === 0 || cuotas[index - 1]?.estado === "pagada";
+                const isDisabled = cuota.estado === "pagada" || !isCurrentCuota;
+
+                // Capital de esta cuota específica
+                const capitalCuota = capitalPorCuota(cuota);
+
+                // Interés de esta cuota específica
+                const interesCuota = interesPorCuota(cuota);
+
+                // Saldo capital después de esta cuota
+                let saldoCapitalCuota;
+                if (prestamo.tipo_prestamo === tipoPrestamo.Fijo) {
+                  // Para tipo fijo: si es la última cuota y no está pagada, muestra el monto completo
+                  const monto = parseFloat(prestamo.monto);
+                  saldoCapitalCuota =
+                    cuota.numero_cuota === prestamo.total_cuotas &&
+                    cuota.estado !== "pagada"
+                      ? monto.toFixed(2)
+                      : "0.00";
+                } else {
+                  // Para tipo normal: capital restante después de esta cuota
+                  const monto = parseFloat(prestamo.monto);
+                  const capitalPorCuotaNormal = monto / prestamo.total_cuotas;
+                  const cuotasRestantes =
+                    prestamo.total_cuotas - cuota.numero_cuota;
+                  saldoCapitalCuota = (
+                    capitalPorCuotaNormal * cuotasRestantes
+                  ).toFixed(2);
+                }
+
+                return (
+                  <tr key={cuota.id} className="border-t odd:bg-gray-50">
+                    <td className="px-4 py-2">{cuota.numero_cuota}</td>
+                    <td className="px-4 py-2">
+                      {formatDate(cuota.fecha_pago)}
+                    </td>
+                    <td className="px-4 py-2">{capitalCuota.toFixed(2)}</td>
+                    <td className="px-4 py-2">{interesCuota.toFixed(2)}</td>
+                    <td className="px-4 py-2">
+                      {parseFloat(cuota.monto).toFixed(2)}
+                    </td>
+                    <td className="px-4 py-2">
+                      {parseFloat(cuota.monto_pagado || 0).toFixed(2)}
+                    </td>
+                    <td className="px-4 py-2">
+                      {saldoCuota(cuota).toFixed(2)}
+                    </td>
+                    {/* <td className="px-4 py-2">{saldoCapitalCuota}</td> */}
+                    <td className="px-4 py-2 capitalize">{cuota.estado}</td>
+                    <td className="px-4 py-2">
+                      <div className="grid grid-cols-2 gap-2 ">
+                        <Button
+                          clase={`${
+                            isDisabled
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-blue-500 hover:bg-blue-700 text-white"
+                          } font-bold py-1 px-3 rounded`}
+                          onClick={() => handlePagarCuota(cuota, false)}
+                          disabled={isDisabled}
+                        >
+                          {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
+                        </Button>
+                        <button
+                          className="text-blue-500 hover:underline"
+                          onClick={() => handlePagarCuota(cuota, true)}
+                        >
+                          <Eye />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Modal para Pagar Cuota */}
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={`Pagar Cuota N° ${selectedCuota?.numero_cuota}`}
+        >
+          <CreateCuotaModal
+            closeModal={setIsModalOpen}
+            cuota={selectedCuota}
+            updatedCuota={handleUpdateCuota}
+            onlyRead={onlyRead}
+            prestamo={prestamo}
+          />
+        </Modal>
+      )}
+    </RegisterTableLayout>
+  );
 };

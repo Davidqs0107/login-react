@@ -44,6 +44,8 @@ export const LoansTable = ({
             <th className="px-4 py-2 border border-gray-200">CI</th>
             <th className="px-4 py-2 border border-gray-200">Monto</th>
             <th className="px-4 py-2 border border-gray-200">Interes%</th>
+            <th className="px-4 py-2 border border-gray-200">Monto total</th>
+            <th className="px-4 py-2 border border-gray-200">Saldo</th>
             <th className="px-4 py-2 border border-gray-200">Frecuencia</th>
             <th className="px-4 py-2 border border-gray-200">Total Cuotas</th>
             <th className="px-4 py-2 border border-gray-200">Tipo prestamo</th>
@@ -69,6 +71,10 @@ export const LoansTable = ({
               <td className="px-4 py-2 border border-gray-200">
                 {loan.tasa_interes}
               </td>
+              <td className="px-4 py-2 border border-gray-200">
+                {loan.monto_total_cuotas}
+              </td>
+              <td className="px-4 py-2 border border-gray-200">{loan.saldo}</td>
               <td className="px-4 py-2 border border-gray-200">
                 {loan.frecuencia_pago}
               </td>
@@ -182,6 +188,13 @@ export const LoansTable = ({
                 onClick={() => onNavigate(loan.id)}
               >
                 <Eye />
+              </button>
+              <button
+                title="Editar documento"
+                className="text-blue-500 hover:underline mr-2"
+                onClick={() => handleOpenModal(loan)}
+              >
+                <FileInput />
               </button>
               <button
                 className="text-green-500 hover:underline mr-2"
