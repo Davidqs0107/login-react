@@ -126,7 +126,7 @@ export const LoansTable = ({
             <td className="px-4 py-3 border border-gray-200">
               <strong>{totalMonto.toFixed(2)}</strong>
             </td>
-            <td className="px-4 py-3 border border-gray-200" colSpan="2"></td>
+            <td className="px-4 py-3 border border-gray-200" colSpan="4"></td>
             <td className="px-4 py-3 border border-gray-200">
               <strong>{totalCuotas.toFixed(2)}</strong>
             </td>
