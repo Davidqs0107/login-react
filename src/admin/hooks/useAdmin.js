@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, updatePlanesRequest } from "../../api/admin";
+import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, limpiarDatosEmpresaRequest, updatePlanesRequest } from "../../api/admin";
 import { registerRequest } from "../../api/auth";
 
 export const useAdmin = () => {
@@ -81,6 +81,20 @@ export const useAdmin = () => {
             setLoading(false);
         }
     }
+
+    const limpiarDatosEmpresa = async (empresa_id) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await limpiarDatosEmpresaRequest(empresa_id);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         {
             // metodos
@@ -90,6 +104,7 @@ export const useAdmin = () => {
             getPlanes,
             updatePlan,
             createEmpresa,
+            limpiarDatosEmpresa,
             // variables
             loading,
             error
