@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LabeledInput } from "../../components/LabeledInput";
 import { Button } from "../../components/Button";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Modal } from "../../components/Modal";
 import { CrearClienteForm } from "../components/CreateClientModal";
 import { useClient } from "../hooks/useClient";
@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { useLoan } from "../hooks/useLoan";
 import { RegisterTableLayout } from "../../layout/RegisterTableLayout";
 import { useNavigate } from "react-router";
+import Select from "react-select";
 
 export const PrestamosPage = () => {
   const {
@@ -17,13 +18,13 @@ export const PrestamosPage = () => {
     formState: { errors },
     reset,
     setValue,
+    control,
   } = useForm();
   const { createLoan, error, loading } = useLoan();
   const { createClient, getClients } = useClient();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clients, setClients] = useState([]);
-  const [filteredClients, setFilteredClients] = useState(clients);
   const navigate = useNavigate();
   const onSubmit = async (data) => {
     console.log(data);
@@ -39,13 +40,6 @@ export const PrestamosPage = () => {
       }, 2000);
     }
   };
-  //buscador local de clientes
-  const handleClientSearch = (e) => {
-    const search = e.target.value.toLowerCase();
-    setFilteredClients(
-      clients.filter((client) => client.nombre.toLowerCase().includes(search))
-    );
-  };
 
   const handleCreateClient = async (newClient) => {
     const client = await createClient(newClient);
@@ -56,7 +50,6 @@ export const PrestamosPage = () => {
         icon: "success",
       });
       setClients((prev) => [...prev, client.cliente]);
-      setFilteredClients((prev) => [...prev, client.cliente]);
       reset();
     }
     setIsModalOpen(false);
@@ -70,8 +63,7 @@ export const PrestamosPage = () => {
       try {
         const data = await getClients(1, 1000);
         if (data && data.clientes) {
-          setClients(data.clientes); // Asegúrate de acceder al nivel correcto.
-          setFilteredClients(data.clientes); // Sincronizar también `filteredClients`.
+          setClients(data.clientes);
         }
       } catch (error) {
         console.error("Error al obtener los clientes:", error);
@@ -94,34 +86,54 @@ export const PrestamosPage = () => {
           {/* Select Cliente */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Cliente
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Buscar cliente"
-                  onChange={handleClientSearch}
-                  className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                />
-                <select
-                  {...register("cliente_id", {
-                    required: "Seleccione un cliente",
-                  })}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                >
-                  {filteredClients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.nombre} {client.apellido}
-                    </option>
-                  ))}
-                </select>
-                {errors.cliente_id && (
-                  <p className="text-red-500 text-sm">
-                    {errors.cliente_id.message}
-                  </p>
+              <Controller
+                name="cliente_id"
+                control={control}
+                rules={{ required: "Seleccione un cliente" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={clients.map((client) => ({
+                      value: client.id,
+                      label: `${client.nombre} ${client.apellido}`,
+                    }))}
+                    placeholder="Buscar y seleccionar cliente..."
+                    isClearable
+                    isSearchable
+                    noOptionsMessage={() => "No se encontraron clientes"}
+                    onChange={(selectedOption) =>
+                      field.onChange(selectedOption?.value || null)
+                    }
+                    value={
+                      clients
+                        .map((client) => ({
+                          value: client.id,
+                          label: `${client.nombre} ${client.apellido}`,
+                        }))
+                        .find((option) => option.value === field.value) || null
+                    }
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        borderColor: errors.cliente_id ? "#f87171" : "#d1d5db",
+                        "&:hover": {
+                          borderColor: errors.cliente_id
+                            ? "#f87171"
+                            : "#9ca3af",
+                        },
+                      }),
+                    }}
+                  />
                 )}
-              </div>
+              />
+              {errors.cliente_id && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.cliente_id.message}
+                </p>
+              )}
             </div>
             <div>
               <br />
