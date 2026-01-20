@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../../components/Button";
 import { usePago } from "../hooks/usePago";
 import Swal from "sweetalert2";
-import { formatDateWithDateFns } from "../../common/functions";
+import { formatDate, formatDateWithDateFns } from "../../common/functions";
 import { ReceiptText } from "lucide-react";
 import { useAuth } from "../../context/AuthContex";
 import { generatePaymentReceiptPDF } from "../functions/generatePaymentReceiptPDF";
@@ -144,9 +144,7 @@ export const CreateCuotaModal = ({
             {pagos.map((pago) => (
               <tr key={pago.id} className="border-t">
                 <>
-                  <td className="px-4 py-2">
-                    {formatDateWithDateFns(pago.fecha_pago)}
-                  </td>
+                  <td className="px-4 py-2">{formatDate(pago.fecha_pago)}</td>
                   <td className="px-4 py-2">{pago.monto}</td>
                   <td className="px-4 py-2">{pago.tipo_pago}</td>
                   <td className="px-4 py-2">
