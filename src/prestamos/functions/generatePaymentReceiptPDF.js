@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { formatDateWithDateFns } from "../../common/functions";
+import { formatDate, formatDateWithDateFns } from "../../common/functions";
 
 export const generatePaymentReceiptPDF = (cliente, pago, usuario, formato = "carta") => {
     const isVoucher = formato === "voucher";
@@ -58,7 +58,7 @@ export const generatePaymentReceiptPDF = (cliente, pago, usuario, formato = "car
     doc.setFont("helvetica", "normal");
     doc.text("Fecha:", 14, y);
     doc.setFont("helvetica", "bold");
-    doc.text(`${formatDateWithDateFns(pago.fecha)}`, 50, y);
+    doc.text(`${formatDate(pago.fecha)}`, 50, y);
     y += 6;
 
     // Información del Usuario que realizó el cobro

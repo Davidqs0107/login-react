@@ -167,7 +167,7 @@ export const generatePDF = (prestamo, cuotas) => {
 
         return [
             cuota.numero_cuota,
-            new Date(cuota.fecha_pago).toLocaleDateString(),
+            formatDate(cuota.fecha_pago),
             capitalCuota.toFixed(2),
             interesCuota.toFixed(2),
             parseFloat(cuota.monto).toFixed(2),
