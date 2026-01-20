@@ -3,8 +3,11 @@ import { formatInTimeZone } from 'date-fns-tz'
 const timeZone = "America/La_Paz";
 export const formatDate = (date) => {
     if (!date) return '';
-    // Formatear la fecha en la zona horaria de Bolivia para evitar problemas con UTC
-    return formatInTimeZone(date, timeZone, 'dd/MM/yyyy');
+    // Extraer solo la fecha sin convertir zonas horarias
+    // Esto evita que UTC-4 reste un día al convertir
+    const fechaSolo = date.split("T")[0]; // "2026-01-20"
+    const [año, mes, dia] = fechaSolo.split("-");
+    return `${dia}/${mes}/${año}`; // "20/01/2026"
 };
 export const formatDateWithDateFns = (date) => {
     const formattedDate = formatInTimeZone(date, timeZone, 'yyyy-MM-dd')
