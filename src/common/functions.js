@@ -2,7 +2,9 @@ import { format } from "date-fns";
 import { formatInTimeZone } from 'date-fns-tz'
 const timeZone = "America/La_Paz";
 export const formatDate = (date) => {
-    return new Date(date).toLocaleDateString();
+    if (!date) return '';
+    // Formatear la fecha en la zona horaria de Bolivia para evitar problemas con UTC
+    return formatInTimeZone(date, timeZone, 'dd/MM/yyyy');
 };
 export const formatDateWithDateFns = (date) => {
     const formattedDate = formatInTimeZone(date, timeZone, 'yyyy-MM-dd')
