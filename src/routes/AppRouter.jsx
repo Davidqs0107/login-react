@@ -15,6 +15,13 @@ import { ListadoPrestamosPage } from "../prestamos/pages/ListadoPrestamosPage";
 import { EmpresasAdminPages } from "../admin/pages/EmpresasAdminPages";
 import { DescargoPage } from "../prestamos/pages/DescargoPage";
 import { EmpresaPage } from "../prestamos/pages/EmpresaPage";
+import { MoraDetalladaPage } from "../reportes/pages/MoraDetalladaPage";
+import { CarteraEstadoPage } from "../reportes/pages/CarteraEstadoPage";
+import { CobrosCobradoresPage } from "../reportes/pages/CobrosCobradoresPage";
+import { AgendaCobroPage } from "../reportes/pages/AgendaCobroPage";
+import { RecaudacionMensualPage } from "../reportes/pages/RecaudacionMensualPage";
+import { FichaClientePage } from "../reportes/pages/FichaClientePage";
+import { ReportesIndexPage } from "../reportes/pages/ReportesIndexPage";
 
 export const AppRouter = () => {
   return (
@@ -31,6 +38,22 @@ export const AppRouter = () => {
         <Route path="/perfil" element={<PerfilPage />} />
         <Route path="/descargos" element={<DescargoPage />} />
         <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
+
+        {/* Reportes */}
+        <Route path="/reportes" element={<ReportesIndexPage />} />
+        <Route path="/reportes/mora" element={<MoraDetalladaPage />} />
+        <Route path="/reportes/cartera" element={<CarteraEstadoPage />} />
+        <Route path="/reportes/cobros" element={<CobrosCobradoresPage />} />
+        <Route path="/reportes/agenda" element={<AgendaCobroPage />} />
+        <Route
+          path="/reportes/recaudacion"
+          element={<RecaudacionMensualPage />}
+        />
+        <Route
+          path="/reportes/cliente/:clienteId"
+          element={<FichaClientePage />}
+        />
+
         <Route path="/*" element={<Navigate to={"/"} />} />
       </Route>
 

@@ -52,7 +52,7 @@ const Sidebar = () => {
         ></div>
       )}
       <div
-        className={` bg-gray-800 text-white w-64 min-h-screen p-4 fixed left-0 top-0 z-50 transform transition-transform duration-300 ease-in-out ${
+        className={` bg-gray-800 text-white w-64 h-screen p-4 fixed left-0 top-0 z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
@@ -69,8 +69,8 @@ const Sidebar = () => {
         <h2 className="break-words text-2xl font-semibold mb-6">
           Hola {user.name}
         </h2>
-        <nav>
-          <ul className="space-y-2">
+        <nav className="flex-1 overflow-y-auto">
+          <ul className="space-y-2 pb-4">
             <li>
               <NavLink
                 to="/"
@@ -104,18 +104,18 @@ const Sidebar = () => {
                     Empresa
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink
-                    to="/clientes"
-                    className={({ isActive }) =>
-                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
-                    }
-                  >
-                    Clientes
-                  </NavLink>
-                </li>
               </>
             )}
+            <li>
+              <NavLink
+                to="/clientes"
+                className={({ isActive }) =>
+                  `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                }
+              >
+                Clientes
+              </NavLink>
+            </li>
             <li>
               <NavLink
                 to="/listado/prestamos"
@@ -148,11 +148,89 @@ const Sidebar = () => {
                 </NavLink>
               </li>
             )}
+
+            {/* Reportes */}
+            {(user.rol === roles.Admin ||
+              user.rol === roles.SuperAdmin ||
+              user.rol === roles.Cobrador) && (
+              <>
+                <li className="mt-4 mb-2">
+                  <div className="text-gray-400 text-xs font-semibold uppercase tracking-wide">
+                    Reportes
+                  </div>
+                </li>
+                <li>
+                  <NavLink
+                    to="/reportes"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Ver Todos
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/reportes/agenda"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Agenda de Cobro
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
+              <>
+                <li>
+                  <NavLink
+                    to="/reportes/mora"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Mora Detallada
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/reportes/cartera"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Cartera por Estado
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/reportes/cobros"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Cobros por Cobrador
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/reportes/recaudacion"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Recaudación Mensual
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
         <button
           onClick={handleLogout}
-          className="mt-2 bottom-4 left-4 right-4 p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center"
+          className="mt-2 w-full p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center flex-shrink-0"
         >
           <LogOut size={18} className="mr-2" />
           Cerrar sesión
