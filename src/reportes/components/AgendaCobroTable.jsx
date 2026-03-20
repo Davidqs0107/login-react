@@ -60,9 +60,9 @@ export const AgendaCobroTable = ({ data }) => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Estado
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Cobrador
-                  </th>
+                  </th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Acciones
                   </th>
@@ -113,9 +113,9 @@ export const AgendaCobroTable = ({ data }) => {
                         {item.estado}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {item.cobrador}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Link
                         to={`/prestamo/${item.prestamo_id}`}
