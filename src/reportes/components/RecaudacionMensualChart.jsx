@@ -1,3 +1,8 @@
+const formatMes = (mesStr, opts) => {
+  const [year, month] = mesStr.split("-").map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString("es-ES", opts);
+};
+
 export const RecaudacionMensualChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
@@ -23,10 +28,7 @@ export const RecaudacionMensualChart = ({ data }) => {
           >
             <div className="mb-2">
               <h3 className="text-lg font-bold text-gray-800">
-                {new Date(item.mes + "-01").toLocaleDateString("es-ES", {
-                  year: "numeric",
-                  month: "long",
-                })}
+                {formatMes(item.mes, { year: "numeric", month: "long" })}
               </h3>
             </div>
             <div className="space-y-2">
@@ -83,10 +85,7 @@ export const RecaudacionMensualChart = ({ data }) => {
               <div key={index}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">
-                    {new Date(item.mes + "-01").toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "short",
-                    })}
+                    {formatMes(item.mes, { year: "numeric", month: "short" })}
                   </span>
                   <span className="text-sm font-bold text-gray-900">
                     Bs. {totalCobrado.toFixed(2)}

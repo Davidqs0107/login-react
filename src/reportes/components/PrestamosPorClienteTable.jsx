@@ -7,6 +7,11 @@ const ESTADO_STYLES = {
   incumplido: { badge: "bg-red-100 text-red-800", label: "Incumplido" },
 };
 
+const formatFecha = (isoStr) => {
+  const [year, month, day] = isoStr.split("T")[0].split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("es-ES");
+};
+
 export const PrestamosPorClienteTable = ({ data }) => {
   if (!data || data.length === 0) {
     return (
@@ -97,7 +102,7 @@ export const PrestamosPorClienteTable = ({ data }) => {
                       #{item.prestamo_id}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {new Date(item.fecha_inicio).toLocaleDateString("es-ES")}
+                      {formatFecha(item.fecha_inicio)}
                     </div>
                     <div className="text-xs text-gray-400 capitalize">
                       {item.frecuencia_pago} · {item.tipo_prestamo}

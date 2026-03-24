@@ -23,6 +23,10 @@ export const PrestamosPorClientePage = () => {
     pageSize: 20,
   });
   const [inputSearch, setInputSearch] = useState("");
+  const [pendingDates, setPendingDates] = useState({
+    fecha_inicio: "",
+    fecha_fin: "",
+  });
   const { getPrestamosPorCliente, loading } = useReportes();
 
   const loadData = async (params) => {
@@ -45,7 +49,13 @@ export const PrestamosPorClientePage = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setFilters((prev) => ({ ...prev, searchTerm: inputSearch, page: 1 }));
+    setFilters((prev) => ({
+      ...prev,
+      searchTerm: inputSearch,
+      fecha_inicio: pendingDates.fecha_inicio,
+      fecha_fin: pendingDates.fecha_fin,
+      page: 1,
+    }));
   };
 
   const handleFilterChange = (field, value) => {
@@ -54,6 +64,7 @@ export const PrestamosPorClientePage = () => {
 
   const handleClearFilters = () => {
     setInputSearch("");
+    setPendingDates({ fecha_inicio: "", fecha_fin: "" });
     setFilters({
       searchTerm: "",
       estado_prestamo: "",
@@ -143,9 +154,12 @@ export const PrestamosPorClientePage = () => {
               </label>
               <input
                 type="date"
-                value={filters.fecha_inicio}
+                value={pendingDates.fecha_inicio}
                 onChange={(e) =>
-                  handleFilterChange("fecha_inicio", e.target.value)
+                  setPendingDates((prev) => ({
+                    ...prev,
+                    fecha_inicio: e.target.value,
+                  }))
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
@@ -158,9 +172,12 @@ export const PrestamosPorClientePage = () => {
               </label>
               <input
                 type="date"
-                value={filters.fecha_fin}
+                value={pendingDates.fecha_fin}
                 onChange={(e) =>
-                  handleFilterChange("fecha_fin", e.target.value)
+                  setPendingDates((prev) => ({
+                    ...prev,
+                    fecha_fin: e.target.value,
+                  }))
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
