@@ -59,3 +59,19 @@ export const getRecaudacionMensualRequest = (params = {}) => {
 // 6. Ficha del Cliente - admin, super_admin
 export const getFichaClienteRequest = (clienteId) =>
     LoginApi.get(`/reportes/cliente/${clienteId}`);
+
+// 7. Préstamos por Cliente - admin, super_admin
+export const getPrestamosPorClienteRequest = (params = {}) => {
+    const { searchTerm, estado_prestamo, fecha_inicio, fecha_fin, page = 1, pageSize = 20 } = params;
+    const queryParams = new URLSearchParams({
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+    });
+
+    if (searchTerm) queryParams.append('searchTerm', searchTerm);
+    if (estado_prestamo) queryParams.append('estado_prestamo', estado_prestamo);
+    if (fecha_inicio) queryParams.append('fecha_inicio', fecha_inicio);
+    if (fecha_fin) queryParams.append('fecha_fin', fecha_fin);
+
+    return LoginApi.get(`/reportes/prestamos?${queryParams.toString()}`);
+};

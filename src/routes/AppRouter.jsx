@@ -22,6 +22,7 @@ import { AgendaCobroPage } from "../reportes/pages/AgendaCobroPage";
 import { RecaudacionMensualPage } from "../reportes/pages/RecaudacionMensualPage";
 import { FichaClientePage } from "../reportes/pages/FichaClientePage";
 import { ReportesIndexPage } from "../reportes/pages/ReportesIndexPage";
+import { PrestamosPorClientePage } from "../reportes/pages/PrestamosPorClientePage";
 
 export const AppRouter = () => {
   return (
@@ -52,6 +53,10 @@ export const AppRouter = () => {
         <Route
           path="/reportes/cliente/:clienteId"
           element={<FichaClientePage />}
+        />
+        <Route
+          path="/reportes/prestamos"
+          element={<PrestamosPorClientePage />}
         />
 
         <Route path="/*" element={<Navigate to={"/"} />} />

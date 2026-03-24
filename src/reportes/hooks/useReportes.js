@@ -5,7 +5,8 @@ import {
     getCobrosPorCobradorRequest,
     getAgendaCobroRequest,
     getRecaudacionMensualRequest,
-    getFichaClienteRequest
+    getFichaClienteRequest,
+    getPrestamosPorClienteRequest
 } from '../../api/reportes';
 
 export const useReportes = () => {
@@ -96,6 +97,20 @@ export const useReportes = () => {
         }
     };
 
+    const getPrestamosPorCliente = async (params = {}) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await getPrestamosPorClienteRequest(params);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.msg || "Error al cargar préstamos por cliente");
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         // Métodos
         getMoraDetallada,
@@ -104,6 +119,7 @@ export const useReportes = () => {
         getAgendaCobro,
         getRecaudacionMensual,
         getFichaCliente,
+        getPrestamosPorCliente,
         // Estados
         loading,
         error

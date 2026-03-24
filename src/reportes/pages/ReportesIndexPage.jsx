@@ -6,7 +6,7 @@ import {
   Users,
   Calendar,
   TrendingUp,
-  UserCheck,
+  ClipboardList,
 } from "lucide-react";
 import { Link } from "react-router";
 
@@ -54,6 +54,14 @@ export const ReportesIndexPage = () => {
       path: "/reportes/recaudacion",
       icon: TrendingUp,
       color: "bg-orange-500",
+      roles: [roles.Admin, roles.SuperAdmin],
+    },
+    {
+      title: "Préstamos por Cliente",
+      description: "Busca préstamos por cliente, nombre, CI, teléfono o estado",
+      path: "/reportes/prestamos",
+      icon: ClipboardList,
+      color: "bg-teal-500",
       roles: [roles.Admin, roles.SuperAdmin],
     },
   ];
