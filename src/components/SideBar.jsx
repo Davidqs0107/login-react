@@ -139,6 +139,18 @@ const Sidebar = () => {
             {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
               <li>
                 <NavLink
+                  to="/pagos"
+                  className={({ isActive }) =>
+                    `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                  }
+                >
+                  Pagos
+                </NavLink>
+              </li>
+            )}
+            {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
+              <li>
+                <NavLink
                   to="/usuarios"
                   className={({ isActive }) =>
                     `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`

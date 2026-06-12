@@ -82,7 +82,7 @@ export const CreateCuotaModal = ({
       navigate(`/listado/prestamos`);
     }
   };
-  const handlePrintPayment = (pago_realizado) => {
+  const handlePrintPayment = (pago_realizado, cuotaIdToPrint) => {
     const { nombre, apellido, ci } = prestamo;
     const { monto, tipo_pago, id, fecha_pago } = pago_realizado;
     const cliente = {
@@ -96,6 +96,7 @@ export const CreateCuotaModal = ({
       tipo_pago,
       fecha: fecha_pago,
       id,
+      cuota_id: cuotaIdToPrint || cuotaId,
     };
     const usuario = {
       nombre: user.name,

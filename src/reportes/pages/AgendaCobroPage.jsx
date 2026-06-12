@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { AgendaCobroTable } from "../components/AgendaCobroTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { exportToPDF, exportToExcel } from "../../common/exportUtils";
+
+const AGENDA_COLUMNS = [
+    { key: 'cliente', label: 'Cliente' },
+    { key: 'telefono', label: 'Teléfono' },
+    { key: 'direccion', label: 'Dirección' },
+    { key: 'numero_cuota', label: 'Cuota #' },
+    { key: 'fecha_pago', label: 'Fecha Pago' },
+    { key: 'monto_cuota', label: 'Monto' }
+];
 
 export const AgendaCobroPage = () => {
   const [data, setData] = useState([]);
@@ -37,13 +47,27 @@ export const AgendaCobroPage = () => {
     setFilters({ ...filters, page: newPage });
   };
 
+  const handleExportPDF = () => {
+    exportToPDF(data, AGENDA_COLUMNS, 'Agenda de Cobro');
+  };
+
+  const handleExportExcel = () => {
+    exportToExcel(data, AGENDA_COLUMNS, 'agenda_cobro');
+  };
+
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Agenda de Cobro</h1>
-        <p className="text-gray-600 mt-2">
-          Cuotas pendientes que vencen próximamente
-        </p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Agenda de Cobro</h1>
+          <p className="text-gray-600 mt-2">
+            Cuotas pendientes que vencen próximamente
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={handleExportPDF} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Exportar PDF</button>
+          <button onClick={handleExportExcel} className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Exportar Excel</button>
+        </div>
       </div>
 
       {/* Filtros */}

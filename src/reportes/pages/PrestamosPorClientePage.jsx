@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { PrestamosPorClienteTable } from "../components/PrestamosPorClienteTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { exportToPDF, exportToExcel } from "../../common/exportUtils";
+
+const PRESTAMOS_COLUMNS = [
+    { key: 'cliente', label: 'Cliente' },
+    { key: 'ci', label: 'CI' },
+    { key: 'prestamo_id', label: 'Préstamo #' },
+    { key: 'capital', label: 'Capital' },
+    { key: 'estado_prestamo', label: 'Estado' },
+    { key: 'fecha_inicio', label: 'Fecha' }
+];
 
 const ESTADOS = [
   { value: "", label: "Todos los estados" },
@@ -79,15 +89,29 @@ export const PrestamosPorClientePage = () => {
     setFilters((prev) => ({ ...prev, page: newPage }));
   };
 
+  const handleExportPDF = () => {
+    exportToPDF(data, PRESTAMOS_COLUMNS, 'Préstamos por Cliente');
+  };
+
+  const handleExportExcel = () => {
+    exportToExcel(data, PRESTAMOS_COLUMNS, 'prestamos_cliente');
+  };
+
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Préstamos por Cliente
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Historial de préstamos con búsqueda por cliente, estado y fechas
-        </p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Préstamos por Cliente
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Historial de préstamos con búsqueda por cliente, estado y fechas
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={handleExportPDF} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Exportar PDF</button>
+          <button onClick={handleExportExcel} className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Exportar Excel</button>
+        </div>
       </div>
 
       {/* Filtros */}

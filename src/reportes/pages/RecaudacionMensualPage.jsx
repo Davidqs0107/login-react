@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { RecaudacionMensualChart } from "../components/RecaudacionMensualChart";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { exportToPDF, exportToExcel } from "../../common/exportUtils";
+
+const RECAUDACION_COLUMNS = [
+    { key: 'mes', label: 'Mes' },
+    { key: 'total_cobrado', label: 'Total' },
+    { key: 'total_efectivo', label: 'Efectivo' },
+    { key: 'total_qr', label: 'QR' },
+    { key: 'num_pagos', label: 'Nro. Pagos' }
+];
 
 export const RecaudacionMensualPage = () => {
   const [data, setData] = useState([]);
@@ -35,13 +44,27 @@ export const RecaudacionMensualPage = () => {
     setTimeout(() => loadData(), 100);
   };
 
+  const handleExportPDF = () => {
+    exportToPDF(data, RECAUDACION_COLUMNS, 'Recaudación Mensual');
+  };
+
+  const handleExportExcel = () => {
+    exportToExcel(data, RECAUDACION_COLUMNS, 'recaudacion_mensual');
+  };
+
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Recaudación Mensual
-        </h1>
-        <p className="text-gray-600 mt-2">Totales cobrados agrupados por mes</p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Recaudación Mensual
+          </h1>
+          <p className="text-gray-600 mt-2">Totales cobrados agrupados por mes</p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={handleExportPDF} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Exportar PDF</button>
+          <button onClick={handleExportExcel} className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Exportar Excel</button>
+        </div>
       </div>
 
       {/* Filtros de fecha */}

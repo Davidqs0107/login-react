@@ -56,6 +56,8 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
         }
     };
 
+    const selectedPlanData = planes.find((p) => p.id === formData.plan_id);
+
     return (
         <div ref={formRef}>
             {error && (
@@ -77,11 +79,18 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
                 >
                     {planes.map((plan) => (
                         <option key={plan.id} value={plan.id}>
-                            {plan.nombre}
+                            {plan.nombre} {plan.max_usuarios ? `(Máx ${plan.max_usuarios} usuarios)` : "(Ilimitado)"}
                         </option>
                     ))}
                 </select>
             </div>
+            {selectedPlanData && selectedPlanData.max_usuarios !== null && (
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <p className="text-sm text-blue-700">
+                        <strong>Límite de usuarios:</strong> {selectedPlanData.max_usuarios} cobradores máximo para este plan
+                    </p>
+                </div>
+            )}
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Días</label>
                 <input

@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { CobrosCobradoresTable } from "../components/CobrosCobradoresTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { exportToPDF, exportToExcel } from "../../common/exportUtils";
+
+const COBROS_COLUMNS = [
+    { key: 'cobrador', label: 'Cobrador' },
+    { key: 'total_cobrado', label: 'Total Cobrado' },
+    { key: 'total_efectivo', label: 'Efectivo' },
+    { key: 'total_qr', label: 'QR' },
+    { key: 'num_pagos', label: 'Nro. Pagos' }
+];
 
 export const CobrosCobradoresPage = () => {
   const [data, setData] = useState([]);
@@ -35,15 +44,29 @@ export const CobrosCobradoresPage = () => {
     setTimeout(() => loadData(), 100);
   };
 
+  const handleExportPDF = () => {
+    exportToPDF(data, COBROS_COLUMNS, 'Cobros por Cobrador');
+  };
+
+  const handleExportExcel = () => {
+    exportToExcel(data, COBROS_COLUMNS, 'cobros_cobradores');
+  };
+
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Cobros por Cobrador
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Total recaudado por cada cobrador en el período seleccionado
-        </p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Cobros por Cobrador
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Total recaudado por cada cobrador en el período seleccionado
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={handleExportPDF} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Exportar PDF</button>
+          <button onClick={handleExportExcel} className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Exportar Excel</button>
+        </div>
       </div>
 
       {/* Filtros de fecha */}

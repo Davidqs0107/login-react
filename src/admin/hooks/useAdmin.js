@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, limpiarDatosEmpresaRequest, updatePlanesRequest } from "../../api/admin";
+import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, limpiarDatosEmpresaRequest, updatePlanesRequest, updatePlanMaxUsuariosRequest } from "../../api/admin";
 import { registerRequest } from "../../api/auth";
 
 export const useAdmin = () => {
@@ -68,6 +68,19 @@ export const useAdmin = () => {
         }
     }
 
+    const updatePlanMaxUsuarios = async (id, max_usuarios) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await updatePlanMaxUsuariosRequest(id, max_usuarios);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.message || "Error desconocido");
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const createEmpresa = async (payload) => {
         setLoading(true);
         setError(null);
@@ -103,6 +116,7 @@ export const useAdmin = () => {
             getUsuariosEmpresa,
             getPlanes,
             updatePlan,
+            updatePlanMaxUsuarios,
             createEmpresa,
             limpiarDatosEmpresa,
             // variables

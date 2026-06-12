@@ -6,3 +6,4 @@ export const getLoansRequest = (data) => LoginApi.get(`/prestamos`, { params: { 
 export const updateLoanRequest = (id, loan) => LoginApi.put(`/prestamos/${id}`, loan);
 export const uploadDocRequest = (id, file) => LoginApi.post(`/prestamos/${id}/archivos`, file);
 export const getDocByIdRequest = (id) => LoginApi.get(`/prestamos/${id}/archivos`);
+export const completarPrestamoRequest = (id) => LoginApi.put(`/prestamos/${id}/completar`);

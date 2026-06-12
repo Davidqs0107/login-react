@@ -13,6 +13,7 @@ import { PublicRoute } from "../PublicRoute";
 import { UsuariosPage } from "../usuarios/pages/UsuariosPage";
 import { ListadoPrestamosPage } from "../prestamos/pages/ListadoPrestamosPage";
 import { EmpresasAdminPages } from "../admin/pages/EmpresasAdminPages";
+import { PlanesAdminPages } from "../admin/pages/PlanesAdminPages";
 import { DescargoPage } from "../prestamos/pages/DescargoPage";
 import { EmpresaPage } from "../prestamos/pages/EmpresaPage";
 import { MoraDetalladaPage } from "../reportes/pages/MoraDetalladaPage";
@@ -23,6 +24,7 @@ import { RecaudacionMensualPage } from "../reportes/pages/RecaudacionMensualPage
 import { FichaClientePage } from "../reportes/pages/FichaClientePage";
 import { ReportesIndexPage } from "../reportes/pages/ReportesIndexPage";
 import { PrestamosPorClientePage } from "../reportes/pages/PrestamosPorClientePage";
+import { CalculadoraPage } from "../prestamos/pages/CalculadoraPage";
 
 export const AppRouter = () => {
   return (
@@ -39,6 +41,7 @@ export const AppRouter = () => {
         <Route path="/perfil" element={<PerfilPage />} />
         <Route path="/descargos" element={<DescargoPage />} />
         <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
+        <Route path="/admin/planes" element={<PlanesAdminPages />} />
 
         {/* Reportes */}
         <Route path="/reportes" element={<ReportesIndexPage />} />
@@ -65,6 +68,7 @@ export const AppRouter = () => {
       <Route element={<PublicRoute />}>
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/register" element={<RegisterPage />} />
+        <Route path="/calculadora" element={<CalculadoraPage />} />
         <Route path="/*" element={<Navigate to={"/auth/login"} />} />
       </Route>
     </Routes>

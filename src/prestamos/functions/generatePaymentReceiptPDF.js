@@ -61,6 +61,12 @@ export const generatePaymentReceiptPDF = (cliente, pago, usuario, formato = "car
     doc.text(`${formatDate(pago.fecha)}`, 50, y);
     y += 6;
 
+    doc.setFont("helvetica", "normal");
+    doc.text("ID Cuota:", 14, y);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${pago.cuota_id || 'N/A'}`, 50, y);
+    y += 6;
+
     // Información del Usuario que realizó el cobro
     doc.setFont("helvetica", "bold");
     doc.text("Información del Usuario", 14, y);

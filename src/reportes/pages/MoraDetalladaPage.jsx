@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { MoraDetalladaTable } from "../components/MoraDetalladaTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { exportToPDF, exportToExcel } from "../../common/exportUtils";
+
+const MORA_COLUMNS = [
+    { key: 'cliente', label: 'Cliente' },
+    { key: 'ci', label: 'CI' },
+    { key: 'numero_cuota', label: 'Cuota #' },
+    { key: 'monto_cuota', label: 'Monto' },
+    { key: 'fecha_vencimiento', label: 'Fecha Vencimiento' },
+    { key: 'dias_mora', label: 'Días Mora' }
+];
 
 export const MoraDetalladaPage = () => {
   const [data, setData] = useState([]);
@@ -38,13 +48,37 @@ export const MoraDetalladaPage = () => {
     setFilters({ ...filters, [field]: value, page: 1 });
   };
 
+  const handleExportPDF = () => {
+    exportToPDF(data, MORA_COLUMNS, 'Reporte Mora Detallada');
+  };
+
+  const handleExportExcel = () => {
+    exportToExcel(data, MORA_COLUMNS, 'reporte_mora');
+  };
+
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Mora Detallada</h1>
-        <p className="text-gray-600 mt-2">
-          Listado de cuotas vencidas con días de mora
-        </p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Mora Detallada</h1>
+          <p className="text-gray-600 mt-2">
+            Listado de cuotas vencidas con días de mora
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportPDF}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+          >
+            Exportar PDF
+          </button>
+          <button
+            onClick={handleExportExcel}
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+          >
+            Exportar Excel
+          </button>
+        </div>
       </div>
 
       {/* Filtros */}

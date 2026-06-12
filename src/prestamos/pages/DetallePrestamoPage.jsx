@@ -12,6 +12,8 @@ import { Eye, MapPinned } from "lucide-react";
 import { tipoPrestamo } from "../../common/constans";
 import { useAuth } from "../../context/AuthContex";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { completarPrestamoRequest } from "../../api/prestamos";
+import Swal from "sweetalert2";
 
 export const DetallePrestamoPage = () => {
   const { user } = useAuth();
@@ -59,6 +61,29 @@ export const DetallePrestamoPage = () => {
   }, []);
   const onDownloadPDF = () => {
     generatePDF(prestamo, cuotas);
+  };
+
+  const handleCompletarPrestamo = async () => {
+    const result = await Swal.fire({
+      title: '¿Marcar como completado?',
+      text: 'Este préstamo se marcará como completado.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, completar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await completarPrestamoRequest(prestamo.id);
+        if (response.data.ok) {
+          setPrestamo({ ...prestamo, estado_prestamo: 'completado' });
+          Swal.fire('Completado', 'Préstamo marcado como completado', 'success');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'No se pudo completar el préstamo', 'error');
+      }
+    }
   };
   const interesMontoTotal = () => {
     if (
@@ -314,13 +339,26 @@ export const DetallePrestamoPage = () => {
             <p className="text-xs text-gray-500 mt-1">Interés por cobrar</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4 p-6 bg-white rounded-lg shadow ">
-          <Button
-            clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4 !w-auto"
-            onClick={onDownloadPDF}
-          >
-            Imprimir
-          </Button>
+        <div className="flex justify-between items-center gap-4 p-6 bg-white rounded-lg shadow ">
+          <div className="flex gap-4 items-center">
+            <Button
+              clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded !w-auto"
+              onClick={onDownloadPDF}
+            >
+              Imprimir
+            </Button>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${prestamo.estado_prestamo === 'completado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+              Estado: {prestamo.estado_prestamo || 'activo'}
+            </span>
+          </div>
+          {user.rol === 'admin' && prestamo.estado_prestamo !== 'completado' && (
+            <Button
+              clase="!bg-green-600 hover:!bg-green-700 text-white font-bold py-2 px-4 rounded !w-auto"
+              onClick={handleCompletarPrestamo}
+            >
+              Marcar como completado
+            </Button>
+          )}
         </div>
       </section>
 
