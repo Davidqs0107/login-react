@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
 import { CuotaTable } from '../components/CuotaTable';
 import { Button } from '../../components/Button';
-import { format, addDays } from 'date-fns';
+import { format, addDays, addWeeks, addMonths, addYears } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+// Cada frecuencia define cómo calcular la fecha de la cuota `i` (1-indexada),
+// espejando exactamente la lógica del backend (calcularFechaCuota).
 const FREQUENCIES = {
-    diario: { label: 'Diario', days: 1 },
-    semanal: { label: 'Semanal', days: 7 },
-    quincenal: { label: 'Quincenal', days: 15 },
-    mensual: { label: 'Mensual', days: 30 },
-    trimestral: { label: 'Trimestral', days: 90 }
+    diario: { label: 'Diario', add: (d, i) => addDays(d, i) },
+    semanal: { label: 'Semanal', add: (d, i) => addWeeks(d, i) },
+    quincenal: { label: 'Quincenal', add: (d, i) => addDays(d, i * 15) },
+    mensual: { label: 'Mensual', add: (d, i) => addMonths(d, i) },
+    trimestral: { label: 'Trimestral', add: (d, i) => addMonths(d, i * 3) },
+    semestral: { label: 'Semestral', add: (d, i) => addMonths(d, i * 6) },
+    anual: { label: 'Anual', add: (d, i) => addYears(d, i) }
 };
 
 export const CalculadoraPage = () => {
@@ -46,34 +50,43 @@ export const CalculadoraPage = () => {
         const fechaInicio = new Date();
 
         if (tipo === 'fijo') {
-            const interesTotal = principal * tasaInteres * (num * freq.days / 30);
-            const interesPorCuota = interesTotal / num;
+            // Interés plano por periodo (idéntico al backend calcularCuotasInteresFijo)
+            const interesPorCuota = parseFloat((principal * tasaInteres).toFixed(2));
 
             for (let i = 0; i < num; i++) {
-                const daysToAdd = frecuencia === 'quincenal' ? (i + 1) * 15 : (i + 1) * (freq.days === 1 ? 1 : freq.days);
-                const fecha = addDays(fechaInicio, daysToAdd);
+                const fecha = freq.add(fechaInicio, i + 1);
                 const esUltima = i === num - 1;
                 cuotasCalculadas.push({
                     fecha: format(fecha, 'dd/MM/yyyy'),
                     capital: esUltima ? principal : 0,
-                    interes: parseFloat(interesPorCuota.toFixed(2)),
-                    total: esUltima ? parseFloat((principal + interesPorCuota).toFixed(2)) : parseFloat(interesPorCuota.toFixed(2))
+                    interes: interesPorCuota,
+                    total: esUltima ? parseFloat((principal + interesPorCuota).toFixed(2)) : interesPorCuota
                 });
             }
         } else {
+            // Cuota constante (idéntico al backend calcularCuotas): la última cuota absorbe el residuo
             const montoTotal = principal * (1 + tasaInteres);
             const montoCuota = parseFloat((montoTotal / num).toFixed(2));
-            const capitalPorCuota = principal / num;
-            const interesPorCuota = montoCuota - capitalPorCuota;
+            const capitalPorCuota = parseFloat((principal / num).toFixed(2));
 
+            let acumulado = 0;
             for (let i = 0; i < num; i++) {
-                const daysToAdd = frecuencia === 'quincenal' ? (i + 1) * 15 : (i + 1) * (freq.days === 1 ? 1 : freq.days);
-                const fecha = addDays(fechaInicio, daysToAdd);
+                const fecha = freq.add(fechaInicio, i + 1);
+                const esUltima = i === num - 1;
+
+                const total = esUltima ? parseFloat((montoTotal - acumulado).toFixed(2)) : montoCuota;
+                if (!esUltima) acumulado += montoCuota;
+
+                const capital = esUltima
+                    ? parseFloat((principal - capitalPorCuota * (num - 1)).toFixed(2))
+                    : capitalPorCuota;
+                const interes = parseFloat((total - capital).toFixed(2));
+
                 cuotasCalculadas.push({
                     fecha: format(fecha, 'dd/MM/yyyy'),
-                    capital: parseFloat(capitalPorCuota.toFixed(2)),
-                    interes: parseFloat(interesPorCuota.toFixed(2)),
-                    total: montoCuota
+                    capital,
+                    interes,
+                    total
                 });
             }
         }

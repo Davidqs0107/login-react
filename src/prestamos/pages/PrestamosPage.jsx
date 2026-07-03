@@ -19,7 +19,17 @@ export const PrestamosPage = () => {
     reset,
     setValue,
     control,
+    watch,
   } = useForm();
+
+  // El significado de la tasa cambia según el tipo de préstamo
+  const tipoPrestamo = watch("tipo_prestamo");
+  const ayudaTasa =
+    tipoPrestamo === "fijo"
+      ? "En Interés Fijo, este % se cobra en CADA cuota; el capital se paga íntegro en la última cuota."
+      : tipoPrestamo === "cuota"
+      ? "En Capital + Interés, este % es el interés TOTAL del préstamo, repartido en todas las cuotas."
+      : "El significado del % depende del tipo de préstamo seleccionado arriba.";
   const { createLoan, error, loading } = useLoan();
   const { createClient, getClients } = useClient();
 
@@ -181,17 +191,20 @@ export const PrestamosPage = () => {
           />
 
           {/* Campo Porcentaje a Ganar */}
-          <LabeledInput
-            label="Porcentaje a Ganar (%)"
-            type="number"
-            name="tasa_interes"
-            register={register}
-            require={true}
-            error={errors.tasa_interes}
-            {...register("tasa_interes", {
-              required: "La tasa de interes es requerido",
-            })}
-          />
+          <div>
+            <LabeledInput
+              label="Porcentaje a Ganar (%)"
+              type="number"
+              name="tasa_interes"
+              register={register}
+              require={true}
+              error={errors.tasa_interes}
+              {...register("tasa_interes", {
+                required: "La tasa de interes es requerido",
+              })}
+            />
+            <p className="mt-1 text-xs text-gray-500">{ayudaTasa}</p>
+          </div>
 
           {/* Fecha */}
           <LabeledInput
