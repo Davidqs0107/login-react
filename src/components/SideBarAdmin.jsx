@@ -81,6 +81,16 @@ const SidebarAdmin = () => {
                                 Planes
                             </NavLink>
                         </li>
+                        <li>
+                            <NavLink
+                                to="/admin/suscripciones"
+                                className={({ isActive }) =>
+                                    `block p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
+                                }
+                            >
+                                Suscripciones
+                            </NavLink>
+                        </li>
                     </ul>
                 </nav>
                 <button

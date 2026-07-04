@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getDocByIdRequest, getLoanByIdRequest, getLoansRequest, registerLoanRequest, updateLoanRequest, uploadDocRequest } from "../../api/prestamos";
+import { getDocByIdRequest, getLoanByIdRequest, getLoansRequest, refinanciarPrestamoRequest, registerLoanRequest, updateLoanRequest, uploadDocRequest } from "../../api/prestamos";
 
 export const useLoan = () => {
     const [loading, setLoading] = useState(false);
@@ -84,6 +84,21 @@ export const useLoan = () => {
             setLoading(false);
         }
     }
+
+    const refinanciarLoan = async (id, payload) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await refinanciarPrestamoRequest(id, payload);
+            return data;
+        } catch (err) {
+            setError(err.response?.data?.msg || "Error al refinanciar");
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return {
         // metodos
         createLoan,
@@ -92,6 +107,7 @@ export const useLoan = () => {
         updateLoan,
         uploadDoc,
         getDoc,
+        refinanciarLoan,
         // variables
         error,
         loading

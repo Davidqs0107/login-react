@@ -83,6 +83,16 @@ const Sidebar = () => {
             </li>
             <li>
               <NavLink
+                to="/guia"
+                className={({ isActive }) =>
+                  `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                }
+              >
+                ¿Cómo funciona?
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
                 to="/perfil"
                 className={({ isActive }) =>
                   `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
@@ -136,6 +146,50 @@ const Sidebar = () => {
                 {user.rol === roles.Cobrador ? "Mi Descargo" : "Descargos"}
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/arqueos"
+                className={({ isActive }) =>
+                  `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                }
+              >
+                Arqueo de Caja
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/comprobantes"
+                className={({ isActive }) =>
+                  `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                }
+              >
+                Comprobantes
+              </NavLink>
+            </li>
+            {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
+              <>
+                <li>
+                  <NavLink
+                    to="/configuracion"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Configuración
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/auditoria"
+                    className={({ isActive }) =>
+                      `block p-2 rounded-lg ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+                    }
+                  >
+                    Auditoría
+                  </NavLink>
+                </li>
+              </>
+            )}
             {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
               <li>
                 <NavLink

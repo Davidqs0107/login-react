@@ -5,6 +5,7 @@ export const CarteraEstadoCards = ({ data }) => {
       activo: "bg-green-100 border-green-300 text-green-800",
       completado: "bg-blue-100 border-blue-300 text-blue-800",
       incumplido: "bg-red-100 border-red-300 text-red-800",
+      refinanciado: "bg-purple-100 border-purple-300 text-purple-800",
     };
     return colors[estado] || "bg-gray-100 border-gray-300 text-gray-800";
   };
@@ -15,6 +16,7 @@ export const CarteraEstadoCards = ({ data }) => {
       activo: "Activo",
       completado: "Completado",
       incumplido: "Incumplido",
+      refinanciado: "Refinanciado",
     };
     return labels[estado] || estado;
   };

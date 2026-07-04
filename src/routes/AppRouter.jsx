@@ -25,10 +25,20 @@ import { FichaClientePage } from "../reportes/pages/FichaClientePage";
 import { ReportesIndexPage } from "../reportes/pages/ReportesIndexPage";
 import { PrestamosPorClientePage } from "../reportes/pages/PrestamosPorClientePage";
 import { CalculadoraPage } from "../prestamos/pages/CalculadoraPage";
+import { ConfiguracionPage } from "../configuracion/pages/ConfiguracionPage";
+import { AuditoriaPage } from "../auditoria/pages/AuditoriaPage";
+import { ArqueoPage } from "../arqueos/pages/ArqueoPage";
+import { ComprobantesPage } from "../comprobantes/pages/ComprobantesPage";
+import { SuscripcionesAdminPage } from "../suscripciones/pages/SuscripcionesAdminPage";
+import { PortalPage } from "../portal/pages/PortalPage";
+import { GuiaPage } from "../guia/pages/GuiaPage";
 
 export const AppRouter = () => {
   return (
     <Routes>
+      {/* Portal público del cliente (acceso por token, sin login) */}
+      <Route path="/portal/:token" element={<PortalPage />} />
+
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/usuarios" element={<UsuariosPage />} />
@@ -39,9 +49,15 @@ export const AppRouter = () => {
         <Route path="/listado/prestamos" element={<ListadoPrestamosPage />} />
         <Route path="/pagos" element={<PagosPage />} />
         <Route path="/perfil" element={<PerfilPage />} />
+        <Route path="/guia" element={<GuiaPage />} />
         <Route path="/descargos" element={<DescargoPage />} />
+        <Route path="/configuracion" element={<ConfiguracionPage />} />
+        <Route path="/auditoria" element={<AuditoriaPage />} />
+        <Route path="/arqueos" element={<ArqueoPage />} />
+        <Route path="/comprobantes" element={<ComprobantesPage />} />
         <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
         <Route path="/admin/planes" element={<PlanesAdminPages />} />
+        <Route path="/admin/suscripciones" element={<SuscripcionesAdminPage />} />
 
         {/* Reportes */}
         <Route path="/reportes" element={<ReportesIndexPage />} />

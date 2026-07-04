@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useLoan } from "../hooks/useLoan";
 import { useParams } from "react-router";
 import { CreateCuotaModal } from "../components/CreateCuotaModal";
+import { RefinanciarModal } from "../components/RefinanciarModal";
 import { RegisterTableLayout } from "../../layout/RegisterTableLayout";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
 import { generatePDF } from "../functions/generatePdfPrestamo";
@@ -33,6 +34,7 @@ export const DetallePrestamoPage = () => {
   const [cuotas, setCuotas] = useState([]);
   const [onlyRead, setOnlyRead] = useState(false);
   const [ubicacionBoton, setUbicacionBoton] = useState(null);
+  const [isRefiOpen, setIsRefiOpen] = useState(false);
 
   const handlePagarCuota = (cuota, read) => {
     setOnlyRead(read);
@@ -351,16 +353,37 @@ export const DetallePrestamoPage = () => {
               Estado: {prestamo.estado_prestamo || 'activo'}
             </span>
           </div>
-          {user.rol === 'admin' && prestamo.estado_prestamo !== 'completado' && (
-            <Button
-              clase="!bg-green-600 hover:!bg-green-700 text-white font-bold py-2 px-4 rounded !w-auto"
-              onClick={handleCompletarPrestamo}
-            >
-              Marcar como completado
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {user.rol === 'admin' &&
+              !['completado', 'refinanciado'].includes(prestamo.estado_prestamo) && (
+                <Button
+                  clase="!bg-indigo-600 hover:!bg-indigo-700 text-white font-bold py-2 px-4 rounded !w-auto"
+                  onClick={() => setIsRefiOpen(true)}
+                >
+                  Refinanciar
+                </Button>
+              )}
+            {user.rol === 'admin' && prestamo.estado_prestamo !== 'completado' && (
+              <Button
+                clase="!bg-green-600 hover:!bg-green-700 text-white font-bold py-2 px-4 rounded !w-auto"
+                onClick={handleCompletarPrestamo}
+              >
+                Marcar como completado
+              </Button>
+            )}
+          </div>
         </div>
       </section>
+
+      {isRefiOpen && (
+        <Modal
+          isOpen={isRefiOpen}
+          onClose={() => setIsRefiOpen(false)}
+          title={`Refinanciar Préstamo #${prestamo.id}`}
+        >
+          <RefinanciarModal prestamo={prestamo} closeModal={setIsRefiOpen} />
+        </Modal>
+      )}
 
       {/* Tabla de Cuotas */}
       <section>
