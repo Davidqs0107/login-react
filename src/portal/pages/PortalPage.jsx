@@ -3,12 +3,25 @@ import { useParams } from "react-router";
 import Swal from "sweetalert2";
 import { usePortal } from "../hooks/usePortal";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ACCEPTED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
+
+const generarRequestId = () =>
+  (typeof crypto !== "undefined" && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}_${Math.random().toString(36).slice(2)}`);
+
 export const PortalPage = () => {
   const { token } = useParams();
   const { getResumen, subirComprobante, loading } = usePortal();
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
   const [form, setForm] = useState({ cuota_id: "", monto: "", referencia: "" });
+  const [archivo, setArchivo] = useState(null);
+  const [archivoPreview, setArchivoPreview] = useState(null);
+  // requestId se genera una sola vez por montaje; un reintento conserva el mismo
+  // id para que el backend dedupe y devuelva el comprobante existente.
+  const [requestId] = useState(generarRequestId);
 
   const load = async () => {
     const res = await getResumen(token);
@@ -16,6 +29,45 @@ export const PortalPage = () => {
   };
 
   useEffect(() => { load(); }, [token]);
+
+  // Liberar Object URL cuando cambia o se desmonta
+  useEffect(() => {
+    return () => {
+      if (archivoPreview) URL.revokeObjectURL(archivoPreview);
+    };
+  }, [archivoPreview]);
+
+  const handleArchivoChange = (e) => {
+    const file = e.target.files?.[0] ?? null;
+    if (archivoPreview) URL.revokeObjectURL(archivoPreview);
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        Swal.fire({ title: "Archivo demasiado grande", text: "Máximo 5 MB.", icon: "warning" });
+        e.target.value = "";
+        setArchivo(null);
+        setArchivoPreview(null);
+        return;
+      }
+      if (!ACCEPTED_TYPES.includes(file.type)) {
+        Swal.fire({ title: "Tipo no permitido", text: "Solo PDF, JPG o PNG.", icon: "warning" });
+        e.target.value = "";
+        setArchivo(null);
+        setArchivoPreview(null);
+        return;
+      }
+      setArchivo(file);
+      setArchivoPreview(URL.createObjectURL(file));
+    } else {
+      setArchivo(null);
+      setArchivoPreview(null);
+    }
+  };
+
+  const quitarArchivo = () => {
+    if (archivoPreview) URL.revokeObjectURL(archivoPreview);
+    setArchivo(null);
+    setArchivoPreview(null);
+  };
 
   const cuotasPendientes = data
     ? data.prestamos.flatMap((p) => p.cuotas.filter((c) => c.estado !== "pagada").map((c) => ({ ...c, prestamo_id: p.id })))
@@ -27,14 +79,28 @@ export const PortalPage = () => {
       Swal.fire({ title: "Completa la cuota y el monto", icon: "warning" });
       return;
     }
-    const res = await subirComprobante(token, {
-      cuota_id: Number(form.cuota_id),
-      monto: Number(form.monto),
-      referencia: form.referencia,
-    });
+    let payload;
+    if (archivo) {
+      const fd = new FormData();
+      fd.append("cuota_id", form.cuota_id);
+      fd.append("monto", form.monto);
+      fd.append("referencia", form.referencia);
+      fd.append("request_id", requestId);
+      fd.append("comprobante", archivo);
+      payload = fd;
+    } else {
+      payload = {
+        cuota_id: Number(form.cuota_id),
+        monto: Number(form.monto),
+        referencia: form.referencia,
+        request_id: requestId,
+      };
+    }
+    const res = await subirComprobante(token, payload);
     if (res?.ok) {
       Swal.fire({ title: "Comprobante enviado", text: res.msg, icon: "success" });
       setForm({ cuota_id: "", monto: "", referencia: "" });
+      quitarArchivo();
       load();
     } else {
       Swal.fire({ title: "Error", text: res?.msg || "", icon: "error" });
@@ -145,6 +211,33 @@ export const PortalPage = () => {
               <input type="text" placeholder="N° de transacción"
                 value={form.referencia} onChange={(e) => setForm({ ...form, referencia: e.target.value })}
                 className="border border-gray-300 rounded-md p-2" />
+            </div>
+            <div className="mt-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Comprobante (opcional)
+              </label>
+              <input
+                type="file"
+                accept="application/pdf,image/jpeg,image/png"
+                onChange={handleArchivoChange}
+                className="block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {archivo && (
+                <div className="flex items-center gap-3 mt-2">
+                  {archivo.type.startsWith("image/") && archivoPreview ? (
+                    <img src={archivoPreview} alt="preview" className="h-16 rounded border" />
+                  ) : (
+                    <span className="text-sm text-gray-600">📄 {archivo.name}</span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={quitarArchivo}
+                    className="text-xs text-red-600 hover:underline"
+                  >
+                    Quitar
+                  </button>
+                </div>
+              )}
             </div>
             <button type="submit" disabled={loading}
               className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400">

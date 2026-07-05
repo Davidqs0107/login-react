@@ -19,7 +19,10 @@ export const usePortal = () => {
     const subirComprobante = async (token, payload) => {
         setLoading(true); setError(null);
         try {
-            const { data } = await subirComprobanteRequest(token, payload);
+            const isFormData = typeof FormData !== 'undefined' && payload instanceof FormData;
+            const { data } = await subirComprobanteRequest(token, payload, {
+                headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+            });
             return data;
         } catch (err) {
             setError(err.response?.data?.msg || 'No se pudo enviar el comprobante');
