@@ -4,6 +4,9 @@ import { useLoan } from '../hooks/useLoan';
 import Swal from 'sweetalert2';
 import { LoaderLocal } from '../../components/LoaderLocal';
 
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
+const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+
 export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
     const { updateLoan, uploadDoc, error, loading } = useLoan();
     const { documento, estado_prestamo } = prestamo;
@@ -29,7 +32,18 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
 
     }
     const handleFileChange = async (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > MAX_FILE_SIZE) {
+            Swal.fire({ title: 'Archivo demasiado grande', text: 'Máximo 1 MB.', icon: 'warning' });
+            e.target.value = '';
+            return;
+        }
+        if (!ACCEPTED_TYPES.includes(file.type)) {
+            Swal.fire({ title: 'Tipo no permitido', text: 'Solo PDF, JPG o PNG.', icon: 'warning' });
+            e.target.value = '';
+            return;
+        }
         const doc = await uploadDoc(prestamo.id, file);
         if (doc) {
             Swal.fire({
@@ -38,9 +52,9 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
                 icon: "success"
             });
             closeModal(false);
+        } else {
+            Swal.fire({ title: 'Error', text: 'No se pudo subir el archivo.', icon: 'error' });
         }
-
-
     }
     return (
         <div>
@@ -63,7 +77,7 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
                 <option value="completado">Completado</option>
                 <option value="incumplido">Incumplido</option>
             </select>
-            <input type='file' name='archivo' onChange={handleFileChange} />
+            <input type='file' name='archivo' accept="application/pdf,image/jpeg,image/png" onChange={handleFileChange} />
 
             <div className="flex justify-end gap-4 mt-2">
                 <Button

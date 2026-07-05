@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import Swal from "sweetalert2";
 import { usePortal } from "../hooks/usePortal";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 const ACCEPTED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
 
 const generarRequestId = () =>

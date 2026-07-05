@@ -25,7 +25,18 @@ export const usePortal = () => {
             });
             return data;
         } catch (err) {
-            setError(err.response?.data?.msg || 'No se pudo enviar el comprobante');
+            // Si el backend no mandó mensaje útil, completar uno por defecto
+            let msg = err.response?.data?.msg;
+            if (!msg) {
+                if (err.response?.status === 413) {
+                    msg = 'La imagen o documento es demasiado grande. Máximo 1 MB.';
+                } else if (err.code === 'ERR_NETWORK') {
+                    msg = 'No se pudo conectar con el servidor.';
+                } else {
+                    msg = 'No se pudo enviar el comprobante.';
+                }
+            }
+            setError(msg);
             return null;
         } finally { setLoading(false); }
     };

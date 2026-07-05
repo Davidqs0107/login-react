@@ -12,7 +12,8 @@ export const useLoan = () => {
             const { data } = await registerLoanRequest(loan);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || err.response?.data?.message || "Error desconocido");
+            return null;
         } finally {
             setLoading(false);
         }
@@ -24,7 +25,8 @@ export const useLoan = () => {
             const { data } = await getLoanByIdRequest(id, mostrarCuotas);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || err.response?.data?.message || "Error desconocido");
+            return null;
         } finally {
             setLoading(false);
         }
@@ -36,7 +38,8 @@ export const useLoan = () => {
             const { data } = await updateLoanRequest(id, loan);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || err.response?.data?.message || "Error desconocido");
+            return null;
         } finally {
             setLoading(false);
         }
@@ -48,7 +51,8 @@ export const useLoan = () => {
             const { data } = await getLoansRequest(payload);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || err.response?.data?.message || "Error desconocido");
+            return null;
         } finally {
             setLoading(false);
         }
@@ -62,11 +66,12 @@ export const useLoan = () => {
         try {
             const formData = new FormData();
             formData.append("archivo", file);
-            console.log(id, formData);
             const { data } = await uploadDocRequest(id, formData);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            const msg = err.response?.data?.msg || err.response?.data?.message || "No se pudo subir el archivo";
+            setError(msg);
+            return null;
         } finally {
             setLoading(false);
         }
@@ -79,7 +84,8 @@ export const useLoan = () => {
             const { data } = await getDocByIdRequest(id);
             return data;
         } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
+            setError(err.response?.data?.msg || err.response?.data?.message || "Error al obtener archivos");
+            return null;
         } finally {
             setLoading(false);
         }
