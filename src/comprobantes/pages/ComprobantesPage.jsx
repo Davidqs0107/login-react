@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useComprobantes } from "../hooks/useComprobantes";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { getEnvVariables } from "../../helpers/getEnvVariables";
+
+const { VITE_API_URL } = getEnvVariables();
 
 const estadoBadge = (estado) => ({
   pendiente: "bg-yellow-100 text-yellow-700",
@@ -88,7 +91,7 @@ export const ComprobantesPage = () => {
                   <td className="p-3">{c.referencia || "-"}</td>
                   <td className="p-3">
                     {c.archivo
-                      ? <a className="text-blue-600 underline" href={`/api/${c.archivo}`} target="_blank" rel="noreferrer">Ver</a>
+                      ? <a className="text-blue-600 underline" href={`${VITE_API_URL}/${c.archivo}`} target="_blank" rel="noreferrer">Ver</a>
                       : "-"}
                   </td>
                   <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${estadoBadge(c.estado)}`}>{c.estado}</span></td>
