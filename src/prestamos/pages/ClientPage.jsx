@@ -146,63 +146,66 @@ export const ClientPage = () => {
         )}
         {loading && <LoaderLocal />}
         <form
-          className="mt-8 space-y-6  md:w-2/4 sm:w-full"
+          className="mt-8 space-y-6 max-w-3xl"
           onSubmit={onSubmit}
         >
-          <div className="grid grid-cols-2 gap-4">
-            <SelectPais
-              name="codigo_pais"
-              register={register}
-              errors={errors}
-              defaultValue={selectedClient?.codigo_pais || "+591"}
-              label="Indicativo"
-            />
-            {formFields.map((field, i) => (
-              <div key={i}>
-                <LabeledInput
-                  type={field.type}
-                  label={field.label}
-                  require={field.required}
-                  error={errors[field.name]}
-                  {...register(field.name, field.validation)}
-                />
-              </div>
-            ))}
-          </div>
-          {user.plan_id > 2 && (
-            <div className="w-full">
-              <button
-                type="button"
-                onClick={() => setShowMap((prev) => !prev)}
-                className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-300 hover:border-blue-500 rounded-lg px-4 py-2 transition-colors w-full justify-center"
-              >
-                <span>{showMap ? "🗺️ Ocultar Mapa" : "📍 Mostrar Mapa"}</span>
-                <span className="text-xs text-gray-500">
-                  {showMap ? "▲" : "▼"}
-                </span>
-              </button>
-              {showMap && (
-                <div className="mt-2 overflow-auto">
-                  <MapLeaflet
-                    onPosition={handlePosition}
-                    client={selectedClient}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Datos del cliente</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <SelectPais
+                name="codigo_pais"
+                register={register}
+                errors={errors}
+                defaultValue={selectedClient?.codigo_pais || "+591"}
+                label="Indicativo"
+              />
+              {formFields.map((field, i) => (
+                <div key={i}>
+                  <LabeledInput
+                    type={field.type}
+                    label={field.label}
+                    require={field.required}
+                    error={errors[field.name]}
+                    {...register(field.name, field.validation)}
                   />
                 </div>
-              )}
+              ))}
             </div>
-          )}
-          <div className="flex gap-4">
-            <Button type="submit" disabled={!!loading}>
-              {selectedClient ? "Actualizar" : "Aceptar"}
-            </Button>
+            {user.plan_id > 2 && (
+              <div className="w-full mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowMap((prev) => !prev)}
+                  className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-300 hover:border-blue-500 rounded-lg px-4 py-2 transition-colors w-full justify-center"
+                >
+                  <span>{showMap ? "🗺️ Ocultar Mapa" : "📍 Mostrar Mapa"}</span>
+                  <span className="text-xs text-gray-500">
+                    {showMap ? "▲" : "▼"}
+                  </span>
+                </button>
+                {showMap && (
+                  <div className="mt-2 overflow-auto">
+                    <MapLeaflet
+                      onPosition={handlePosition}
+                      client={selectedClient}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="flex gap-4 mt-4">
+              <Button type="submit" disabled={!!loading}>
+                {selectedClient ? "Actualizar" : "Aceptar"}
+              </Button>
 
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </Button>
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={handleCancel}
+              >
+                Cancelar
+              </Button>
+            </div>
           </div>
         </form>
         <ClientsTable

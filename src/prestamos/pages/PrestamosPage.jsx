@@ -92,10 +92,11 @@ export const PrestamosPage = () => {
         </div>
       )}
       {loading && <p>Cargando...</p>}
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* Select Cliente */}
+      <form className="mt-8 space-y-6 max-w-3xl" onSubmit={handleSubmit(onSubmit)}>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Cliente</h2>
           <div className="grid grid-cols-2 gap-4 items-end">
+            {/* Select Cliente */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Cliente
@@ -155,91 +156,99 @@ export const PrestamosPage = () => {
               </Button>
             </div>
           </div>
+        </div>
 
-          {/* Select Tipo de Préstamo */}
-          <LabeledSelect
-            label="Tipo de Préstamo"
-            require
-            error={errors.tipo_prestamo}
-            {...register("tipo_prestamo", {
-              required: "Seleccione un tipo de préstamo",
-            })}
-          >
-            <option value="">Seleccione</option>
-            <option value="fijo">Interés Fijo</option>
-            <option value="cuota">Capital + Interés</option>
-          </LabeledSelect>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Condiciones del préstamo</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Select Tipo de Préstamo */}
+            <LabeledSelect
+              label="Tipo de Préstamo"
+              require
+              error={errors.tipo_prestamo}
+              {...register("tipo_prestamo", {
+                required: "Seleccione un tipo de préstamo",
+              })}
+            >
+              <option value="">Seleccione</option>
+              <option value="fijo">Interés Fijo</option>
+              <option value="cuota">Capital + Interés</option>
+            </LabeledSelect>
 
-          {/* Campo Monto */}
-          <LabeledInput
-            label="Monto"
-            type="number"
-            require
-            error={errors.monto}
-            {...register("monto", { required: "El monto es requerido" })}
-          />
+            {/* Campo Monto */}
+            <LabeledInput
+              label="Monto"
+              type="number"
+              require
+              error={errors.monto}
+              {...register("monto", { required: "El monto es requerido" })}
+            />
 
-          {/* Campo Porcentaje a Ganar */}
-          <LabeledInput
-            label="Porcentaje a Ganar (%)"
-            type="number"
-            require
-            error={errors.tasa_interes}
-            help={ayudaTasa}
-            {...register("tasa_interes", {
-              required: "La tasa de interés es requerida",
-            })}
-          />
+            {/* Campo Porcentaje a Ganar */}
+            <LabeledInput
+              label="Porcentaje a Ganar (%)"
+              type="number"
+              require
+              error={errors.tasa_interes}
+              help={ayudaTasa}
+              {...register("tasa_interes", {
+                required: "La tasa de interés es requerida",
+              })}
+            />
 
-          {/* Fecha */}
-          <LabeledInput
-            label="Fecha de Inicio"
-            type="date"
-            require
-            error={errors.fecha_inicio}
-            {...register("fecha_inicio", { required: "La fecha es requerida" })}
-          />
+            {/* Frequencia de pagos */}
+            <LabeledSelect
+              label="Frecuencia de pago"
+              require
+              error={errors.frecuencia_pago}
+              {...register("frecuencia_pago", {
+                required: "Seleccione una frecuencia de pago",
+              })}
+            >
+              <option value="">Seleccione</option>
+              <option value="diario">Diario</option>
+              <option value="semanal">Semanal</option>
+              <option value="quincenal">Quincenal</option>
+              <option value="mensual">Mensual</option>
+              <option value="anual">Anual</option>
+            </LabeledSelect>
 
-          {/* Frequencia de pagos */}
-          <LabeledSelect
-            label="Frecuencia de pago"
-            require
-            error={errors.frecuencia_pago}
-            {...register("frecuencia_pago", {
-              required: "Seleccione una frecuencia de pago",
-            })}
-          >
-            <option value="">Seleccione</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="mensual">Mensual</option>
-            <option value="anual">Anual</option>
-          </LabeledSelect>
+            {/* Cuotas */}
+            <LabeledInput
+              label="Cuotas"
+              type="number"
+              require
+              error={errors.total_cuotas}
+              {...register("total_cuotas", {
+                required: "Las cuotas son requeridas",
+              })}
+            />
 
-          {/* Cuotas */}
-          <LabeledInput
-            label="Cuotas"
-            type="number"
+            {/* Fecha */}
+            <LabeledInput
+              label="Fecha de Inicio"
+              type="date"
+              require
+              error={errors.fecha_inicio}
+              {...register("fecha_inicio", { required: "La fecha es requerida" })}
+            />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Documento</h2>
+          {/* Textarea Descripción */}
+          <LabeledTextarea
+            label="Documento"
+            rows={4}
             require
-            error={errors.total_cuotas}
-            {...register("total_cuotas", {
-              required: "Las cuotas son requeridas",
+            error={errors.documento}
+            placeholder="Ingrese una descripción del documento"
+            {...register("documento", {
+              required: "El documento es requerido",
             })}
           />
         </div>
-
-        {/* Textarea Descripción */}
-        <LabeledTextarea
-          label="Documento"
-          rows={4}
-          require
-          error={errors.documento}
-          placeholder="Ingrese una descripción del documento"
-          {...register("documento", {
-            required: "El documento es requerido",
-          })}
-        />
 
         <div className="flex gap-4">
           <Button type="submit">
