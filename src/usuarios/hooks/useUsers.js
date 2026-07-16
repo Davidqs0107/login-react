@@ -1,87 +1,15 @@
-import { useState } from 'react';
+import { useApi } from '../../hooks/useApi';
 import { deleteUserRequest, getUserRequest, getUsersRequest, registerUserRequest, updateUserCobradorRequest, updateUserRequest } from "../../api/usuarios";
 
 export const useUsers = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { call, loading, error } = useApi();
 
-    const createUser = async (user) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await registerUserRequest(user);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.msg || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const updateUser = async (user) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await updateUserRequest(user);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.msg || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const updateUserCobrador = async (user) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await updateUserCobradorRequest(user);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.msg || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const deleteUser = async ({ id, estado = true }) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await deleteUserRequest(id, estado);
-            return true;
-        } catch (err) {
-            let error = "Error desconocido";
-            if (err.response.data.msg) {
-                error = err.response.data.msg;
-            }
-            setError(err.response?.data?.msg || error);
-            return false;
-        } finally {
-            setLoading(false);
-        }
-    };
-    const getUsers = async (page = 1, pageSize = 10) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getUsersRequest(page, pageSize);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.msg || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const getUser = async (id) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getUserRequest(id);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.msg || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
+    const createUser = (user) => call(() => registerUserRequest(user));
+    const updateUser = (user) => call(() => updateUserRequest(user));
+    const updateUserCobrador = (user) => call(() => updateUserCobradorRequest(user));
+    const deleteUser = async ({ id, estado = true }) => (await call(() => deleteUserRequest(id, estado))) !== null;
+    const getUsers = (page = 1, pageSize = 10) => call(() => getUsersRequest(page, pageSize));
+    const getUser = (id) => call(() => getUserRequest(id));
     return {
         //metodos
         createUser,

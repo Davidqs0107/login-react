@@ -1,59 +1,14 @@
-import { useState } from "react";
+import { useApi } from "../../hooks/useApi";
 import { getSummaryCobradorRequest, getSummaryRequest, getById, update } from "../../api/empresa";
 import { useAuth } from "../../context/AuthContex";
 
 export const useEmpresa = () => {
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const getSummary = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getSummaryRequest();
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const getSummaryCobrador = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getSummaryCobradorRequest();
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const getEmpresa = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getById();
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error al obtener la empresa");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const updateEmpresa = async (empresa) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await update(empresa);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error al actualizar la empresa");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { call, loading, error } = useApi();
+    const getSummary = () => call(() => getSummaryRequest());
+    const getSummaryCobrador = () => call(() => getSummaryCobradorRequest());
+    const getEmpresa = () => call(() => getById(), "Error al obtener la empresa");
+    const updateEmpresa = (empresa) => call(() => update(empresa), "Error al actualizar la empresa");
     return (
         {
             //metodos

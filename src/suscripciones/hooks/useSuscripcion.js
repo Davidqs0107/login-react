@@ -1,31 +1,15 @@
-import { useState } from 'react';
+import { useApi } from '../../hooks/useApi';
 import { getMiSuscripcionRequest, getSuscripcionesRequest } from '../../api/suscripcion';
 
 export const useSuscripcion = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { call, loading, error } = useApi();
 
     const getMiSuscripcion = async () => {
-        setLoading(true); setError(null);
-        try {
-            const { data } = await getMiSuscripcionRequest();
-            return data.suscripcion;
-        } catch (err) {
-            setError(err.response?.data?.msg || 'Error al cargar la suscripción');
-            return null;
-        } finally { setLoading(false); }
+        const data = await call(() => getMiSuscripcionRequest(), 'Error al cargar la suscripción');
+        return data ? data.suscripcion : null;
     };
 
-    const getSuscripciones = async (params = {}) => {
-        setLoading(true); setError(null);
-        try {
-            const { data } = await getSuscripcionesRequest(params);
-            return data; // { ok, suscripciones, meta }
-        } catch (err) {
-            setError(err.response?.data?.msg || 'Error al cargar las suscripciones');
-            return null;
-        } finally { setLoading(false); }
-    };
+    const getSuscripciones = (params = {}) => call(() => getSuscripcionesRequest(params), 'Error al cargar las suscripciones'); // { ok, suscripciones, meta }
 
     return { getMiSuscripcion, getSuscripciones, loading, error };
 };

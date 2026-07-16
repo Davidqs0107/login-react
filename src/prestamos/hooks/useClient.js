@@ -1,64 +1,14 @@
 
-import { useState } from 'react'
+import { useApi } from '../../hooks/useApi';
 import { deleteClientRequest, getClientRequest, registerClientRequest, updateClientRequest } from '../../api/clientes';
 import { useAuth } from '../../context/AuthContex';
 export const useClient = () => {
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const createClient = async (client) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await registerClientRequest(client);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const updateClient = async (client) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await updateClientRequest(client);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-    const deleteClient = async ({ id, estado = true }) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await deleteClientRequest(id, estado);
-            return true;
-        } catch (err) {
-            let error = "Error desconocido";
-            if (err.response.data.msg) {
-                error = err.response.data.msg;
-            }
-            setError(err.response?.data?.message || error);
-            return false;
-        } finally {
-            setLoading(false);
-        }
-    };
-    const getClients = async (page = 1, pageSize = 10) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getClientRequest(page, pageSize);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { call, loading, error } = useApi();
+    const createClient = (client) => call(() => registerClientRequest(client));
+    const updateClient = (client) => call(() => updateClientRequest(client));
+    const deleteClient = async ({ id, estado = true }) => (await call(() => deleteClientRequest(id, estado))) !== null;
+    const getClients = (page = 1, pageSize = 10) => call(() => getClientRequest(page, pageSize));
     return {
         // metodos
         createClient,

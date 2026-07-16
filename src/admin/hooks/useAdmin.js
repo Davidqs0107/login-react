@@ -1,112 +1,18 @@
-import { useState } from "react";
+import { useApi } from "../../hooks/useApi";
 import { getEmpresasAdminRequest, getEmpresasByNameRequest, getPlanesRequest, getUsuariosEmpresaRequest, limpiarDatosEmpresaRequest, updatePlanesRequest, updatePlanMaxUsuariosRequest } from "../../api/admin";
 import { registerRequest } from "../../api/auth";
 
 export const useAdmin = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { call, loading, error } = useApi();
 
-    const getEmpresasAdmin = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getEmpresasAdminRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-    const getEmpresasByName = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getEmpresasByNameRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-    const getUsuariosEmpresa = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getUsuariosEmpresaRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-    const getPlanes = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getPlanesRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const updatePlan = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await updatePlanesRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const updatePlanMaxUsuarios = async (id, max_usuarios) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await updatePlanMaxUsuariosRequest(id, max_usuarios);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const createEmpresa = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await registerRequest(payload);
-            return data;
-        } catch (err) {
-            console.log(err)
-            setError(err.response?.data?.message || err.response?.data?.msg);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const limpiarDatosEmpresa = async (empresa_id) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await limpiarDatosEmpresaRequest(empresa_id);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
+    const getEmpresasAdmin = (payload) => call(() => getEmpresasAdminRequest(payload));
+    const getEmpresasByName = (payload) => call(() => getEmpresasByNameRequest(payload));
+    const getUsuariosEmpresa = (payload) => call(() => getUsuariosEmpresaRequest(payload));
+    const getPlanes = (payload) => call(() => getPlanesRequest(payload));
+    const updatePlan = (payload) => call(() => updatePlanesRequest(payload));
+    const updatePlanMaxUsuarios = (id, max_usuarios) => call(() => updatePlanMaxUsuariosRequest(id, max_usuarios));
+    const createEmpresa = (payload) => call(() => registerRequest(payload));
+    const limpiarDatosEmpresa = (empresa_id) => call(() => limpiarDatosEmpresaRequest(empresa_id));
 
     return (
         {

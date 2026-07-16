@@ -1,6 +1,3 @@
-import { format } from "date-fns";
-import { formatInTimeZone } from 'date-fns-tz'
-const timeZone = "America/La_Paz";
 export const formatDate = (date) => {
     if (!date) return '';
     // Extraer solo la fecha sin convertir zonas horarias
@@ -9,10 +6,8 @@ export const formatDate = (date) => {
     const [año, mes, dia] = fechaSolo.split("-");
     return `${dia}/${mes}/${año}`; // "20/01/2026"
 };
-export const formatDateWithDateFns = (date) => {
-    const formattedDate = formatInTimeZone(date, timeZone, 'yyyy-MM-dd')
-    return formattedDate;
-}
+export const formatDateWithDateFns = (date) =>
+    new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz' }).format(new Date(date));
 export const formtaTipoPrestamo = (tipo) => {
     return tipo === 'fijo' ? 'Interes fijo' : 'Capital + Interes';
 }

@@ -30,7 +30,7 @@ const formatearMRR = (v) => {
 export const SuperAdminDashboard = () => {
     const { user } = useAuth();
     const { getGlobalMetrics, getCrecimientoEmpresas, getDistribucionPlanes,
-            getEmpresasRecientes, getSuscripcionesCriticas, loading } = useAdminMetrics();
+            getEmpresasRecientes, getSuscripcionesCriticas } = useAdminMetrics();
 
     const [metrics, setMetrics] = useState(null);
     const [crecimiento, setCrecimiento] = useState([]);
@@ -39,30 +39,36 @@ export const SuperAdminDashboard = () => {
     const [criticas, setCriticas] = useState([]);
     const [error, setError] = useState(null);
     const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
+    const [cargando, setCargando] = useState(true);
 
     const loadAll = useCallback(async () => {
         setError(null);
-        // Secuencial con pequeño delay para evitar saturar el connection pool del navegador
-        // (Chrome limita a 6 conexiones simultáneas por host).
-        const m = await getGlobalMetrics();
-        await new Promise(r => setTimeout(r, 50));
-        const c = await getCrecimientoEmpresas();
-        await new Promise(r => setTimeout(r, 50));
-        const d = await getDistribucionPlanes();
-        await new Promise(r => setTimeout(r, 50));
-        const r = await getEmpresasRecientes(10);
-        await new Promise(r => setTimeout(r, 50));
-        const s = await getSuscripcionesCriticas(10);
+        setCargando(true);
+        try {
+            // Secuencial con pequeño delay para evitar saturar el connection pool del navegador
+            // (Chrome limita a 6 conexiones simultáneas por host).
+            const m = await getGlobalMetrics();
+            await new Promise(r => setTimeout(r, 50));
+            const c = await getCrecimientoEmpresas();
+            await new Promise(r => setTimeout(r, 50));
+            const d = await getDistribucionPlanes();
+            await new Promise(r => setTimeout(r, 50));
+            const r = await getEmpresasRecientes(10);
+            await new Promise(r => setTimeout(r, 50));
+            const s = await getSuscripcionesCriticas(10);
 
-        if (m?.metrics) setMetrics(m.metrics);
-        if (c?.data) setCrecimiento(c.data);
-        if (d?.data) setDistribucion(d.data);
-        if (r?.data) setRecientes(r.data);
-        if (s?.data) setCriticas(s.data);
-        if (!m && !c && !d && !r && !s) {
-            setError('No se pudieron cargar las métricas. Verifica que el backend esté corriendo.');
+            if (m?.metrics) setMetrics(m.metrics);
+            if (c?.data) setCrecimiento(c.data);
+            if (d?.data) setDistribucion(d.data);
+            if (r?.data) setRecientes(r.data);
+            if (s?.data) setCriticas(s.data);
+            if (!m && !c && !d && !r && !s) {
+                setError('No se pudieron cargar las métricas. Verifica que el backend esté corriendo.');
+            }
+            setUltimaActualizacion(new Date());
+        } finally {
+            setCargando(false);
         }
-        setUltimaActualizacion(new Date());
     }, [getGlobalMetrics, getCrecimientoEmpresas, getDistribucionPlanes, getEmpresasRecientes, getSuscripcionesCriticas]);
 
     useEffect(() => { loadAll(); }, [loadAll]);
@@ -76,7 +82,7 @@ export const SuperAdminDashboard = () => {
         value: Number(p.cantidad) || 0,
     }));
 
-    if (loading && !metrics) {
+    if (cargando && !metrics) {
         return (
             <div className="p-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6">Panel Superadmin</h1>
@@ -105,9 +111,9 @@ export const SuperAdminDashboard = () => {
                         </p>
                     )}
                 </div>
-                <button onClick={loadAll} disabled={loading}
+                <button onClick={loadAll} disabled={cargando}
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-                    <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+                    <RefreshCw size={16} className={cargando ? 'animate-spin' : ''} />
                     Actualizar
                 </button>
             </div>

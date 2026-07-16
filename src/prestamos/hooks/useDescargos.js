@@ -1,61 +1,13 @@
-import { useState } from "react";
+import { useApi } from "../../hooks/useApi";
 import { aprobarDescargoRequest, createDescargoRequest, getDescargosByUserRequest, getDescargosRequest } from "../../api/descargos";
 
 export const useDescargos = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { call, loading, error } = useApi();
 
-    const getDescargos = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getDescargosRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const getDescargosByUser = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getDescargosByUserRequest(payload);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const createDescargo = async (descargo) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await createDescargoRequest(descargo);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const aprobarDescargo = async (descargo) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await aprobarDescargoRequest(descargo);
-            return data;
-        } catch (err) {
-            setError(err.response?.data?.message || "Error desconocido");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const getDescargos = (payload) => call(() => getDescargosRequest(payload));
+    const getDescargosByUser = (payload) => call(() => getDescargosByUserRequest(payload));
+    const createDescargo = (descargo) => call(() => createDescargoRequest(descargo));
+    const aprobarDescargo = (descargo) => call(() => aprobarDescargoRequest(descargo));
     return {
         //metodos
         getDescargos,

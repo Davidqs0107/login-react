@@ -1,36 +1,17 @@
-import { useState } from 'react';
+import { useApi } from '../../hooks/useApi';
 import { getConfiguracionRequest, updateConfiguracionRequest } from '../../api/configuracion';
 
 export const useConfiguracion = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { call, loading, error } = useApi();
 
     const getConfiguracion = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await getConfiguracionRequest();
-            return data.configuracion;
-        } catch (err) {
-            setError(err.response?.data?.msg || 'Error al cargar la configuración');
-            return null;
-        } finally {
-            setLoading(false);
-        }
+        const data = await call(() => getConfiguracionRequest(), 'Error al cargar la configuración');
+        return data ? data.configuracion : null;
     };
 
     const updateConfiguracion = async (payload) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await updateConfiguracionRequest(payload);
-            return data.configuracion;
-        } catch (err) {
-            setError(err.response?.data?.msg || 'Error al guardar la configuración');
-            return null;
-        } finally {
-            setLoading(false);
-        }
+        const data = await call(() => updateConfiguracionRequest(payload), 'Error al guardar la configuración');
+        return data ? data.configuracion : null;
     };
 
     return { getConfiguracion, updateConfiguracion, loading, error };
