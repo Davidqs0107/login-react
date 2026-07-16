@@ -78,8 +78,6 @@ export const PerfilPage = () => {
                             <LabeledInput
                                 type={field.type}
                                 label={field.label}
-                                name={field.name}
-                                register={register}
                                 require={field.required}
                                 disabled={field.disabled || false}
                                 error={errors[field.name]}
@@ -90,14 +88,14 @@ export const PerfilPage = () => {
                 </div>
 
                 <div className="flex gap-4">
-                    <Button clase='!w-auto' type='submit'
+                    <Button type='submit'
                         disabled={!!loading}
                     >
                         Actualizar
                     </Button>
 
                     <Button
-                        clase='!w-auto !bg-gray-500 hover:!bg-gray-600'
+                        variant="secondary"
                         type='button'
                         onClick={handleCancel}
                     >

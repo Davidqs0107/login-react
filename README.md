@@ -54,7 +54,7 @@ npm run dev        # http://localhost:5173
 ## Autenticación
 
 - El token JWT se guarda en `localStorage` y se envía en cada request en el header `x-token` (interceptor en `src/api/settings.js`).
-- Rutas protegidas envueltas por `ProtectedRoute`; rutas públicas por `PublicRoute`.
+- Rutas protegidas envueltas por `ProtectedRoute`; rutas públicas por `PublicRoute`. Dentro de las protegidas, `RoleRoute` restringe por rol: `/admin/*` solo `super_admin`; `/usuarios`, `/configuracion`, `/auditoria`, `/empresa` y `/pagos` solo `admin`/`super_admin`.
 - El **portal del cliente** (`/portal/:token`) es una ruta pública independiente (sin login de staff).
 
 ## Estructura (por dominio)
@@ -64,8 +64,9 @@ src/
 ├── api/            # clientes axios por recurso (auth, clientes, prestamos, arqueos, ...)
 ├── context/        # AuthContext (sesión, login/logout)
 ├── routes/         # AppRouter (definición de rutas)
-├── components/     # UI compartida (Sidebar, Modal, LoaderLocal, ...)
+├── components/     # UI compartida (Sidebar, Modal, LoaderLocal, FormField/LabeledInput — sistema unificado de formularios, ...)
 ├── auth/           # login y registro
+├── hooks/          # useApi (loading/error compartido de requests)
 ├── prestamos/      # clientes, préstamos, pagos, calculadora, refinanciación
 ├── reportes/       # pantallas de reportes
 ├── usuarios/       # gestión de usuarios / perfil
@@ -87,12 +88,14 @@ src/
 | `/guia` | ¿Cómo funciona? | admin / cobrador |
 | `/clientes` | Clientes (con score y enlace al portal) | staff |
 | `/prestamo` · `/prestamo/:id` | Crear / detalle de préstamo | staff |
+| `/usuarios` | Gestión de usuarios | admin |
+| `/descargos` | Descargos | staff |
 | `/pagos` | Pagos | admin |
 | `/arqueos` | Arqueo de caja | staff |
 | `/comprobantes` | Comprobantes del portal | staff |
 | `/configuracion` | Configuración de mora | admin |
 | `/auditoria` | Bitácora | admin |
+| `/empresa` | Datos de la empresa | admin |
 | `/reportes/*` | Reportes | staff |
-| `/admin/empresas` · `/admin/planes` · `/admin/suscripciones` | Panel super_admin | super_admin |
+| `/admin/empresas` · `/admin/planes` · `/admin/suscripciones` · `/admin/dashboard` | Panel super_admin | super_admin |
 | `/portal/:token` | Portal del cliente | público (por token) |
-```

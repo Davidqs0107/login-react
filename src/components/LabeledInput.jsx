@@ -1,38 +1,32 @@
-import React from 'react';
+import { forwardRef } from 'react';
+import { Field, fieldClass } from './FormField';
 
-export const LabeledInput = React.forwardRef(({
+// forwardRef: con la API nueva (<LabeledInput {...register(...)} />) React extrae `ref` del spread
+// en el call-site; sin forwardRef se descarta y react-hook-form nunca recibe el elemento.
+export const LabeledInput = forwardRef(({
     name,
     label,
     require = false,
-    clase = "",
+    clase = '',
     error = null,
+    help = null,
     register,
     disabled = false,
     ...props
 }, ref) => {
+    // Compat: API vieja pasaba register como prop. La API nueva hace spread de register() desde afuera.
     const registerProps = register ? register(name, { required: require }) : {};
     return (
-        <div className="flex flex-col">
-            <label>
-                {label}
-                <input
-                    disabled={disabled}
-                    {...registerProps}
-                    {...props}
-                    ref={ref}
-                    className={`appearance-none rounded-none relative block w-full 
-                        px-3 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} 
-                        placeholder-gray-500 text-gray-900 rounded-t-md 
-                        focus:outline-none focus:ring-indigo-500 
-                        focus:border-indigo-500 focus:z-10 sm:text-sm ${clase}`}
-                />
-            </label>
-            {error && (
-                <span className="text-red-500 text-sm mt-1">{error.message}</span>
-            )}
-        </div>
+        <Field label={label} required={require} error={error} help={help}>
+            <input
+                name={name}
+                disabled={disabled}
+                {...registerProps}
+                {...props}
+                ref={ref}
+                className={`${fieldClass(error)} ${clase}`}
+            />
+        </Field>
     );
 });
-
-// Añadir un displayName para mejorar la depuración
 LabeledInput.displayName = 'LabeledInput';

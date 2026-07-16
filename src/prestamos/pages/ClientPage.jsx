@@ -162,8 +162,6 @@ export const ClientPage = () => {
                 <LabeledInput
                   type={field.type}
                   label={field.label}
-                  name={field.name}
-                  register={register}
                   require={field.required}
                   error={errors[field.name]}
                   {...register(field.name, field.validation)}
@@ -194,12 +192,12 @@ export const ClientPage = () => {
             </div>
           )}
           <div className="flex gap-4">
-            <Button clase="!w-auto" type="submit" disabled={!!loading}>
+            <Button type="submit" disabled={!!loading}>
               {selectedClient ? "Actualizar" : "Aceptar"}
             </Button>
 
             <Button
-              clase="!w-auto !bg-gray-500 hover:!bg-gray-600"
+              variant="secondary"
               type="button"
               onClick={handleCancel}
             >

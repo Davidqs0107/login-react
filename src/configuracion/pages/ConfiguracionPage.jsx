@@ -4,6 +4,8 @@ import { useConfiguracion } from "../hooks/useConfiguracion";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { SelectMoneda } from "../../components/SelectMoneda";
 import { useConfig } from "../../context/ConfigContext";
+import { LabeledInput } from "../../components/LabeledInput";
+import { LabeledSelect } from "../../components/FormField";
 
 const MORA_TIPOS = [
   { value: "porcentaje_cuota", label: "% único sobre la cuota" },
@@ -98,72 +100,52 @@ export const ConfiguracionPage = () => {
           </div>
 
           <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${form.mora_activa ? "" : "opacity-50 pointer-events-none"}`}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de mora</label>
-              <select
-                value={form.mora_tipo}
-                onChange={(e) => set("mora_tipo", e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2"
-              >
-                {MORA_TIPOS.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Valor {form.mora_tipo === "monto_fijo_dia" ? "(monto)" : "(%)"}
-              </label>
-              <input
-                type="number" step="0.01" min="0"
-                value={form.mora_valor}
-                onChange={(e) => set("mora_valor", e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Días de gracia</label>
-              <input
-                type="number" min="0"
-                value={form.mora_dias_gracia}
-                onChange={(e) => set("mora_dias_gracia", e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tope máximo (opcional)</label>
-              <input
-                type="number" step="0.01" min="0"
-                value={form.mora_tope}
-                onChange={(e) => set("mora_tope", e.target.value)}
-                placeholder="Sin tope"
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
+            <LabeledSelect
+              label="Tipo de mora"
+              value={form.mora_tipo}
+              onChange={(e) => set("mora_tipo", e.target.value)}
+            >
+              {MORA_TIPOS.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </LabeledSelect>
+            <LabeledInput
+              label={`Valor ${form.mora_tipo === "monto_fijo_dia" ? "(monto)" : "(%)"}`}
+              type="number" step="0.01" min="0"
+              value={form.mora_valor}
+              onChange={(e) => set("mora_valor", e.target.value)}
+            />
+            <LabeledInput
+              label="Días de gracia"
+              type="number" min="0"
+              value={form.mora_dias_gracia}
+              onChange={(e) => set("mora_dias_gracia", e.target.value)}
+            />
+            <LabeledInput
+              label="Tope máximo (opcional)"
+              type="number" step="0.01" min="0"
+              value={form.mora_tope}
+              onChange={(e) => set("mora_tope", e.target.value)}
+              placeholder="Sin tope"
+            />
           </div>
         </div>
 
         {/* Incumplimiento y general */}
         <div className="bg-white rounded-lg shadow p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Días para marcar incumplido</label>
-            <input
-              type="number" min="1"
-              value={form.incumplido_dias}
-              onChange={(e) => set("incumplido_dias", e.target.value)}
-              className="w-full border border-gray-300 rounded-md p-2"
-            />
-            <p className="text-xs text-gray-500 mt-1">Un préstamo con atraso mayor a estos días se marca "incumplido".</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Moneda</label>
-            <input
-              type="text" maxLength={4}
-              value={form.moneda}
-              onChange={(e) => set("moneda", e.target.value.toUpperCase())}
-              className="w-full border border-gray-300 rounded-md p-2"
-            />
-          </div>
+          <LabeledInput
+            label="Días para marcar incumplido"
+            type="number" min="1"
+            value={form.incumplido_dias}
+            onChange={(e) => set("incumplido_dias", e.target.value)}
+            help='Un préstamo con atraso mayor a estos días se marca "incumplido".'
+          />
+          <LabeledInput
+            label="Moneda"
+            type="text" maxLength={4}
+            value={form.moneda}
+            onChange={(e) => set("moneda", e.target.value.toUpperCase())}
+          />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Símbolo de moneda</label>
             <SelectMoneda

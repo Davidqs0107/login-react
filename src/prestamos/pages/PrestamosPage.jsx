@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LabeledInput } from "../../components/LabeledInput";
+import { LabeledSelect, LabeledTextarea } from "../../components/FormField";
 import { Button } from "../../components/Button";
 import { useForm, Controller } from "react-hook-form";
 import { Modal } from "../../components/Modal";
@@ -94,7 +95,7 @@ export const PrestamosPage = () => {
       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid md:grid-cols-2 gap-4">
           {/* Select Cliente */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 items-end">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Cliente
@@ -145,11 +146,9 @@ export const PrestamosPage = () => {
                 </p>
               )}
             </div>
-            <div>
-              <br />
+            <div className="self-end">
               <Button
                 type="button"
-                clase="!w-auto mt-2"
                 onClick={() => setIsModalOpen(true)}
               >
                 Crear Cliente
@@ -158,128 +157,96 @@ export const PrestamosPage = () => {
           </div>
 
           {/* Select Tipo de Préstamo */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Tipo de Préstamo
-            </label>
-            <select
-              {...register("tipo_prestamo", {
-                required: "Seleccione un tipo de préstamo",
-              })}
-              className="w-full border border-gray-300 rounded-md p-2"
-            >
-              <option value="">Seleccione</option>
-              <option value="fijo">Interés Fijo</option>
-              <option value="cuota">Capital + Interés</option>
-            </select>
-            {errors.tipo_prestamo && (
-              <p className="text-red-500 text-sm">
-                {errors.tipo_prestamo.message}
-              </p>
-            )}
-          </div>
+          <LabeledSelect
+            label="Tipo de Préstamo"
+            require
+            error={errors.tipo_prestamo}
+            {...register("tipo_prestamo", {
+              required: "Seleccione un tipo de préstamo",
+            })}
+          >
+            <option value="">Seleccione</option>
+            <option value="fijo">Interés Fijo</option>
+            <option value="cuota">Capital + Interés</option>
+          </LabeledSelect>
 
           {/* Campo Monto */}
           <LabeledInput
             label="Monto"
             type="number"
-            name="monto"
-            register={register}
-            require={true}
+            require
             error={errors.monto}
             {...register("monto", { required: "El monto es requerido" })}
           />
 
           {/* Campo Porcentaje a Ganar */}
-          <div>
-            <LabeledInput
-              label="Porcentaje a Ganar (%)"
-              type="number"
-              name="tasa_interes"
-              register={register}
-              require={true}
-              error={errors.tasa_interes}
-              {...register("tasa_interes", {
-                required: "La tasa de interes es requerido",
-              })}
-            />
-            <p className="mt-1 text-xs text-gray-500">{ayudaTasa}</p>
-          </div>
+          <LabeledInput
+            label="Porcentaje a Ganar (%)"
+            type="number"
+            require
+            error={errors.tasa_interes}
+            help={ayudaTasa}
+            {...register("tasa_interes", {
+              required: "La tasa de interés es requerida",
+            })}
+          />
 
           {/* Fecha */}
           <LabeledInput
             label="Fecha de Inicio"
             type="date"
-            name="fecha_inicio"
-            register={register}
-            require={true}
+            require
             error={errors.fecha_inicio}
             {...register("fecha_inicio", { required: "La fecha es requerida" })}
           />
 
           {/* Frequencia de pagos */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Frecuencia de pago
-            </label>
-            <select
-              {...register("frecuencia_pago", {
-                required: "Seleccione un tipo de préstamo",
-              })}
-              className="w-full border border-gray-300 rounded-md p-2"
-            >
-              <option value="">Seleccione</option>
-              <option value="diario">Diario</option>
-              <option value="semanal">Semanal</option>
-              <option value="quincenal">Quincenal</option>
-              <option value="mensual">Mensual</option>
-              <option value="anual">Anual</option>
-            </select>
-            {errors.frecuencia_pago && (
-              <p className="text-red-500 text-sm">
-                {errors.frecuencia_pago.message}
-              </p>
-            )}
-          </div>
+          <LabeledSelect
+            label="Frecuencia de pago"
+            require
+            error={errors.frecuencia_pago}
+            {...register("frecuencia_pago", {
+              required: "Seleccione una frecuencia de pago",
+            })}
+          >
+            <option value="">Seleccione</option>
+            <option value="diario">Diario</option>
+            <option value="semanal">Semanal</option>
+            <option value="quincenal">Quincenal</option>
+            <option value="mensual">Mensual</option>
+            <option value="anual">Anual</option>
+          </LabeledSelect>
 
           {/* Cuotas */}
           <LabeledInput
             label="Cuotas"
             type="number"
-            name="total_cuotas"
-            register={register}
-            require={true}
+            require
             error={errors.total_cuotas}
             {...register("total_cuotas", {
-              required: "Las cuotas es requerido",
+              required: "Las cuotas son requeridas",
             })}
           />
         </div>
 
         {/* Textarea Descripción */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Documento
-          </label>
-          <textarea
-            {...register("documento", {
-              required: "La documento es requerida",
-            })}
-            className="w-full border border-gray-300 rounded-md p-2"
-            rows="4"
-            placeholder="Ingrese una descripción del documento"
-          ></textarea>
-          {errors.documento && (
-            <p className="text-red-500 text-sm">{errors.documento.message}</p>
-          )}
-        </div>
+        <LabeledTextarea
+          label="Documento"
+          rows={4}
+          require
+          error={errors.documento}
+          placeholder="Ingrese una descripción del documento"
+          {...register("documento", {
+            required: "El documento es requerido",
+          })}
+        />
 
         <div className="flex gap-4">
-          <Button clase="!w-auto" type="submit">
+          <Button type="submit">
             Registrar
           </Button>
           <Button
-            clase="!w-auto !bg-gray-500 hover:!bg-gray-600"
+            variant="secondary"
             type="button"
             onClick={() => handleNavigate("/listado/prestamos")}
           >

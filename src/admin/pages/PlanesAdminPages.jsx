@@ -4,6 +4,7 @@ import { useAdmin } from "../hooks/useAdmin";
 import { Button } from "../../components/Button";
 import { Modal } from "../../components/Modal";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { LabeledInput } from "../../components/LabeledInput";
 import Swal from "sweetalert2";
 
 export const PlanesAdminPages = () => {
@@ -146,13 +147,10 @@ export const PlanesAdminPages = () => {
                         </p>
 
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Máximo de usuarios
-                            </label>
-                            <input
+                            <LabeledInput
+                                label="Máximo de usuarios"
                                 type="number"
                                 min="1"
-                                className="w-full border border-gray-300 rounded-md p-2"
                                 placeholder="Vacío = ilimitado"
                                 value={maxUsuariosInput}
                                 onChange={(e) => setMaxUsuariosInput(e.target.value)}
@@ -161,7 +159,7 @@ export const PlanesAdminPages = () => {
 
                         <div className="flex justify-end gap-4 mt-6">
                             <Button
-                                clase="!bg-gray-500 hover:!bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                                variant="secondary"
                                 onClick={() => setIsEditModalOpen(false)}
                             >
                                 Cancelar

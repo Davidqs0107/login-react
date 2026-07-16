@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from '../../components/Button'
+import { LabeledSelect, LabeledTextarea } from '../../components/FormField';
 import { useLoan } from '../hooks/useLoan';
 import Swal from 'sweetalert2';
 import { LoaderLocal } from '../../components/LoaderLocal';
@@ -60,15 +61,15 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
         <div>
             {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
             {loading && <LoaderLocal />}
-            <label className="block text-sm font-medium text-gray-700 mb-2">Documento</label>
-            <textarea
+            <LabeledTextarea
+                label="Documento"
                 name='documento'
-                className="w-full border border-gray-300 rounded-md p-2"
                 placeholder="Ingrese el Documento"
                 defaultValue={documento}
             />
-            <select name="estado_prestamo"
-                className="w-full border border-gray-300 rounded-md p-2 mb-2"
+            <LabeledSelect
+                clase="mb-2"
+                name="estado_prestamo"
                 value={estadoPrestamo}
                 onChange={handleSelectChange}
             >
@@ -76,12 +77,12 @@ export const EditPrestamoModal = ({ closeModal, prestamo, editLoan }) => {
                 <option value="activo">Activo</option>
                 <option value="completado">Completado</option>
                 <option value="incumplido">Incumplido</option>
-            </select>
+            </LabeledSelect>
             <input type='file' name='archivo' accept="application/pdf,image/jpeg,image/png" onChange={handleFileChange} />
 
             <div className="flex justify-end gap-4 mt-2">
                 <Button
-                    clase="!bg-gray-500 hover:!bg-gray-600 !text-white !font-bold py-2 px-4 !rounded"
+                    variant="secondary"
                     onClick={() => closeModal(false)}
                 >
                     Cancelar

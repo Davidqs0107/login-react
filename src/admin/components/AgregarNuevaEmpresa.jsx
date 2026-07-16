@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '../../components/Button'
-import { LabeledInputAuth } from '../../auth/components/LabeledInputAuth'
+import { LabeledInput } from '../../components/LabeledInput'
 import { useForm } from 'react-hook-form';
 import { useAdmin } from '../hooks/useAdmin';
 import { LoaderLocal } from '../../components/LoaderLocal';
@@ -29,30 +29,22 @@ export const AgregarNuevaEmpresa = ({ closeModal }) => {
             {error && <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
             {loading && <LoaderLocal />}
             <form className='mt-8 space-y-6' onSubmit={onSubmit}>
-                <LabeledInputAuth type="text"
-                    label="Nombre Empresa" name="nombreEmpresa" register={register} require={true}
+                <LabeledInput type="text"
+                    label="Nombre Empresa" require error={errors.nombreEmpresa}
+                    {...register('nombreEmpresa', { required: 'El nombre de empresa es requerido' })}
                 />
-                {
-                    errors.nombreEmpresa && <div className="text-red-500 text-sm !mt-0">Nombre de empresa es requerido</div>
-                }
-                <LabeledInputAuth type="text"
-                    label="Nombre" name="nombre" register={register} require={true}
+                <LabeledInput type="text"
+                    label="Nombre" require error={errors.nombre}
+                    {...register('nombre', { required: 'El nombre es requerido' })}
                 />
-                {
-                    errors.nombre && <div className="text-red-500 text-sm !mt-0">Nombre es requerido</div>
-                }
-                <LabeledInputAuth type="email"
-                    label="Email" name="email" register={register} require={true}
+                <LabeledInput type="email"
+                    label="Email" require error={errors.email}
+                    {...register('email', { required: 'El email es requerido' })}
                 />
-                {
-                    errors.email && <div className="text-red-500 text-sm !mt-0">Email es requerido</div>
-                }
-                <LabeledInputAuth type="password"
-                    label="Password" name="password" register={register} require={true}
+                <LabeledInput type="password"
+                    label="Password" require error={errors.password}
+                    {...register('password', { required: 'El password es requerido' })}
                 />
-                {
-                    errors.password && <div className="text-red-500 text-sm !mt-0">Password es requerido</div>
-                }
                 <Button type='submit'
 
                 >

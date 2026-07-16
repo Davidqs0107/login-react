@@ -92,9 +92,7 @@ export const DescargoPage = () => {
                         <LabeledInput
                             label="Fecha de Inicio"
                             type="date"
-                            name="fecha_inicio"
-                            register={register}
-                            require={true}
+                            require
                             error={errors.fecha_inicio}
                             {...register("fecha_inicio", { required: 'La fecha es requerida' })}
                         />
@@ -104,9 +102,7 @@ export const DescargoPage = () => {
                         <LabeledInput
                             label="Fecha de Fin"
                             type="date"
-                            name="fecha_fin"
-                            register={register}
-                            require={true}
+                            require
                             error={errors.fecha_fin}
                             {...register("fecha_fin", { required: 'La fecha es requerida' })}
                         />
@@ -114,7 +110,7 @@ export const DescargoPage = () => {
                     </div>
                     <div>
                         <br />
-                        <Button clase="!w-auto !bg-green-500 hover:!bg-green-600"
+                        <Button clase="!bg-green-500 hover:!bg-green-600"
                             type="button"
                             onClick={onSubmit}
                         >

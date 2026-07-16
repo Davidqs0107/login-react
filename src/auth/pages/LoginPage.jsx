@@ -4,7 +4,7 @@ import { Button } from '../../components/Button'
 import { Link } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../context/AuthContex'
-import { LabeledInputAuth } from '../components/LabeledInputAuth'
+import { LabeledInput } from '../../components/LabeledInput'
 
 export const LoginPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -22,20 +22,15 @@ export const LoginPage = () => {
             }
             <form className='mt-8 space-y-6' onSubmit={onSubmit}>
 
-                <LabeledInputAuth type="email"
-                    label="Email" name="email" register={register} require={true}
+                <LabeledInput type="email"
+                    label="Email" require error={errors.email}
+                    {...register('email', { required: 'El email es requerido' })}
                 />
-                {
-                    errors.email && <div className="text-red-500 text-sm !mt-0">Email es requerido</div>
-                }
-                <LabeledInputAuth type="password"
-                    label="Password" name="password" register={register} require={true}
+                <LabeledInput type="password"
+                    label="Password" require error={errors.password}
+                    {...register('password', { required: 'El password es requerido' })}
                 />
-                {
-                    errors.password && <div className="text-red-500 text-sm !mt-0">Password es requerido</div>
-                }
-                <Button type='submit'
-
+                <Button type='submit' clase='w-full'
                 >
                     Login
                 </Button>

@@ -3,6 +3,7 @@ import { formFields } from '../forms/descargosForm';
 import { useForm } from 'react-hook-form';
 import { Button } from '../../components/Button';
 import { LabeledInput } from '../../components/LabeledInput';
+import { LabeledSelect } from '../../components/FormField';
 import { useDescargos } from '../hooks/useDescargos';
 import Swal from 'sweetalert2';
 
@@ -36,36 +37,32 @@ export const DescargosRegistroCobrador = ({ setDescargos }) => {
                             step={field.step}
                             type={field.type}
                             label={field.label}
-                            name={field.name}
-                            register={register}
                             require={field.required}
                             error={errors[field.name]}
                             {...register(field.name, field.validation)}
                         />
                     </div>
                 ))}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Tipo de pago</label>
-                    <select
-                        {...register('tipo_pago', { required: 'Seleccione un tipo de pago' })}
-                        className="w-full border border-gray-300 rounded-md p-2"
-                    >
-                        <option value="efectivo">Efectivo</option>
-                        <option value="qr">QR</option>
-                    </select>
-                    {errors.tipo_pago && <p className="text-red-500 text-sm">{errors.tipo_pago.message}</p>}
-                </div>
+                <LabeledSelect
+                    label="Tipo de pago"
+                    require
+                    error={errors.tipo_pago}
+                    {...register('tipo_pago', { required: 'Seleccione un tipo de pago' })}
+                >
+                    <option value="efectivo">Efectivo</option>
+                    <option value="qr">QR</option>
+                </LabeledSelect>
             </div>
 
             <div className="flex gap-4">
-                <Button clase='!w-auto' type='submit'
+                <Button type='submit'
                     disabled={!!loading}
                 >
                     Aceptar
                 </Button>
 
                 <Button
-                    clase='!w-auto !bg-gray-500 hover:!bg-gray-600'
+                    variant="secondary"
                     type='button'
                     onClick={() => reset()}
                 >

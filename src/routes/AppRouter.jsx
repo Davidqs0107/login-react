@@ -9,6 +9,7 @@ import { DetallePrestamoPage } from "../prestamos/pages/DetallePrestamoPage";
 import { PerfilPage } from "../usuarios/pages/PerfilPage";
 import { PagosPage } from "../prestamos/pages/PagosPage";
 import { ProtectedRoute } from "../ProtectedRoute";
+import { RoleRoute } from "../RoleRoute";
 import { PublicRoute } from "../PublicRoute";
 import { UsuariosPage } from "../usuarios/pages/UsuariosPage";
 import { ListadoPrestamosPage } from "../prestamos/pages/ListadoPrestamosPage";
@@ -42,24 +43,30 @@ export const AppRouter = () => {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/usuarios" element={<UsuariosPage />} />
-        <Route path="/empresa" element={<EmpresaPage />} />
         <Route path="/clientes" element={<ClientPage />} />
         <Route path="/prestamo" element={<PrestamosPage />} />
         <Route path="/prestamo/:id" element={<DetallePrestamoPage />} />
         <Route path="/listado/prestamos" element={<ListadoPrestamosPage />} />
-        <Route path="/pagos" element={<PagosPage />} />
         <Route path="/perfil" element={<PerfilPage />} />
         <Route path="/guia" element={<GuiaPage />} />
         <Route path="/descargos" element={<DescargoPage />} />
-        <Route path="/configuracion" element={<ConfiguracionPage />} />
-        <Route path="/auditoria" element={<AuditoriaPage />} />
         <Route path="/arqueos" element={<ArqueoPage />} />
         <Route path="/comprobantes" element={<ComprobantesPage />} />
-        <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
-        <Route path="/admin/planes" element={<PlanesAdminPages />} />
-        <Route path="/admin/suscripciones" element={<SuscripcionesAdminPage />} />
-        <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
+
+        <Route element={<RoleRoute roles={['super_admin']} />}>
+          <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
+          <Route path="/admin/planes" element={<PlanesAdminPages />} />
+          <Route path="/admin/suscripciones" element={<SuscripcionesAdminPage />} />
+          <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
+        </Route>
+
+        <Route element={<RoleRoute roles={['super_admin', 'admin']} />}>
+          <Route path="/usuarios" element={<UsuariosPage />} />
+          <Route path="/configuracion" element={<ConfiguracionPage />} />
+          <Route path="/auditoria" element={<AuditoriaPage />} />
+          <Route path="/empresa" element={<EmpresaPage />} />
+          <Route path="/pagos" element={<PagosPage />} />
+        </Route>
 
         {/* Reportes */}
         <Route path="/reportes" element={<ReportesIndexPage />} />

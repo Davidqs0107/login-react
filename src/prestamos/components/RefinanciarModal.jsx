@@ -2,6 +2,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { useLoan } from "../hooks/useLoan";
+import { LabeledInput } from "../../components/LabeledInput";
 
 /**
  * Formulario de refinanciación: capitaliza el saldo pendiente (+ monto adicional
@@ -47,25 +48,19 @@ export const RefinanciarModal = ({ prestamo, closeModal }) => {
       <p className="text-sm text-gray-600">
         Se saldará el préstamo actual y su saldo pendiente pasará a un préstamo nuevo.
       </p>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Monto adicional (opcional)</label>
-        <input type="number" step="0.01" min="0" value={form.monto_adicional}
-          onChange={(e) => set("monto_adicional", e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2" />
-        <p className="text-xs text-gray-500 mt-1">Dinero nuevo que se entrega al cliente, sumado al saldo.</p>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">N° de cuotas del nuevo préstamo</label>
-        <input type="number" min="1" value={form.total_cuotas}
-          onChange={(e) => set("total_cuotas", e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2" />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio</label>
-        <input type="date" value={form.fecha_inicio}
-          onChange={(e) => set("fecha_inicio", e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2" />
-      </div>
+      <LabeledInput
+        label="Monto adicional (opcional)"
+        type="number" step="0.01" min="0" value={form.monto_adicional}
+        onChange={(e) => set("monto_adicional", e.target.value)}
+        help="Dinero nuevo que se entrega al cliente, sumado al saldo." />
+      <LabeledInput
+        label="N° de cuotas del nuevo préstamo"
+        type="number" min="1" value={form.total_cuotas}
+        onChange={(e) => set("total_cuotas", e.target.value)} />
+      <LabeledInput
+        label="Fecha de inicio"
+        type="date" value={form.fecha_inicio}
+        onChange={(e) => set("fecha_inicio", e.target.value)} />
       <div className="flex gap-2 pt-2">
         <button type="submit" disabled={loading}
           className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400">

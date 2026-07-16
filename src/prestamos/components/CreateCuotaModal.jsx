@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../components/Button";
+import { LabeledInput } from "../../components/LabeledInput";
+import { LabeledSelect } from "../../components/FormField";
 import { usePago } from "../hooks/usePago";
 import Swal from "sweetalert2";
 import { formatDate, formatDateWithDateFns } from "../../common/functions";
@@ -163,36 +165,23 @@ export const CreateCuotaModal = ({
         </table>
         {!onlyRead && (
           <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Monto a Pagar
-              </label>
-              <input
-                min={1}
-                name="monto"
-                type="number"
-                className="w-full border border-gray-300 rounded-md p-2"
-                placeholder="Ingrese el monto"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tipo de pago
-              </label>
-              <select
-                name="tipo_pago"
-                className="w-full border border-gray-300 rounded-md p-2"
-              >
-                <option value="efectivo">Efectivo</option>
-                <option value="qr">QR</option>
-              </select>
-            </div>
+            <LabeledInput
+              label="Monto a Pagar"
+              min={1}
+              name="monto"
+              type="number"
+              placeholder="Ingrese el monto"
+            />
+            <LabeledSelect label="Tipo de pago" name="tipo_pago">
+              <option value="efectivo">Efectivo</option>
+              <option value="qr">QR</option>
+            </LabeledSelect>
           </>
         )}
 
         <div className="flex  gap-4">
           <Button
-            clase="!bg-gray-500 hover:!bg-gray-600 text-white font-bold py-2 px-4 rounded"
+            variant="secondary"
             onClick={() => closeModal(false)}
           >
             Cancelar

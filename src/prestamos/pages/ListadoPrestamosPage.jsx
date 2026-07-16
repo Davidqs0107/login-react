@@ -102,9 +102,7 @@ export const ListadoPrestamosPage = () => {
                         <LabeledInput
                             label="Fecha de Inicio"
                             type="date"
-                            name="fecha_inicio"
-                            register={register}
-                            require={true}
+                            require
                             error={errors.fecha_inicio}
                             {...register("fecha_inicio", { required: 'La fecha es requerida' })}
                         />
@@ -114,9 +112,7 @@ export const ListadoPrestamosPage = () => {
                         <LabeledInput
                             label="Fecha de Fin"
                             type="date"
-                            name="fecha_fin"
-                            register={register}
-                            require={true}
+                            require
                             error={errors.fecha_fin}
                             {...register("fecha_fin", { required: 'La fecha es requerida' })}
                         />
@@ -124,7 +120,7 @@ export const ListadoPrestamosPage = () => {
                     </div>
                     <div>
                         <br />
-                        <Button clase="!w-auto !bg-green-500 hover:!bg-green-600"
+                        <Button clase="!bg-green-500 hover:!bg-green-600"
                             type="button"
                             onClick={onSubmit}
                         >
@@ -133,7 +129,7 @@ export const ListadoPrestamosPage = () => {
                     </div>
                     <div>
                         <br />
-                        <Button clase="!w-auto bg-gray-500 hover:bg-gray-600"
+                        <Button variant="secondary"
                             type="button"
                             onClick={onRedirect}
                         >
@@ -144,7 +140,7 @@ export const ListadoPrestamosPage = () => {
             </section>
             <section>
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">Pretamos</h2>
+                    <h2 className="text-xl font-bold">Préstamos</h2>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                         <input

@@ -3,6 +3,8 @@ import { Button } from "../../components/Button";
 import Swal from "sweetalert2";
 import { useAdmin } from "../hooks/useAdmin";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { LabeledInput } from "../../components/LabeledInput";
+import { LabeledSelect } from "../../components/FormField";
 export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdateEmpresa }) => {
     const { updatePlan, loading, error } = useAdmin();
 
@@ -68,12 +70,9 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
             {loading && <LoaderLocal />}
             <h1>Empresa: {empresa.nombre}</h1>
             <div className="mt-5">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tipo de planes
-                </label>
-                <select
+                <LabeledSelect
+                    label="Tipo de planes"
                     name="plan_id"
-                    className="w-full border border-gray-300 rounded-md p-2"
                     value={formData.plan_id}
                     onChange={handleChange}
                 >
@@ -82,7 +81,7 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
                             {plan.nombre} {plan.max_usuarios ? `(Máx ${plan.max_usuarios} usuarios)` : "(Ilimitado)"}
                         </option>
                     ))}
-                </select>
+                </LabeledSelect>
             </div>
             {selectedPlanData && selectedPlanData.max_usuarios !== null && (
                 <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
@@ -92,34 +91,30 @@ export const EditEmpresaPlanModal = ({ planes, closeModal, empresa, handleUpdate
                 </div>
             )}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Días</label>
-                <input
+                <LabeledInput
+                    label="Días"
                     min={7}
                     name="dias"
                     type="number"
-                    className="w-full border border-gray-300 rounded-md p-2"
                     placeholder="Ingrese los días"
                     value={formData.dias}
                     onChange={handleChange}
                 />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Estado del plan
-                </label>
-                <select
+                <LabeledSelect
+                    label="Estado del plan"
                     name="estado"
-                    className="w-full border border-gray-300 rounded-md p-2"
                     value={formData.estado}
                     onChange={handleChange}
                 >
                     <option value="activo">Activo</option>
                     <option value="inactivo">Inactivo</option>
-                </select>
+                </LabeledSelect>
             </div>
             <div className="flex justify-end gap-4 mt-8">
                 <Button
-                    clase="!bg-gray-500 hover:!bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                    variant="secondary"
                     onClick={() => closeModal(false)}
                 >
                     Cancelar

@@ -2,6 +2,7 @@ import { NavLink } from "react-router";
 import {
   Users, HandCoins, Wallet, ClipboardCheck, Receipt, BarChart3,
   Settings, RefreshCw, ShieldCheck, CalendarClock, TrafficCone, ArrowRight,
+  Banknote, UserPlus, History,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContex";
 import { roles } from "../../common/constans";
@@ -28,6 +29,11 @@ const FEATURES = [
     desc: "Tu lista de cuotas por cobrar en los próximos días para organizar la ruta del día.",
   },
   {
+    icon: Banknote, color: "bg-lime-100 text-lime-600", to: "/descargos",
+    title: "Descargos",
+    desc: "Rinde el efectivo cobrado en el día: monto, nota y tipo de pago. El admin lo revisa y aprueba.",
+  },
+  {
     icon: ClipboardCheck, color: "bg-indigo-100 text-indigo-600", to: "/arqueos",
     title: "Arqueo de caja",
     desc: "Al final del día cierra tu caja: el sistema calcula lo cobrado y lo comparas con lo entregado. La diferencia queda registrada.",
@@ -48,9 +54,19 @@ const FEATURES = [
     desc: "Define la mora de tu empresa (% diario, % de cuota o monto fijo), los días de gracia y a los cuántos días un préstamo se marca incumplido.",
   },
   {
+    icon: UserPlus, color: "bg-cyan-100 text-cyan-600", to: "/usuarios", adminOnly: true,
+    title: "Usuarios",
+    desc: "Crea y gestiona los usuarios de tu financiera: cobradores y otros administradores.",
+  },
+  {
     icon: RefreshCw, color: "bg-violet-100 text-violet-600", to: "/listado/prestamos", adminOnly: true,
     title: "Refinanciación",
     desc: "Desde el detalle de un préstamo, capitaliza el saldo pendiente (más un monto adicional opcional) en un préstamo nuevo enlazado al anterior.",
+  },
+  {
+    icon: History, color: "bg-orange-100 text-orange-600", to: "/pagos", adminOnly: true,
+    title: "Pagos",
+    desc: "Historial y búsqueda de pagos por cliente, cuota o rango de fechas.",
   },
   {
     icon: ShieldCheck, color: "bg-rose-100 text-rose-600", to: "/auditoria", adminOnly: true,
@@ -62,7 +78,7 @@ const FEATURES = [
 const FLUJO_COBRADOR = [
   "Revisa tu Agenda de Cobro del día",
   "Cobra y registra los pagos de cada cliente",
-  "Aprueba los comprobantes que subieron al portal",
+  "Registra tu descargo con lo cobrado del día",
   "Cierra tu caja (arqueo) con lo entregado",
 ];
 const FLUJO_ADMIN = [

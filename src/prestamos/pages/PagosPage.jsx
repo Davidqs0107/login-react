@@ -3,10 +3,15 @@ import { RegisterTableLayout } from '../../layout/RegisterTableLayout';
 import { usePagosPage } from '../hooks/usePagosPage';
 import { LoaderLocal } from '../../components/LoaderLocal';
 import { Button } from '../../components/Button';
+import { LabeledInput } from '../../components/LabeledInput';
 import { Paginate } from '../../components/Paginate';
 import { User, Hash, Calendar, Search, X } from 'lucide-react';
+import { formatDate } from '../../common/functions';
+import { formatMoney } from '../../helpers/format';
+import { useConfig } from '../../context/ConfigContext';
 
 export const PagosPage = () => {
+    const { simboloMoneda } = useConfig();
     const {
         loading,
         error,
@@ -171,19 +176,17 @@ export const PagosPage = () => {
                 {searchType === 'fecha' && (
                     <div className="flex gap-4 mb-4">
                         <div className="flex-1">
-                            <label className="block text-sm text-gray-600 mb-1">Desde</label>
-                            <input
+                            <LabeledInput
+                                label="Desde"
                                 type="date"
-                                className="w-full border p-2 rounded"
                                 value={fechaInicio}
                                 onChange={(e) => setFechaInicio(e.target.value)}
                             />
                         </div>
                         <div className="flex-1">
-                            <label className="block text-sm text-gray-600 mb-1">Hasta</label>
-                            <input
+                            <LabeledInput
+                                label="Hasta"
                                 type="date"
-                                className="w-full border p-2 rounded"
                                 value={fechaFin}
                                 onChange={(e) => setFechaFin(e.target.value)}
                             />
@@ -201,7 +204,7 @@ export const PagosPage = () => {
                     </Button>
                     <Button
                         onClick={handleClear}
-                        clase="!bg-gray-500 hover:!bg-gray-600"
+                        variant="secondary"
                     >
                         <X size={16} className="inline mr-1" /> Limpiar
                     </Button>
@@ -242,10 +245,10 @@ export const PagosPage = () => {
                                 {resultType === 'pagos' && results.map((pago) => (
                                     <tr key={pago.id}>
                                         <td className="px-4 py-2">{pago.id}</td>
-                                        <td className="px-4 py-2">{pago.fecha_pago}</td>
+                                        <td className="px-4 py-2">{formatDate(pago.fecha_pago)}</td>
                                         <td className="px-4 py-2">{pago.cliente_nombre} {pago.cliente_apellido}</td>
                                         <td className="px-4 py-2">{pago.numero_cuota}</td>
-                                        <td className="px-4 py-2">${parseFloat(pago.monto).toFixed(2)}</td>
+                                        <td className="px-4 py-2">{formatMoney(pago.monto, simboloMoneda)}</td>
                                         <td className="px-4 py-2">{pago.tipo_pago || '-'}</td>
                                     </tr>
                                 ))}
@@ -254,10 +257,10 @@ export const PagosPage = () => {
                                     return (
                                         <tr key={cuota.id}>
                                             <td className="px-4 py-2">{cuota.numero_cuota}</td>
-                                            <td className="px-4 py-2">{cuota.fecha_pago}</td>
-                                            <td className="px-4 py-2">${parseFloat(cuota.monto).toFixed(2)}</td>
-                                            <td className="px-4 py-2">${parseFloat(cuota.monto_pagado || 0).toFixed(2)}</td>
-                                            <td className="px-4 py-2">${saldo.toFixed(2)}</td>
+                                            <td className="px-4 py-2">{formatDate(cuota.fecha_pago)}</td>
+                                            <td className="px-4 py-2">{formatMoney(cuota.monto, simboloMoneda)}</td>
+                                            <td className="px-4 py-2">{formatMoney(cuota.monto_pagado || 0, simboloMoneda)}</td>
+                                            <td className="px-4 py-2">{formatMoney(saldo, simboloMoneda)}</td>
                                             <td className="px-4 py-2">
                                                 <span className={`px-2 py-1 rounded-full text-xs ${
                                                     cuota.estado === 'pagada' ? 'bg-green-100 text-green-800' :

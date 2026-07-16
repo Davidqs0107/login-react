@@ -160,9 +160,12 @@ export const EmpresasAdminPages = () => {
   };
 
   useEffect(() => {
-    setValue("fecha_inicio", formatDateWithDateFns(new Date()));
+    const unAnioAtras = new Date();
+    unAnioAtras.setMonth(unAnioAtras.getMonth() - 12);
+    setValue("fecha_inicio", formatDateWithDateFns(unAnioAtras));
     setValue("fecha_fin", formatDateWithDateFns(new Date()));
     handlePlanes();
+    onSubmit(); // carga inicial con el rango por defecto recién seteado
   }, []);
   return (
     <RegisterTableLayout title="Empresas">
@@ -178,9 +181,7 @@ export const EmpresasAdminPages = () => {
             <LabeledInput
               label="Fecha de Inicio"
               type="date"
-              name="fecha_inicio"
-              register={register}
-              require={true}
+              require
               error={errors.fecha_inicio}
               {...register("fecha_inicio", {
                 required: "La fecha es requerida",
@@ -191,9 +192,7 @@ export const EmpresasAdminPages = () => {
             <LabeledInput
               label="Fecha de Fin"
               type="date"
-              name="fecha_fin"
-              register={register}
-              require={true}
+              require
               error={errors.fecha_fin}
               {...register("fecha_fin", { required: "La fecha es requerida" })}
             />
@@ -201,7 +200,7 @@ export const EmpresasAdminPages = () => {
           <div>
             <br />
             <Button
-              clase="!w-auto !bg-green-500 hover:!bg-green-600"
+              clase="!bg-green-500 hover:!bg-green-600"
               type="button"
               onClick={onSubmit}
             >
@@ -211,7 +210,7 @@ export const EmpresasAdminPages = () => {
           <div>
             <br />
             <Button
-              clase="!w-auto !bg-blue-500 hover:!bg-green-600"
+              clase="!bg-blue-500 hover:!bg-green-600"
               type="button"
               onClick={(e) =>
                 handleModal({ type: "nuevo", title: "Nueva Empresa" }, e)
