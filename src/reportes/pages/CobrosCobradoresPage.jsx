@@ -1,16 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { CobrosCobradoresTable } from "../components/CobrosCobradoresTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const COBROS_COLUMNS = [
-    { key: 'cobrador', label: 'Cobrador' },
-    { key: 'total_cobrado', label: 'Total Cobrado' },
-    { key: 'total_efectivo', label: 'Efectivo' },
-    { key: 'total_qr', label: 'QR' },
-    { key: 'num_pagos', label: 'Nro. Pagos' }
-];
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const CobrosCobradoresPage = () => {
   const [data, setData] = useState([]);
@@ -19,6 +13,16 @@ export const CobrosCobradoresPage = () => {
     fecha_fin: "",
   });
   const { getCobrosPorCobrador, loading } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const COBROS_COLUMNS = useMemo(() => [
+    { key: 'cobrador', label: 'Cobrador' },
+    { key: 'telefono', label: 'Teléfono', format: (v, row) => formatPhone(v, row.codigo_pais) },
+    { key: 'total_cobrado', label: 'Total Cobrado', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'total_efectivo', label: 'Efectivo', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'total_qr', label: 'QR', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'num_pagos', label: 'Nro. Pagos' }
+  ], [simboloMoneda]);
 
   const loadData = async () => {
     const params = {};

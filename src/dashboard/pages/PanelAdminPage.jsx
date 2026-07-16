@@ -9,11 +9,12 @@ import { Card } from "../../components/CardResumen";
 import { CarteraEstadoCards } from "../../reportes/components/CarteraEstadoCards";
 import { RecaudacionMensualChart } from "../../reportes/components/RecaudacionMensualChart";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 const hoyISO = () => new Date().toISOString().slice(0, 10);
 const primerDiaMes = () => { const d = new Date(); d.setDate(1); return d.toISOString().slice(0, 10); };
 const inicioTendencia = () => { const d = new Date(); d.setMonth(d.getMonth() - 5); d.setDate(1); return d.toISOString().slice(0, 10); };
-const bs = (n) => `Bs. ${parseFloat(n || 0).toFixed(2)}`;
 
 const SectionHeader = ({ title, to, cta = "Ver detalle" }) => (
   <div className="flex items-center justify-between mb-4">
@@ -29,6 +30,7 @@ const SectionHeader = ({ title, to, cta = "Ver detalle" }) => (
 export const PanelAdminPage = () => {
   const { getSummary } = useEmpresa();
   const { getCarteraPorEstado, getRecaudacionMensual, getCobrosPorCobrador, getMoraDetallada } = useReportes();
+  const { simboloMoneda } = useConfig();
 
   const [summary, setSummary] = useState({});
   const [cartera, setCartera] = useState([]);
@@ -87,8 +89,8 @@ export const PanelAdminPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card title="Clientes activos" value={summary.clientes_activos || 0} icon={<Users size={24} />} color="bg-blue-500" />
         <Card title="Préstamos activos" value={summary.prestamos_pendientes || 0} icon={<FileText size={24} />} color="bg-green-500" />
-        <Card title="Saldo en cartera" value={bs(saldoCartera)} icon={<Wallet size={24} />} color="bg-indigo-500" />
-        <Card title="Recaudado (este mes)" value={bs(summary.total_recaudado)} icon={<BadgeDollarSign size={24} />} color="bg-emerald-600" />
+        <Card title="Saldo en cartera" value={formatMoney(saldoCartera, simboloMoneda)} icon={<Wallet size={24} />} color="bg-indigo-500" />
+        <Card title="Recaudado (este mes)" value={formatMoney(summary.total_recaudado, simboloMoneda)} icon={<BadgeDollarSign size={24} />} color="bg-emerald-600" />
       </div>
 
       {/* Alerta de mora */}
@@ -103,7 +105,7 @@ export const PanelAdminPage = () => {
               {mora.count}
               {mora.count > 0 && (
                 <span className="text-sm font-normal text-gray-500 ml-2">
-                  · saldo {bs(mora.saldo)}{mora.recargo > 0 ? ` · recargo ${bs(mora.recargo)}` : ""}
+                  · saldo {formatMoney(mora.saldo, simboloMoneda)}{mora.recargo > 0 ? ` · recargo ${formatMoney(mora.recargo, simboloMoneda)}` : ""}
                 </span>
               )}
             </p>
@@ -148,7 +150,7 @@ export const PanelAdminPage = () => {
                           <div className="bg-emerald-500 h-3 rounded-full"
                             style={{ width: `${(parseFloat(c.total_cobrado) / maxCobro) * 100}%` }} />
                         </div>
-                        <span className="font-semibold text-gray-800 whitespace-nowrap">{bs(c.total_cobrado)}</span>
+                        <span className="font-semibold text-gray-800 whitespace-nowrap">{formatMoney(c.total_cobrado, simboloMoneda)}</span>
                       </div>
                     </td>
                   </tr>

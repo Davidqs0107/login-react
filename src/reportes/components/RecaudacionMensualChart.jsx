@@ -1,9 +1,13 @@
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
+
 const formatMes = (mesStr, opts) => {
   const [year, month] = mesStr.split("-").map(Number);
   return new Date(year, month - 1, 1).toLocaleDateString("es-ES", opts);
 };
 
 export const RecaudacionMensualChart = ({ data }) => {
+  const { simboloMoneda } = useConfig();
   if (!data || data.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
@@ -35,19 +39,19 @@ export const RecaudacionMensualChart = ({ data }) => {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Total Cobrado:</span>
                 <span className="text-xl font-bold text-green-600">
-                  Bs. {parseFloat(item.total_cobrado).toFixed(2)}
+                  {formatMoney(item.total_cobrado, simboloMoneda)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Efectivo:</span>
                 <span className="text-sm font-semibold text-gray-700">
-                  Bs. {parseFloat(item.total_efectivo).toFixed(2)}
+                  {formatMoney(item.total_efectivo, simboloMoneda)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">QR:</span>
                 <span className="text-sm font-semibold text-gray-700">
-                  Bs. {parseFloat(item.total_qr).toFixed(2)}
+                  {formatMoney(item.total_qr, simboloMoneda)}
                 </span>
               </div>
               <div className="pt-2 border-t">
@@ -88,7 +92,7 @@ export const RecaudacionMensualChart = ({ data }) => {
                     {formatMes(item.mes, { year: "numeric", month: "short" })}
                   </span>
                   <span className="text-sm font-bold text-gray-900">
-                    Bs. {totalCobrado.toFixed(2)}
+                    {formatMoney(totalCobrado, simboloMoneda)}
                   </span>
                 </div>
                 <div className="relative">

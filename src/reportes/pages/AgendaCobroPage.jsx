@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { AgendaCobroTable } from "../components/AgendaCobroTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const AGENDA_COLUMNS = [
-    { key: 'cliente', label: 'Cliente' },
-    { key: 'telefono', label: 'Teléfono' },
-    { key: 'direccion', label: 'Dirección' },
-    { key: 'numero_cuota', label: 'Cuota #' },
-    { key: 'fecha_pago', label: 'Fecha Pago' },
-    { key: 'monto_cuota', label: 'Monto' }
-];
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const AgendaCobroPage = () => {
   const [data, setData] = useState([]);
@@ -23,6 +16,16 @@ export const AgendaCobroPage = () => {
     pageSize: 50,
   });
   const { getAgendaCobro, loading } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const AGENDA_COLUMNS = useMemo(() => [
+    { key: 'cliente', label: 'Cliente' },
+    { key: 'telefono', label: 'Teléfono', format: (v, row) => formatPhone(v, row.codigo_pais) },
+    { key: 'direccion', label: 'Dirección' },
+    { key: 'numero_cuota', label: 'Cuota #' },
+    { key: 'fecha_pago', label: 'Fecha Pago' },
+    { key: 'monto_cuota', label: 'Monto', format: (v) => formatMoney(v, simboloMoneda) }
+  ], [simboloMoneda]);
 
   const loadData = async () => {
     const params = { ...filters };

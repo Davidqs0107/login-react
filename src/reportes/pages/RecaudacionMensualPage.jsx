@@ -1,16 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { RecaudacionMensualChart } from "../components/RecaudacionMensualChart";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const RECAUDACION_COLUMNS = [
-    { key: 'mes', label: 'Mes' },
-    { key: 'total_cobrado', label: 'Total' },
-    { key: 'total_efectivo', label: 'Efectivo' },
-    { key: 'total_qr', label: 'QR' },
-    { key: 'num_pagos', label: 'Nro. Pagos' }
-];
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const RecaudacionMensualPage = () => {
   const [data, setData] = useState([]);
@@ -19,6 +13,15 @@ export const RecaudacionMensualPage = () => {
     fecha_fin: "",
   });
   const { getRecaudacionMensual, loading } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const RECAUDACION_COLUMNS = useMemo(() => [
+    { key: 'mes', label: 'Mes' },
+    { key: 'total_cobrado', label: 'Total', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'total_efectivo', label: 'Efectivo', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'total_qr', label: 'QR', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'num_pagos', label: 'Nro. Pagos' }
+  ], [simboloMoneda]);
 
   const loadData = async () => {
     const params = {};

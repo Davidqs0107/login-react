@@ -1,4 +1,8 @@
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
+
 export const MoraDetalladaTable = ({ data }) => {
+  const { simboloMoneda } = useConfig();
   const getMoraColor = (dias) => {
     if (dias <= 30) return "bg-yellow-100 text-yellow-800";
     if (dias <= 60) return "bg-orange-100 text-orange-800";
@@ -63,7 +67,7 @@ export const MoraDetalladaTable = ({ data }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{item.telefono}</div>
+                  <div className="text-sm text-gray-900">{formatPhone(item.telefono, item.codigo_pais)}</div>
                   <div className="text-sm text-gray-500">{item.direccion}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -77,10 +81,10 @@ export const MoraDetalladaTable = ({ data }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    Bs. {parseFloat(item.monto_cuota).toFixed(2)}
+                    {formatMoney(item.monto_cuota, simboloMoneda)}
                   </div>
                   <div className="text-sm text-gray-500">
-                    Pendiente: Bs. {parseFloat(item.saldo_pendiente).toFixed(2)}
+                    Pendiente: {formatMoney(item.saldo_pendiente, simboloMoneda)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

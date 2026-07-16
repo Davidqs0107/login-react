@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LabeledInput } from "../../components/LabeledInput";
+import { SelectPais } from "../../components/SelectPais";
 import { Button } from "../../components/Button";
 import { useForm } from "react-hook-form";
 import { formFields } from "../forms/clienteForm";
@@ -81,6 +82,7 @@ export const ClientPage = () => {
     formFields.forEach((field) => {
       return setValue(field.name, client[field.name]);
     });
+    setValue("codigo_pais", client.codigo_pais || "+591");
     clearErrors();
   };
   const handleDelete = async (clientId) => {
@@ -148,6 +150,13 @@ export const ClientPage = () => {
           onSubmit={onSubmit}
         >
           <div className="grid grid-cols-2 gap-4">
+            <SelectPais
+              name="codigo_pais"
+              register={register}
+              errors={errors}
+              defaultValue={selectedClient?.codigo_pais || "+591"}
+              label="Indicativo"
+            />
             {formFields.map((field, i) => (
               <div key={i}>
                 <LabeledInput

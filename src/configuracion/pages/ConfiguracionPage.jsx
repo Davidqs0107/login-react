@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useConfiguracion } from "../hooks/useConfiguracion";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { SelectMoneda } from "../../components/SelectMoneda";
+import { useConfig } from "../../context/ConfigContext";
 
 const MORA_TIPOS = [
   { value: "porcentaje_cuota", label: "% único sobre la cuota" },
@@ -17,10 +19,12 @@ const initial = {
   mora_tope: "",
   incumplido_dias: 90,
   moneda: "BOB",
+  simbolo_moneda: "Bs.",
 };
 
 export const ConfiguracionPage = () => {
   const { getConfiguracion, updateConfiguracion, loading } = useConfiguracion();
+  const { setConfig } = useConfig();
   const [form, setForm] = useState(initial);
   const [cargando, setCargando] = useState(true);
 
@@ -36,6 +40,7 @@ export const ConfiguracionPage = () => {
           mora_tope: cfg.mora_tope ?? "",
           incumplido_dias: cfg.incumplido_dias ?? 90,
           moneda: cfg.moneda ?? "BOB",
+          simbolo_moneda: cfg.simbolo_moneda ?? "Bs.",
         });
       }
       setCargando(false);
@@ -55,6 +60,12 @@ export const ConfiguracionPage = () => {
     };
     const res = await updateConfiguracion(payload);
     if (res) {
+      const next = {
+        simboloMoneda: res.simbolo_moneda,
+        moneda: res.moneda,
+      };
+      setConfig(next);
+      localStorage.setItem('config', JSON.stringify(next));
       Swal.fire({ title: "Configuración guardada", icon: "success", timer: 1800, showConfirmButton: false });
     } else {
       Swal.fire({ title: "No se pudo guardar", icon: "error" });
@@ -152,6 +163,14 @@ export const ConfiguracionPage = () => {
               onChange={(e) => set("moneda", e.target.value.toUpperCase())}
               className="w-full border border-gray-300 rounded-md p-2"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Símbolo de moneda</label>
+            <SelectMoneda
+              value={form.simbolo_moneda}
+              onChange={(e) => set("simbolo_moneda", e.target.value)}
+            />
+            <p className="text-xs text-gray-500 mt-1">Se mostrará en tablas, dashboard y PDFs.</p>
           </div>
         </div>
 

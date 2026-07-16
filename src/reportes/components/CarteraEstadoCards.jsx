@@ -1,4 +1,8 @@
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
+
 export const CarteraEstadoCards = ({ data }) => {
+  const { simboloMoneda } = useConfig();
   const getEstadoColor = (estado) => {
     const colors = {
       pendiente: "bg-gray-100 border-gray-300 text-gray-800",
@@ -57,21 +61,21 @@ export const CarteraEstadoCards = ({ data }) => {
               <div>
                 <p className="text-xs opacity-75">Capital Prestado</p>
                 <p className="text-xl font-bold">
-                  Bs. {parseFloat(item.capital_prestado).toFixed(2)}
+                  {formatMoney(item.capital_prestado, simboloMoneda)}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs opacity-75">Total Pagado</p>
                 <p className="text-lg font-semibold">
-                  Bs. {parseFloat(item.total_pagado).toFixed(2)}
+                  {formatMoney(item.total_pagado, simboloMoneda)}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs opacity-75">Saldo Pendiente</p>
                 <p className="text-lg font-semibold">
-                  Bs. {parseFloat(item.saldo_pendiente).toFixed(2)}
+                  {formatMoney(item.saldo_pendiente, simboloMoneda)}
                 </p>
               </div>
 

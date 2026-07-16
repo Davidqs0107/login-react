@@ -1,4 +1,4 @@
-import { LogOut, Menu, X } from 'lucide-react';
+import { LogOut, Menu, X, LayoutDashboard, Building2, CreditCard, ListChecks } from 'lucide-react';
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContex';
@@ -48,26 +48,28 @@ const SidebarAdmin = () => {
             )}
             <div className={`bg-gray-800 text-white w-64 min-h-screen p-4 fixed left-0 top-0 z-20 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
                 } md:translate-x-0`}>
-                <h2 className="text-2xl font-semibold mb-6">Hola {user.name}</h2>
+                <h2 className="text-2xl font-semibold mb-6">Hola {user?.name || user?.nombre || 'Admin'}</h2>
                 <nav>
                     <ul className="space-y-2">
                         <li>
                             <NavLink
-                                to="/"
+                                to="/admin/dashboard"
                                 className={({ isActive }) =>
-                                    `block p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
+                                    `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
                                 }
                             >
-                                Inicio
+                                <LayoutDashboard size={18} />
+                                Dashboard
                             </NavLink>
                         </li>
                         <li>
                             <NavLink
                                 to="/admin/empresas"
                                 className={({ isActive }) =>
-                                    `block p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
+                                    `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
                                 }
                             >
+                                <Building2 size={18} />
                                 Empresas
                             </NavLink>
                         </li>
@@ -75,9 +77,10 @@ const SidebarAdmin = () => {
                             <NavLink
                                 to="/admin/planes"
                                 className={({ isActive }) =>
-                                    `block p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
+                                    `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
                                 }
                             >
+                                <CreditCard size={18} />
                                 Planes
                             </NavLink>
                         </li>
@@ -85,9 +88,10 @@ const SidebarAdmin = () => {
                             <NavLink
                                 to="/admin/suscripciones"
                                 className={({ isActive }) =>
-                                    `block p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
+                                    `flex items-center gap-2 p-2 rounded-lg ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'}`
                                 }
                             >
+                                <ListChecks size={18} />
                                 Suscripciones
                             </NavLink>
                         </li>

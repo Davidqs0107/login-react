@@ -32,6 +32,7 @@ import { ComprobantesPage } from "../comprobantes/pages/ComprobantesPage";
 import { SuscripcionesAdminPage } from "../suscripciones/pages/SuscripcionesAdminPage";
 import { PortalPage } from "../portal/pages/PortalPage";
 import { GuiaPage } from "../guia/pages/GuiaPage";
+import { SuperAdminDashboard } from "../admin/pages/SuperAdminDashboard";
 
 export const AppRouter = () => {
   return (
@@ -58,6 +59,7 @@ export const AppRouter = () => {
         <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
         <Route path="/admin/planes" element={<PlanesAdminPages />} />
         <Route path="/admin/suscripciones" element={<SuscripcionesAdminPage />} />
+        <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
 
         {/* Reportes */}
         <Route path="/reportes" element={<ReportesIndexPage />} />

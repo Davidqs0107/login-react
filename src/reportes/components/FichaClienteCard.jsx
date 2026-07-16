@@ -1,4 +1,8 @@
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
+
 export const FichaClienteCard = ({ cliente, prestamos }) => {
+  const { simboloMoneda } = useConfig();
   const getEstadoColor = (estado) => {
     const colors = {
       pendiente: "bg-gray-500",
@@ -40,7 +44,7 @@ export const FichaClienteCard = ({ cliente, prestamos }) => {
           <div>
             <p className="text-sm text-gray-600">Teléfono</p>
             <p className="text-lg font-semibold text-gray-900">
-              {cliente.telefono}
+              {formatPhone(cliente.telefono, cliente.codigo_pais)}
             </p>
           </div>
           <div>
@@ -108,7 +112,7 @@ export const FichaClienteCard = ({ cliente, prestamos }) => {
                       <div>
                         <p className="text-xs text-gray-600">Capital</p>
                         <p className="text-lg font-bold text-gray-900">
-                          Bs. {parseFloat(prestamo.capital).toFixed(2)}
+                          {formatMoney(prestamo.capital, simboloMoneda)}
                         </p>
                       </div>
                       <div>
@@ -120,13 +124,13 @@ export const FichaClienteCard = ({ cliente, prestamos }) => {
                       <div>
                         <p className="text-xs text-gray-600">Total a Pagar</p>
                         <p className="text-lg font-bold text-gray-900">
-                          Bs. {parseFloat(prestamo.total_a_pagar).toFixed(2)}
+                          {formatMoney(prestamo.total_a_pagar, simboloMoneda)}
                         </p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-600">Saldo Restante</p>
                         <p className="text-lg font-bold text-red-600">
-                          Bs. {parseFloat(prestamo.saldo_restante).toFixed(2)}
+                          {formatMoney(prestamo.saldo_restante, simboloMoneda)}
                         </p>
                       </div>
                     </div>

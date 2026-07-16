@@ -1,4 +1,8 @@
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
+
 export const CobrosCobradoresTable = ({ data }) => {
+  const { simboloMoneda } = useConfig();
   if (!data || data.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
@@ -79,14 +83,14 @@ export const CobrosCobradoresTable = ({ data }) => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {item.telefono}
+                    {formatPhone(item.telefono, item.codigo_pais)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {item.num_pagos}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-lg font-bold text-green-600">
-                      Bs. {totalCobrado.toFixed(2)}
+                      {formatMoney(totalCobrado, simboloMoneda)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -94,13 +98,13 @@ export const CobrosCobradoresTable = ({ data }) => {
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">Efectivo:</span>
                         <span className="font-semibold">
-                          Bs. {totalEfectivo.toFixed(2)}
+                          {formatMoney(totalEfectivo, simboloMoneda)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">QR:</span>
                         <span className="font-semibold">
-                          Bs. {totalQr.toFixed(2)}
+                          {formatMoney(totalQr, simboloMoneda)}
                         </span>
                       </div>
                       {/* Barra de progreso apilada */}

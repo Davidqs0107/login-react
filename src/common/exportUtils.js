@@ -10,8 +10,8 @@ export const exportToExcel = (data, columns, filename = 'reporte') => {
     const worksheetData = data.map(row => {
         const newRow = {};
         columns.forEach(col => {
-            const value = col.key.split('.').reduce((obj, key) => obj?.[key], row);
-            newRow[col.label] = value ?? '';
+            const raw = col.key.split('.').reduce((obj, key) => obj?.[key], row);
+            newRow[col.label] = col.format ? col.format(raw, row) : (raw ?? '');
         });
         return newRow;
     });
@@ -33,7 +33,8 @@ export const exportToPDF = (data, columns, title) => {
 
     const tableData = data.map(row =>
         columns.map(col => {
-            const value = col.key.split('.').reduce((obj, key) => obj?.[key], row);
+            const raw = col.key.split('.').reduce((obj, key) => obj?.[key], row);
+            const value = col.format ? col.format(raw, row) : raw;
             return value ?? '';
         })
     );

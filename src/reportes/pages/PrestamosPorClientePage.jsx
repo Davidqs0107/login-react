@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { PrestamosPorClienteTable } from "../components/PrestamosPorClienteTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const PRESTAMOS_COLUMNS = [
-    { key: 'cliente', label: 'Cliente' },
-    { key: 'ci', label: 'CI' },
-    { key: 'prestamo_id', label: 'Préstamo #' },
-    { key: 'capital', label: 'Capital' },
-    { key: 'estado_prestamo', label: 'Estado' },
-    { key: 'fecha_inicio', label: 'Fecha' }
-];
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 const ESTADOS = [
   { value: "", label: "Todos los estados" },
@@ -38,6 +31,17 @@ export const PrestamosPorClientePage = () => {
     fecha_fin: "",
   });
   const { getPrestamosPorCliente, loading } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const PRESTAMOS_COLUMNS = useMemo(() => [
+    { key: 'cliente', label: 'Cliente' },
+    { key: 'ci', label: 'CI' },
+    { key: 'telefono', label: 'Teléfono', format: (v, row) => formatPhone(v, row.codigo_pais) },
+    { key: 'prestamo_id', label: 'Préstamo #' },
+    { key: 'capital', label: 'Capital', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'estado_prestamo', label: 'Estado' },
+    { key: 'fecha_inicio', label: 'Fecha' }
+  ], [simboloMoneda]);
 
   const loadData = async (params) => {
     const cleanParams = { ...params };

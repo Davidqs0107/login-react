@@ -1,6 +1,9 @@
 import { Link } from "react-router";
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const AgendaCobroTable = ({ data }) => {
+  const { simboloMoneda } = useConfig();
   const getEstadoColor = (estado) => {
     const colors = {
       pendiente: "bg-gray-100 text-gray-800",
@@ -83,7 +86,7 @@ export const AgendaCobroTable = ({ data }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {item.telefono}
+                        {formatPhone(item.telefono, item.codigo_pais)}
                       </div>
                       <div className="text-sm text-gray-500">
                         {item.direccion}
@@ -99,11 +102,10 @@ export const AgendaCobroTable = ({ data }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
-                        Bs. {parseFloat(item.monto_cuota).toFixed(2)}
+                        {formatMoney(item.monto_cuota, simboloMoneda)}
                       </div>
                       <div className="text-sm text-gray-500">
-                        Pendiente: Bs.{" "}
-                        {parseFloat(item.monto_pendiente).toFixed(2)}
+                        Pendiente: {formatMoney(item.monto_pendiente, simboloMoneda)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

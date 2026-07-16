@@ -3,6 +3,7 @@ import React from "react";
 import Swal from "sweetalert2";
 import { ScoreBadge } from "./ScoreBadge";
 import { generarPortalTokenRequest } from "../../api/clientes";
+import { formatPhone } from "../../helpers/format";
 
 export const ClientsTable = ({ clients = [], meta, onPageChange, onEdit, onDelete }) => {
     const { page, totalPages } = meta;
@@ -45,7 +46,7 @@ export const ClientsTable = ({ clients = [], meta, onPageChange, onEdit, onDelet
                             <td className="px-4 py-2 border border-gray-200">{client.nombre}</td>
                             <td className="px-4 py-2 border border-gray-200">{client.apellido}</td>
                             <td className="px-4 py-2 border border-gray-200">{client.ci}</td>
-                            <td className="px-4 py-2 border border-gray-200">{client.telefono}</td>
+                            <td className="px-4 py-2 border border-gray-200">{formatPhone(client.telefono, client.codigo_pais)}</td>
                             <td className="px-4 py-2 border border-gray-200">{client.email}</td>
                             <td className="px-4 py-2 border border-gray-200">{client.direccion}</td>
                             <td className="px-4 py-2 border border-gray-200"><ScoreBadge clienteId={client.id} /></td>

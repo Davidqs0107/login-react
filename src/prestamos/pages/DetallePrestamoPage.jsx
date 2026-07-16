@@ -13,6 +13,7 @@ import { Eye, MapPinned } from "lucide-react";
 import { tipoPrestamo } from "../../common/constans";
 import { useAuth } from "../../context/AuthContex";
 import { LoaderLocal } from "../../components/LoaderLocal";
+import { formatPhone } from "../../helpers/format";
 import { completarPrestamoRequest } from "../../api/prestamos";
 import Swal from "sweetalert2";
 
@@ -249,7 +250,7 @@ export const DetallePrestamoPage = () => {
               <strong>Dirección:</strong> {prestamo.direccion}
             </p>
             <p>
-              <strong>Telefono:</strong> {prestamo.telefono}
+              <strong>Telefono:</strong> {formatPhone(prestamo.telefono, prestamo.codigo_pais)}
             </p>
             {ubicacionBoton && (
               <p>

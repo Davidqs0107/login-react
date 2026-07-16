@@ -1,5 +1,6 @@
 import { UserRoundPen, UserRoundX } from "lucide-react";
 import React from "react";
+import { formatPhone } from "../../helpers/format";
 
 export const UsersTable = ({ users = [], onEdit, onDelete }) => {
     return (
@@ -22,7 +23,7 @@ export const UsersTable = ({ users = [], onEdit, onDelete }) => {
                             <td className="px-4 py-2 border border-gray-200">{user.nombre}</td>
                             <td className="px-4 py-2 border border-gray-200">{user.apellido}</td>
                             <td className="px-4 py-2 border border-gray-200">{user.ci}</td>
-                            <td className="px-4 py-2 border border-gray-200">{user.telefono}</td>
+                            <td className="px-4 py-2 border border-gray-200">{formatPhone(user.telefono, user.codigo_pais)}</td>
                             <td className="px-4 py-2 border border-gray-200">{user.email}</td>
                             <td className="px-4 py-2 border border-gray-200">{user.rol}</td>
                             <td className="px-4 py-2 border border-gray-200">

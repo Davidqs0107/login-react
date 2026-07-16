@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Navigate } from 'react-router'
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout'
 import { useEmpresa } from '../hooks/useEmpresa'
 import { useAuth } from '../../context/AuthContex'
@@ -26,6 +27,11 @@ export const DashboardPage = () => {
             fetchSummaryCobrador();
         }
     }, [isLoading]);
+
+    // El superadmin tiene su propio dashboard cross-empresa
+    if (!isLoading && user?.rol === roles.SuperAdmin) {
+        return <Navigate to="/admin/dashboard" replace />;
+    }
 
     // El home del admin es el panel analítico completo
     if (!isLoading && user?.rol === roles.Admin) {

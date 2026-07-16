@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { formatMoney, formatPhone } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 const ESTADO_STYLES = {
   pendiente: { badge: "bg-gray-100 text-gray-800", label: "Pendiente" },
@@ -13,6 +15,7 @@ const formatFecha = (isoStr) => {
 };
 
 export const PrestamosPorClienteTable = ({ data }) => {
+  const { simboloMoneda } = useConfig();
   if (!data || data.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
@@ -90,7 +93,7 @@ export const PrestamosPorClienteTable = ({ data }) => {
 
                   {/* Contacto */}
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{item.telefono}</div>
+                    <div className="text-sm text-gray-900">{formatPhone(item.telefono, item.codigo_pais)}</div>
                     <div className="text-xs text-gray-500 max-w-[140px] truncate">
                       {item.direccion}
                     </div>
@@ -112,13 +115,13 @@ export const PrestamosPorClienteTable = ({ data }) => {
                   {/* Capital / Interés */}
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
-                      Bs. {parseFloat(item.capital).toFixed(2)}
+                      {formatMoney(item.capital, simboloMoneda)}
                     </div>
                     <div className="text-xs text-gray-500">
                       {parseFloat(item.tasa_interes).toFixed(2)}% interés
                     </div>
                     <div className="text-xs text-red-500 font-medium">
-                      Saldo: Bs. {parseFloat(item.saldo_pendiente).toFixed(2)}
+                      Saldo: {formatMoney(item.saldo_pendiente, simboloMoneda)}
                     </div>
                   </td>
 
@@ -144,7 +147,7 @@ export const PrestamosPorClienteTable = ({ data }) => {
                   {/* Pagado / Total */}
                   <td className="px-4 py-3 whitespace-nowrap min-w-[140px]">
                     <div className="flex justify-between text-xs text-gray-600 mb-1">
-                      <span>Bs. {totalPagado.toFixed(2)}</span>
+                      <span>{formatMoney(totalPagado, simboloMoneda)}</span>
                       <span className="font-semibold">{recuperadoPct}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
@@ -154,7 +157,7 @@ export const PrestamosPorClienteTable = ({ data }) => {
                       />
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
-                      de Bs. {totalAPagar.toFixed(2)}
+                      de {formatMoney(totalAPagar, simboloMoneda)}
                     </div>
                   </td>
 

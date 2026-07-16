@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { RegisterTableLayout } from '../../layout/RegisterTableLayout'
 import { Button } from '../../components/Button'
 import { LabeledInput } from '../../components/LabeledInput'
+import { SelectPais } from '../../components/SelectPais'
 import { formFields } from '../forms/usuarioForm'
 import { useForm } from 'react-hook-form'
 import { useUsers } from '../hooks/useUsers'
 import Swal from 'sweetalert2'
 import { useAuth } from '../../context/AuthContex'
-import { LoaderLocal } from '../../components/LoaderLocal'
+import { LoaderLocal } from '../../components/LoaderLocal';
 
 export const PerfilPage = () => {
     const { user } = useAuth();
@@ -65,6 +66,13 @@ export const PerfilPage = () => {
             {loading && <LoaderLocal />}
             <form className='mt-8 space-y-6  md:w-2/4 sm:w-full' onSubmit={onSubmit}>
                 <div className='grid grid-cols-2 gap-4'>
+                    <SelectPais
+                        name="codigo_pais"
+                        register={register}
+                        errors={errors}
+                        defaultValue={user?.codigo_pais || "+591"}
+                        label="Indicativo"
+                    />
                     {getDynamicFormFields().map((field, i) => (
                         <div key={i}>
                             <LabeledInput

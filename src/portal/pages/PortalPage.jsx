@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import Swal from "sweetalert2";
 import { usePortal } from "../hooks/usePortal";
+import { formatMoney } from "../../helpers/format";
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 const ACCEPTED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
@@ -134,12 +135,12 @@ export const PortalPage = () => {
           <div className="flex gap-6 mt-4">
             <div>
               <p className="text-xs text-gray-500 uppercase">Saldo total</p>
-              <p className="text-2xl font-bold text-gray-800">{data.moneda} {data.total_saldo}</p>
+              <p className="text-2xl font-bold text-gray-800">{formatMoney(data.total_saldo, data.simbolo_moneda)}</p>
             </div>
             {data.total_mora > 0 && (
               <div>
                 <p className="text-xs text-gray-500 uppercase">Mora</p>
-                <p className="text-2xl font-bold text-red-600">{data.moneda} {data.total_mora}</p>
+                <p className="text-2xl font-bold text-red-600">{formatMoney(data.total_mora, data.simbolo_moneda)}</p>
               </div>
             )}
           </div>
@@ -150,7 +151,7 @@ export const PortalPage = () => {
           <div key={p.id} className="bg-white rounded-lg shadow p-6">
             <div className="flex justify-between items-center mb-3">
               <h2 className="font-semibold text-gray-800">Préstamo #{p.id}</h2>
-              <span className="text-sm text-gray-500">Saldo: {data.moneda} {p.saldo}</span>
+              <span className="text-sm text-gray-500">Saldo: {formatMoney(p.saldo, data.simbolo_moneda)}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">

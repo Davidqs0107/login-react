@@ -3,6 +3,7 @@ import { formatDateWithDateFns } from '../../common/functions'
 import { Eye } from 'lucide-react'
 import { roles } from '../../common/constans'
 import Swal from 'sweetalert2'
+import { formatPhone } from '../../helpers/format'
 
 export const DescargosTable = ({ descargos = [], rol, aprobar }) => {
     const handleOpenModal = (descargo) => {
@@ -13,7 +14,7 @@ export const DescargosTable = ({ descargos = [], rol, aprobar }) => {
                 <p><strong>Nombre:</strong> ${descargo.nombre}</p>
                 <p><strong>Apellido:</strong> ${descargo.apellido}</p>
                 <p><strong>CI:</strong> ${descargo.ci}</p>
-                <p><strong>Telefono:</strong> ${descargo.telefono}</p>
+                <p><strong>Telefono:</strong> ${formatPhone(descargo.telefono, descargo.codigo_pais)}</p>
                 <p><strong>Email:</strong> ${descargo.email}</p>
                 <p><strong>Tipo de pago:</strong> ${descargo.tipo_pago}</p>
                 <p><strong>Monto:</strong> ${descargo.monto}</p>
@@ -68,7 +69,7 @@ export const DescargosTable = ({ descargos = [], rol, aprobar }) => {
                                         <td className="px-4 py-2 border border-gray-200">{descargo?.nombre}</td>
                                         <td className="px-4 py-2 border border-gray-200">{descargo?.apellido}</td>
                                         <td className="px-4 py-2 border border-gray-200">{descargo?.ci}</td>
-                                        <td className="px-4 py-2 border border-gray-200">{descargo?.telefono}</td>
+                                        <td className="px-4 py-2 border border-gray-200">{formatPhone(descargo?.telefono, descargo?.codigo_pais)}</td>
                                         <td className="px-4 py-2 border border-gray-200">{descargo?.email}</td>
                                     </>
                                 )}

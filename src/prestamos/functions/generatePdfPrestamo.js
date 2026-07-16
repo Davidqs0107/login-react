@@ -2,9 +2,11 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
 import { tipoPrestamo } from "../../common/constans";
+import { formatMoney, formatPhone, getSimboloMoneda } from "../../helpers/format";
 
 export const generatePDF = (prestamo, cuotas) => {
     const doc = new jsPDF();
+    const simbolo = getSimboloMoneda();
 
     // ============ FUNCIONES DE CÁLCULO ============
 
@@ -109,11 +111,11 @@ export const generatePDF = (prestamo, cuotas) => {
     doc.text(`CI: ${prestamo.ci}`, 14, 42);
     doc.text(`Email: ${prestamo.email}`, 14, 48);
     doc.text(`Dirección: ${prestamo.direccion}`, 14, 54);
-    doc.text(`Teléfono: ${prestamo.telefono}`, 14, 60);
+    doc.text(`Teléfono: ${formatPhone(prestamo.telefono, prestamo.codigo_pais)}`, 14, 60);
 
     // Detalles del Préstamo
     doc.text("Detalles del Préstamo", 14, 70);
-    doc.text(`Monto: ${prestamo.monto}`, 14, 76);
+    doc.text(`Monto: ${formatMoney(prestamo.monto, simbolo)}`, 14, 76);
     doc.text(`Tipo: ${formtaTipoPrestamo(prestamo.tipo_prestamo)}`, 14, 82);
     doc.text(`Tasa de Interés: ${prestamo.tasa_interes}%`, 14, 88);
     doc.text(`Frecuencia de Pago: ${prestamo.frecuencia_pago}`, 14, 94);
@@ -131,10 +133,10 @@ export const generatePDF = (prestamo, cuotas) => {
     const interesGanadoValue = interesGanado();
     const saldoInteresValue = saldoInteres();
 
-    doc.text(`Capital Pagado: ${capitalPagado}`, 14, 122);
-    doc.text(`Saldo Capital Pendiente: ${saldoCapitalValue}`, 14, 128);
-    doc.text(`Interés Ganado: ${interesGanadoValue}`, 110, 122);
-    doc.text(`Saldo Interés Pendiente: ${saldoInteresValue}`, 110, 128);
+    doc.text(`Capital Pagado: ${formatMoney(capitalPagado, simbolo)}`, 14, 122);
+    doc.text(`Saldo Capital Pendiente: ${formatMoney(saldoCapitalValue, simbolo)}`, 14, 128);
+    doc.text(`Interés Ganado: ${formatMoney(interesGanadoValue, simbolo)}`, 110, 122);
+    doc.text(`Saldo Interés Pendiente: ${formatMoney(saldoInteresValue, simbolo)}`, 110, 128);
 
     // Tabla de Cuotas
     const tableColumn = [
@@ -168,11 +170,11 @@ export const generatePDF = (prestamo, cuotas) => {
         return [
             cuota.numero_cuota,
             formatDate(cuota.fecha_pago),
-            capitalCuota.toFixed(2),
-            interesCuota.toFixed(2),
-            parseFloat(cuota.monto).toFixed(2),
-            parseFloat(cuota.monto_pagado || 0).toFixed(2),
-            saldoCuota(cuota).toFixed(2),
+            formatMoney(capitalCuota, simbolo),
+            formatMoney(interesCuota, simbolo),
+            formatMoney(cuota.monto, simbolo),
+            formatMoney(cuota.monto_pagado || 0, simbolo),
+            formatMoney(saldoCuota(cuota), simbolo),
             cuota.estado
         ];
     });

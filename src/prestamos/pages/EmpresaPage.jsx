@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LabeledInput } from "../../components/LabeledInput";
+import { SelectPais } from "../../components/SelectPais";
 import { Button } from "../../components/Button";
 import { useForm } from "react-hook-form";
 import { useEmpresa } from "../hooks/useEmpresa";
@@ -46,6 +47,12 @@ export const EmpresaPage = () => {
       },
     },
     {
+      name: "codigo_pais",
+      label: "Indicativo",
+      type: "select_pais",
+      required: false,
+    },
+    {
       name: "telefono",
       label: "Teléfono",
       type: "text",
@@ -53,8 +60,8 @@ export const EmpresaPage = () => {
       validation: {
         required: "El teléfono es requerido",
         pattern: {
-          value: /^[0-9]{7,10}$/,
-          message: "El teléfono debe tener entre 7 y 10 dígitos",
+          value: /^[0-9]{6,15}$/,
+          message: "Solo dígitos (6-15)",
         },
       },
     },
@@ -72,6 +79,7 @@ export const EmpresaPage = () => {
       setValue("nombre", empresaData.nombre);
       setValue("direccion", empresaData.direccion);
       setValue("telefono", empresaData.telefono);
+      setValue("codigo_pais", empresaData.codigo_pais);
     }
   };
 
@@ -80,6 +88,7 @@ export const EmpresaPage = () => {
       nombre: data.nombre,
       direccion: data.direccion,
       telefono: data.telefono,
+      codigo_pais: data.codigo_pais,
     };
 
     const result = await updateEmpresa(payload);
@@ -99,6 +108,7 @@ export const EmpresaPage = () => {
       setValue("nombre", empresa.nombre);
       setValue("direccion", empresa.direccion);
       setValue("telefono", empresa.telefono);
+      setValue("codigo_pais", empresa.codigo_pais);
     } else {
       reset();
     }
@@ -117,15 +127,26 @@ export const EmpresaPage = () => {
         <div className="grid grid-cols-1 gap-4">
           {formFields.map((field, i) => (
             <div key={i}>
-              <LabeledInput
-                type={field.type}
-                label={field.label}
-                name={field.name}
-                register={register}
-                require={field.required}
-                error={errors[field.name]}
-                {...register(field.name, field.validation)}
-              />
+              {field.type === 'select_pais' ? (
+                <SelectPais
+                  name={field.name}
+                  register={register}
+                  errors={errors}
+                  defaultValue={empresa?.codigo_pais || '+591'}
+                  label={field.label}
+                  required={field.required}
+                />
+              ) : (
+                <LabeledInput
+                  type={field.type}
+                  label={field.label}
+                  name={field.name}
+                  register={register}
+                  require={field.required}
+                  error={errors[field.name]}
+                  {...register(field.name, field.validation)}
+                />
+              )}
             </div>
           ))}
         </div>

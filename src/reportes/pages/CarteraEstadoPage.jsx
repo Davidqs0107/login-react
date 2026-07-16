@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { CarteraEstadoCards } from "../components/CarteraEstadoCards";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const CARTERA_COLUMNS = [
-    { key: 'estado_prestamo', label: 'Estado' },
-    { key: 'num_prestamos', label: 'Total Préstamos' },
-    { key: 'capital_prestado', label: 'Capital Prestado' },
-    { key: 'total_pagado', label: 'Total Pagado' },
-    { key: 'saldo_pendiente', label: 'Saldo Pendiente' }
-];
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const CarteraEstadoPage = () => {
   const [data, setData] = useState([]);
   const { getCarteraPorEstado, loading } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const CARTERA_COLUMNS = useMemo(() => [
+    { key: 'estado_prestamo', label: 'Estado' },
+    { key: 'num_prestamos', label: 'Total Préstamos' },
+    { key: 'capital_prestado', label: 'Capital Prestado', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'total_pagado', label: 'Total Pagado', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'saldo_pendiente', label: 'Saldo Pendiente', format: (v) => formatMoney(v, simboloMoneda) }
+  ], [simboloMoneda]);
 
   const loadData = async () => {
     const result = await getCarteraPorEstado();

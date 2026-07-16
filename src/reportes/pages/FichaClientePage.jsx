@@ -1,17 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { FichaClienteCard } from "../components/FichaClienteCard";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { useNavigate, useParams } from "react-router";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const FICHA_COLUMNS = [
-    { key: 'prestamo_id', label: 'ID Préstamo' },
-    { key: 'capital', label: 'Capital' },
-    { key: 'tasa_interes', label: 'Tasa' },
-    { key: 'estado_prestamo', label: 'Estado' },
-    { key: 'fecha_inicio', label: 'Fecha Inicio' }
-];
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const FichaClientePage = () => {
   const { clienteId } = useParams();
@@ -19,6 +13,15 @@ export const FichaClientePage = () => {
   const [clienteData, setClienteData] = useState(null);
   const [prestamos, setPrestamos] = useState([]);
   const { getFichaCliente, loading, error } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const FICHA_COLUMNS = useMemo(() => [
+    { key: 'prestamo_id', label: 'ID Préstamo' },
+    { key: 'capital', label: 'Capital', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'tasa_interes', label: 'Tasa' },
+    { key: 'estado_prestamo', label: 'Estado' },
+    { key: 'fecha_inicio', label: 'Fecha Inicio' }
+  ], [simboloMoneda]);
 
   const loadData = async () => {
     const result = await getFichaCliente(clienteId);

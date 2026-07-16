@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReportes } from "../hooks/useReportes";
 import { MoraDetalladaTable } from "../components/MoraDetalladaTable";
 import { LoaderLocal } from "../../components/LoaderLocal";
 import { exportToPDF, exportToExcel } from "../../common/exportUtils";
-
-const MORA_COLUMNS = [
-    { key: 'cliente', label: 'Cliente' },
-    { key: 'ci', label: 'CI' },
-    { key: 'numero_cuota', label: 'Cuota #' },
-    { key: 'monto_cuota', label: 'Monto' },
-    { key: 'fecha_vencimiento', label: 'Fecha Vencimiento' },
-    { key: 'dias_mora', label: 'Días Mora' }
-];
+import { formatMoney } from "../../helpers/format";
+import { useConfig } from "../../context/ConfigContext";
 
 export const MoraDetalladaPage = () => {
   const [data, setData] = useState([]);
@@ -23,6 +16,17 @@ export const MoraDetalladaPage = () => {
     cobrador_id: "",
   });
   const { getMoraDetallada, loading } = useReportes();
+  const { simboloMoneda } = useConfig();
+
+  const MORA_COLUMNS = useMemo(() => [
+    { key: 'cliente', label: 'Cliente' },
+    { key: 'ci', label: 'CI' },
+    { key: 'telefono', label: 'Teléfono', format: (v, row) => `${row.codigo_pais || ''} ${v || ''}`.trim() },
+    { key: 'numero_cuota', label: 'Cuota #' },
+    { key: 'monto_cuota', label: 'Monto', format: (v) => formatMoney(v, simboloMoneda) },
+    { key: 'fecha_vencimiento', label: 'Fecha Vencimiento' },
+    { key: 'dias_mora', label: 'Días Mora' }
+  ], [simboloMoneda]);
 
   const loadData = async () => {
     const params = { ...filters };

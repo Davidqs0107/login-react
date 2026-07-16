@@ -1,9 +1,11 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { formatDate, formatDateWithDateFns } from "../../common/functions";
+import { formatMoney, getSimboloMoneda } from "../../helpers/format";
 
 export const generatePaymentReceiptPDF = (cliente, pago, usuario, formato = "carta") => {
     const isVoucher = formato === "voucher";
+    const simbolo = getSimboloMoneda();
 
     const doc = new jsPDF({
         orientation: "portrait",
@@ -46,7 +48,7 @@ export const generatePaymentReceiptPDF = (cliente, pago, usuario, formato = "car
     doc.setFont("helvetica", "normal");
     doc.text("Monto del Pago:", 14, y);
     doc.setFont("helvetica", "bold");
-    doc.text(`${pago.monto}`, 50, y);
+    doc.text(formatMoney(pago.monto, simbolo), 50, y);
     y += 6;
 
     doc.setFont("helvetica", "normal");

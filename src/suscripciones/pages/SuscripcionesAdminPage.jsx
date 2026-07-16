@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { useSuscripcion } from "../hooks/useSuscripcion";
 import { LoaderLocal } from "../../components/LoaderLocal";
 
@@ -11,9 +12,11 @@ const estadoBadge = (estado) => ({
 
 export const SuscripcionesAdminPage = () => {
   const { getSuscripciones, loading } = useSuscripcion();
+  const [searchParams] = useSearchParams();
+  const estadoInicial = searchParams.get("estado") || "";
   const [rows, setRows] = useState([]);
   const [meta, setMeta] = useState(null);
-  const [filtro, setFiltro] = useState("");
+  const [filtro, setFiltro] = useState(estadoInicial);
   const [page, setPage] = useState(1);
 
   const load = async () => {

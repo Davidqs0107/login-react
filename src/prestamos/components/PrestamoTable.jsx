@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
 import { Eye, FileInput, FileSearch2 } from "lucide-react";
+import { formatPhone } from "../../helpers/format";
 
 export const LoansTable = ({
   loans = [],
@@ -168,7 +169,7 @@ export const LoansTable = ({
             </div>
             <div className="flex justify-between">
               <span className="font-bold">Telefono:</span>
-              <span>{loan.telefono}</span>
+              <span>{formatPhone(loan.telefono, loan.codigo_pais)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-bold">Direccion:</span>
