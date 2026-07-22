@@ -342,8 +342,8 @@ export const DetallePrestamoPage = () => {
             <p className="text-xs text-gray-500 mt-1">Interés por cobrar</p>
           </div>
         </div>
-        <div className="flex justify-between items-center gap-4 p-6 bg-white rounded-lg shadow ">
-          <div className="flex gap-4 items-center">
+        <div className="flex flex-wrap justify-between items-center gap-4 p-6 bg-white rounded-lg shadow">
+          <div className="flex flex-wrap gap-4 items-center">
             <Button
               clase="!bg-yellow-500 hover:!bg-yellow-700 text-white font-bold py-2 px-4 rounded !w-auto"
               onClick={onDownloadPDF}
@@ -354,7 +354,7 @@ export const DetallePrestamoPage = () => {
               Estado: {prestamo.estado_prestamo || 'activo'}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {user.rol === 'admin' &&
               !['completado', 'refinanciado'].includes(prestamo.estado_prestamo) && (
                 <Button

@@ -119,6 +119,13 @@ export const ClientsTable = ({ clients = [], meta, onPageChange, onEdit, onDelet
                                 <UserRoundPen />
                             </button>
                             <button
+                                className="text-emerald-600 hover:underline mr-2"
+                                title="Enlace del portal"
+                                onClick={() => handlePortal(client.id)}
+                            >
+                                <Link2 />
+                            </button>
+                            <button
                                 className="text-red-500 hover:underline"
                                 onClick={() => onDelete(client.id)}
                             >
