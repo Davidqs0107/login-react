@@ -10,6 +10,14 @@ const ACCION_LABEL = {
   arqueo_rechazado: "Rechazó un arqueo",
   comprobante_aprobado: "Aprobó un comprobante",
   comprobante_rechazado: "Rechazó un comprobante",
+  crear_pago: "Registró un pago",
+  crear_multipago: "Registró un pago múltiple",
+  crear_prestamo: "Creó un préstamo",
+  completar_prestamo: "Completó un préstamo",
+  crear_cliente: "Creó un cliente",
+  editar_cliente: "Editó un cliente",
+  eliminar_cliente: "Eliminó un cliente",
+  crear_usuario: "Creó un usuario",
 };
 
 const badgeColor = (accion) =>
@@ -56,6 +64,8 @@ export const AuditoriaPage = () => {
             <option value="configuracion_empresa">Configuración</option>
             <option value="arqueo">Arqueos</option>
             <option value="comprobante_pago">Comprobantes</option>
+            <option value="cliente">Clientes</option>
+            <option value="usuario">Usuarios</option>
           </select>
         </div>
       </div>

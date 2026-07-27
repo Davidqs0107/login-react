@@ -190,7 +190,7 @@ const Sidebar = () => {
                 </li>
               </>
             )}
-            {(user.rol === roles.Admin || user.rol === roles.SuperAdmin) && (
+            {(user.rol === roles.Admin || user.rol === roles.SuperAdmin || user.rol === roles.Cobrador) && (
               <li>
                 <NavLink
                   to="/pagos"

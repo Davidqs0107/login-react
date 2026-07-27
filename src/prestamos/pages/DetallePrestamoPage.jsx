@@ -46,6 +46,8 @@ export const DetallePrestamoPage = () => {
     setCuotas((prev) =>
       prev.map((c) => (c.id === cuota.id ? { ...c, ...cuota } : c))
     );
+    // Re-fetch para traer mora_cobrada, estado_prestamo y actualizar las cards
+    fetchUsers();
   };
   const fetchUsers = async () => {
     try {
@@ -61,7 +63,7 @@ export const DetallePrestamoPage = () => {
   };
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [prestamoId]);
   const onDownloadPDF = () => {
     generatePDF(prestamo, cuotas);
   };
@@ -215,6 +217,12 @@ export const DetallePrestamoPage = () => {
     return (interesMontoTotal() - parseFloat(interesGanado())).toFixed(2);
   };
 
+  // Mora Cobrada: suma de recargos por atraso ya cobrados en todas las cuotas
+  const moraCobradaTotal = cuotas.reduce(
+    (acc, c) => acc + parseFloat(c.mora_cobrada || 0),
+    0
+  );
+
   if (loading) {
     return (
       <RegisterTableLayout title="Detalle de Préstamo">
@@ -302,7 +310,7 @@ export const DetallePrestamoPage = () => {
         </div>
 
         {/* Resumen Financiero */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-lg mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-lg mt-4">
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Capital Pagado
@@ -340,6 +348,17 @@ export const DetallePrestamoPage = () => {
               {saldoInteres()}
             </p>
             <p className="text-xs text-gray-500 mt-1">Interés por cobrar</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Mora Cobrada
+            </h3>
+            <p className="text-2xl font-bold text-red-600">
+              {moraCobradaTotal.toFixed(2)}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Recargos por atraso ya cobrados
+            </p>
           </div>
         </div>
         <div className="flex flex-wrap justify-between items-center gap-4 p-6 bg-white rounded-lg shadow">
@@ -470,13 +489,25 @@ export const DetallePrestamoPage = () => {
                       {parseFloat(cuota.monto).toFixed(2)}
                     </td>
                     <td className="px-4 py-2">
-                      {parseFloat(cuota.monto_pagado || 0).toFixed(2)}
+                      {(parseFloat(cuota.monto_pagado || 0) + parseFloat(cuota.mora_cobrada || 0)).toFixed(2)}
+                      {parseFloat(cuota.mora_cobrada || 0) > 0 && (
+                        <div className="text-xs text-gray-500">
+                          {parseFloat(cuota.monto_pagado || 0).toFixed(2)} cuota + {parseFloat(cuota.mora_cobrada).toFixed(2)} mora
+                        </div>
+                      )}
                     </td>
                     <td className="px-4 py-2">
                       {saldoCuota(cuota).toFixed(2)}
                     </td>
                     {/* <td className="px-4 py-2">{saldoCapitalCuota}</td> */}
-                    <td className="px-4 py-2 capitalize">{cuota.estado}</td>
+                    <td className="px-4 py-2 capitalize">
+                      <div>{cuota.estado}</div>
+                      {parseFloat(cuota.mora_pendiente || 0) > 0 && (
+                        <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 normal-case">
+                          mora {parseFloat(cuota.mora_pendiente).toFixed(2)}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-2">
                       <div className="grid grid-cols-2 gap-2 ">
                         <Button

@@ -52,6 +52,7 @@ export const AppRouter = () => {
         <Route path="/descargos" element={<DescargoPage />} />
         <Route path="/arqueos" element={<ArqueoPage />} />
         <Route path="/comprobantes" element={<ComprobantesPage />} />
+        <Route path="/pagos" element={<PagosPage />} />
 
         <Route element={<RoleRoute roles={['super_admin']} />}>
           <Route path="/admin/empresas" element={<EmpresasAdminPages />} />
@@ -65,27 +66,29 @@ export const AppRouter = () => {
           <Route path="/configuracion" element={<ConfiguracionPage />} />
           <Route path="/auditoria" element={<AuditoriaPage />} />
           <Route path="/empresa" element={<EmpresaPage />} />
-          <Route path="/pagos" element={<PagosPage />} />
         </Route>
 
         {/* Reportes */}
         <Route path="/reportes" element={<ReportesIndexPage />} />
-        <Route path="/reportes/mora" element={<MoraDetalladaPage />} />
-        <Route path="/reportes/cartera" element={<CarteraEstadoPage />} />
-        <Route path="/reportes/cobros" element={<CobrosCobradoresPage />} />
         <Route path="/reportes/agenda" element={<AgendaCobroPage />} />
-        <Route
-          path="/reportes/recaudacion"
-          element={<RecaudacionMensualPage />}
-        />
-        <Route
-          path="/reportes/cliente/:clienteId"
-          element={<FichaClientePage />}
-        />
-        <Route
-          path="/reportes/prestamos"
-          element={<PrestamosPorClientePage />}
-        />
+
+        <Route element={<RoleRoute roles={['super_admin', 'admin']} />}>
+          <Route path="/reportes/mora" element={<MoraDetalladaPage />} />
+          <Route path="/reportes/cartera" element={<CarteraEstadoPage />} />
+          <Route path="/reportes/cobros" element={<CobrosCobradoresPage />} />
+          <Route
+            path="/reportes/recaudacion"
+            element={<RecaudacionMensualPage />}
+          />
+          <Route
+            path="/reportes/cliente/:clienteId"
+            element={<FichaClientePage />}
+          />
+          <Route
+            path="/reportes/prestamos"
+            element={<PrestamosPorClientePage />}
+          />
+        </Route>
 
         <Route path="/*" element={<Navigate to={"/"} />} />
       </Route>

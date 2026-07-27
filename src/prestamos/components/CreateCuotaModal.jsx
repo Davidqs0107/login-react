@@ -135,6 +135,9 @@ export const CreateCuotaModal = ({
                 Monto
               </th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                Mora
+              </th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
                 Tipo pago
               </th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
@@ -149,6 +152,7 @@ export const CreateCuotaModal = ({
                 <>
                   <td className="px-4 py-2">{formatDate(pago.fecha_pago)}</td>
                   <td className="px-4 py-2">{pago.monto}</td>
+                  <td className="px-4 py-2">{parseFloat(pago.monto_mora || 0).toFixed(2)}</td>
                   <td className="px-4 py-2">{pago.tipo_pago}</td>
                   <td className="px-4 py-2">
                     <Button
@@ -165,6 +169,12 @@ export const CreateCuotaModal = ({
         </table>
         {!onlyRead && (
           <>
+            {parseFloat(cuota.mora_pendiente || 0) > 0 && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded">
+                Mora pendiente: <b>{parseFloat(cuota.mora_pendiente).toFixed(2)}</b> — para saldar la cuota paga{" "}
+                <b>{(parseFloat(cuota.monto) - parseFloat(cuota.monto_pagado || 0) + parseFloat(cuota.mora_pendiente)).toFixed(2)}</b>
+              </div>
+            )}
             <LabeledInput
               label="Monto a Pagar"
               min={1}
