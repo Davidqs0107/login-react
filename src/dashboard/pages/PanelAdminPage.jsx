@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { useEmpresa } from "../../prestamos/hooks/useEmpresa";
 import { useReportes } from "../../reportes/hooks/useReportes";
+import { useArqueo } from "../../arqueos/hooks/useArqueo";
 import { Card } from "../../components/CardResumen";
 import { CarteraEstadoCards } from "../../reportes/components/CarteraEstadoCards";
 import { RecaudacionMensualChart } from "../../reportes/components/RecaudacionMensualChart";
@@ -30,6 +31,7 @@ const SectionHeader = ({ title, to, cta = "Ver detalle" }) => (
 export const PanelAdminPage = () => {
   const { getSummary } = useEmpresa();
   const { getCarteraPorEstado, getRecaudacionMensual, getCobrosPorCobrador, getMoraDetallada } = useReportes();
+  const { getArqueosPendientes } = useArqueo();
   const { simboloMoneda } = useConfig();
 
   const [summary, setSummary] = useState({});
@@ -37,16 +39,18 @@ export const PanelAdminPage = () => {
   const [recaudacion, setRecaudacion] = useState([]);
   const [cobros, setCobros] = useState([]);
   const [mora, setMora] = useState({ count: 0, saldo: 0, recargo: 0 });
+  const [arqueosPendientes, setArqueosPendientes] = useState([]);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const [sum, cart, rec, cob, mor] = await Promise.all([
+      const [sum, cart, rec, cob, mor, pend] = await Promise.all([
         getSummary(),
         getCarteraPorEstado(),
         getRecaudacionMensual({ fecha_inicio: inicioTendencia(), fecha_fin: hoyISO() }),
         getCobrosPorCobrador({ fecha_inicio: primerDiaMes(), fecha_fin: hoyISO() }),
         getMoraDetallada({ page: 1, pageSize: 500 }),
+        getArqueosPendientes(),
       ]);
 
       if (sum) setSummary(sum.empresa || {});
@@ -61,6 +65,7 @@ export const PanelAdminPage = () => {
           recargo: filas.reduce((a, f) => a + parseFloat(f.recargo_mora || 0), 0),
         });
       }
+      if (pend) setArqueosPendientes(pend.pendientes || []);
       setCargando(false);
     })();
   }, []);
@@ -84,6 +89,17 @@ export const PanelAdminPage = () => {
         <h1 className="text-3xl font-bold text-gray-800">Panel</h1>
         <p className="text-gray-600 mt-1">Visión general de tu financiera.</p>
       </div>
+
+      {/* Alerta de arqueos pendientes */}
+      {arqueosPendientes.length > 0 && (
+        <NavLink to="/arqueos" className="block bg-amber-50 border border-amber-300 text-amber-800 rounded-lg p-4 space-y-1 hover:bg-amber-100 transition-colors">
+          {arqueosPendientes.map((p) => (
+            <p key={p.usuario_id}>
+              ⚠️ {p.cobrador} — {p.dias_pendientes} día(s) con cobros sin arquear ({formatMoney(p.total_sin_arquear, simboloMoneda)}) — más antiguo: {p.fecha_mas_antigua?.slice(0, 10)}
+            </p>
+          ))}
+        </NavLink>
+      )}
 
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
