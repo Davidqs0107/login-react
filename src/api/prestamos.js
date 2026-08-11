@@ -8,3 +8,5 @@ export const uploadDocRequest = (id, file) => LoginApi.post(`/prestamos/${id}/ar
 export const getDocByIdRequest = (id) => LoginApi.get(`/prestamos/${id}/archivos`);
 export const completarPrestamoRequest = (id) => LoginApi.put(`/prestamos/${id}/completar`);
 export const refinanciarPrestamoRequest = (id, data) => LoginApi.post(`/prestamos/${id}/refinanciar`, data);
+export const getFiniquitoRequest = (id) => LoginApi.get(`/prestamos/${id}/finiquito`);
+export const cancelarPrestamoRequest = (id, data) => LoginApi.post(`/prestamos/${id}/cancelar`, data);

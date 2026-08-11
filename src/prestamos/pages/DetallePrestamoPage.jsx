@@ -6,6 +6,7 @@ import { useLoan } from "../hooks/useLoan";
 import { useParams } from "react-router";
 import { CreateCuotaModal } from "../components/CreateCuotaModal";
 import { RefinanciarModal } from "../components/RefinanciarModal";
+import { CancelarAnticipadoModal } from "../components/CancelarAnticipadoModal";
 import { RegisterTableLayout } from "../../layout/RegisterTableLayout";
 import { formatDate, formtaTipoPrestamo } from "../../common/functions";
 import { generatePDF } from "../functions/generatePdfPrestamo";
@@ -36,6 +37,7 @@ export const DetallePrestamoPage = () => {
   const [onlyRead, setOnlyRead] = useState(false);
   const [ubicacionBoton, setUbicacionBoton] = useState(null);
   const [isRefiOpen, setIsRefiOpen] = useState(false);
+  const [isCancelarOpen, setIsCancelarOpen] = useState(false);
 
   const handlePagarCuota = (cuota, read) => {
     setOnlyRead(read);
@@ -212,10 +214,27 @@ export const DetallePrestamoPage = () => {
       .toFixed(2);
   };
 
-  // Saldo de Interés: interés que aún falta por cobrar
-  const saldoInteres = () => {
-    return (interesMontoTotal() - parseFloat(interesGanado())).toFixed(2);
+  // Interés pendiente de una cuota puntual: lo que le falta cobrar de interés
+  // (mismo criterio que interesGanado: el pago cubre interés primero)
+  const interesPendientePorCuota = (cuota) => {
+    const interesCuota = interesPorCuota(cuota);
+    const montoPagado = parseFloat(cuota.monto_pagado || 0);
+    return interesCuota - Math.min(montoPagado, interesCuota);
   };
+
+  // Saldo de Interés: interés que aún falta por cobrar (solo cuotas pendientes/parciales,
+  // las condonadas ya no son cobrables)
+  const saldoInteres = () => {
+    return cuotas
+      .filter((c) => ["pendiente", "parcial"].includes(c.estado))
+      .reduce((acc, cuota) => acc + interesPendientePorCuota(cuota), 0)
+      .toFixed(2);
+  };
+
+  // Interés condonado: interés no cobrado de cuotas condonadas (informativo)
+  const interesCondonado = cuotas
+    .filter((c) => c.estado === "condonada")
+    .reduce((acc, cuota) => acc + interesPendientePorCuota(cuota), 0);
 
   // Mora Cobrada: suma de recargos por atraso ya cobrados en todas las cuotas
   const moraCobradaTotal = cuotas.reduce(
@@ -348,6 +367,11 @@ export const DetallePrestamoPage = () => {
               {saldoInteres()}
             </p>
             <p className="text-xs text-gray-500 mt-1">Interés por cobrar</p>
+            {interesCondonado > 0 && (
+              <p className="text-xs text-gray-500 mt-1">
+                Condonado: {interesCondonado.toFixed(2)}
+              </p>
+            )}
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -383,6 +407,16 @@ export const DetallePrestamoPage = () => {
                   Refinanciar
                 </Button>
               )}
+            {user.rol === 'admin' &&
+              prestamo.tipo_prestamo === tipoPrestamo.Fijo &&
+              !['completado', 'refinanciado'].includes(prestamo.estado_prestamo) && (
+                <Button
+                  clase="!bg-orange-600 hover:!bg-orange-700 text-white font-bold py-2 px-4 rounded !w-auto"
+                  onClick={() => setIsCancelarOpen(true)}
+                >
+                  Cancelar anticipado
+                </Button>
+              )}
             {user.rol === 'admin' && prestamo.estado_prestamo !== 'completado' && (
               <Button
                 clase="!bg-green-600 hover:!bg-green-700 text-white font-bold py-2 px-4 rounded !w-auto"
@@ -402,6 +436,20 @@ export const DetallePrestamoPage = () => {
           title={`Refinanciar Préstamo #${prestamo.id}`}
         >
           <RefinanciarModal prestamo={prestamo} closeModal={setIsRefiOpen} />
+        </Modal>
+      )}
+
+      {isCancelarOpen && (
+        <Modal
+          isOpen={isCancelarOpen}
+          onClose={() => setIsCancelarOpen(false)}
+          title={`Cancelar anticipado Préstamo #${prestamo.id}`}
+        >
+          <CancelarAnticipadoModal
+            prestamo={prestamo}
+            closeModal={setIsCancelarOpen}
+            onSuccess={fetchUsers}
+          />
         </Modal>
       )}
 
@@ -447,8 +495,10 @@ export const DetallePrestamoPage = () => {
             <tbody>
               {cuotas.map((cuota, index) => {
                 const isCurrentCuota =
-                  index === 0 || cuotas[index - 1]?.estado === "pagada";
-                const isDisabled = cuota.estado === "pagada" || !isCurrentCuota;
+                  index === 0 ||
+                  ["pagada", "condonada"].includes(cuotas[index - 1]?.estado);
+                const isDisabled =
+                  ["pagada", "condonada"].includes(cuota.estado) || !isCurrentCuota;
 
                 // Capital de esta cuota específica
                 const capitalCuota = capitalPorCuota(cuota);
@@ -501,7 +551,15 @@ export const DetallePrestamoPage = () => {
                     </td>
                     {/* <td className="px-4 py-2">{saldoCapitalCuota}</td> */}
                     <td className="px-4 py-2 capitalize">
-                      <div>{cuota.estado}</div>
+                      <div>
+                        {cuota.estado === "condonada" ? (
+                          <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-600 normal-case">
+                            condonada
+                          </span>
+                        ) : (
+                          cuota.estado
+                        )}
+                      </div>
                       {parseFloat(cuota.mora_pendiente || 0) > 0 && (
                         <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 normal-case">
                           mora {parseFloat(cuota.mora_pendiente).toFixed(2)}
@@ -519,7 +577,11 @@ export const DetallePrestamoPage = () => {
                           onClick={() => handlePagarCuota(cuota, false)}
                           disabled={isDisabled}
                         >
-                          {cuota.estado === "pagada" ? "Pagada" : "Pagar"}
+                          {cuota.estado === "pagada"
+                            ? "Pagada"
+                            : cuota.estado === "condonada"
+                            ? "Condonada"
+                            : "Pagar"}
                         </Button>
                         <button
                           className="text-blue-500 hover:underline"

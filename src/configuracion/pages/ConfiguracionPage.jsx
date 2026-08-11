@@ -22,6 +22,7 @@ const initial = {
   incumplido_dias: 90,
   moneda: "BOB",
   simbolo_moneda: "Bs.",
+  cancelacion_cuotas_interes: 1,
 };
 
 export const ConfiguracionPage = () => {
@@ -43,6 +44,7 @@ export const ConfiguracionPage = () => {
           incumplido_dias: cfg.incumplido_dias ?? 90,
           moneda: cfg.moneda ?? "BOB",
           simbolo_moneda: cfg.simbolo_moneda ?? "Bs.",
+          cancelacion_cuotas_interes: cfg.cancelacion_cuotas_interes ?? 1,
         });
       }
       setCargando(false);
@@ -59,6 +61,7 @@ export const ConfiguracionPage = () => {
       mora_dias_gracia: Number(form.mora_dias_gracia) || 0,
       mora_tope: form.mora_tope === "" ? null : Number(form.mora_tope),
       incumplido_dias: Number(form.incumplido_dias) || 90,
+      cancelacion_cuotas_interes: Number(form.cancelacion_cuotas_interes) || 1,
     };
     const res = await updateConfiguracion(payload);
     if (res) {
@@ -139,6 +142,13 @@ export const ConfiguracionPage = () => {
             value={form.incumplido_dias}
             onChange={(e) => set("incumplido_dias", e.target.value)}
             help='Un préstamo con atraso mayor a estos días se marca "incumplido".'
+          />
+          <LabeledInput
+            label="Cuotas de interés al cancelar anticipado"
+            type="number" min="1"
+            value={form.cancelacion_cuotas_interes}
+            onChange={(e) => set("cancelacion_cuotas_interes", e.target.value)}
+            help="Cuotas de interés que se cobran al cancelar un préstamo fijo antes de tiempo; el resto se condona."
           />
           <LabeledInput
             label="Moneda"

@@ -71,7 +71,7 @@ export const PortalPage = () => {
   };
 
   const cuotasPendientes = data
-    ? data.prestamos.flatMap((p) => p.cuotas.filter((c) => c.estado !== "pagada").map((c) => ({ ...c, prestamo_id: p.id })))
+    ? data.prestamos.flatMap((p) => p.cuotas.filter((c) => !["pagada", "condonada"].includes(c.estado)).map((c) => ({ ...c, prestamo_id: p.id })))
     : [];
 
   const handleSubmit = async (e) => {

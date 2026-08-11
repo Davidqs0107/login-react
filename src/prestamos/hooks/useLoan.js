@@ -1,5 +1,5 @@
 import { useApi } from "../../hooks/useApi";
-import { getDocByIdRequest, getLoanByIdRequest, getLoansRequest, refinanciarPrestamoRequest, registerLoanRequest, updateLoanRequest, uploadDocRequest } from "../../api/prestamos";
+import { getDocByIdRequest, getLoanByIdRequest, getLoansRequest, refinanciarPrestamoRequest, registerLoanRequest, updateLoanRequest, uploadDocRequest, getFiniquitoRequest, cancelarPrestamoRequest } from "../../api/prestamos";
 
 export const useLoan = () => {
     const { call, loading, error } = useApi();
@@ -21,6 +21,9 @@ export const useLoan = () => {
 
     const refinanciarLoan = (id, payload) => call(() => refinanciarPrestamoRequest(id, payload), "Error al refinanciar");
 
+    const getFiniquito = (id) => call(() => getFiniquitoRequest(id), "Error al calcular el finiquito");
+    const cancelarLoan = (id, payload) => call(() => cancelarPrestamoRequest(id, payload), "Error al cancelar el préstamo");
+
     return {
         // metodos
         createLoan,
@@ -30,6 +33,8 @@ export const useLoan = () => {
         uploadDoc,
         getDoc,
         refinanciarLoan,
+        getFiniquito,
+        cancelarLoan,
         // variables
         error,
         loading
